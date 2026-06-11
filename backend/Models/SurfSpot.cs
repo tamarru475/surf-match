@@ -16,6 +16,7 @@ public class SurfSpot
     public CrowdLevel TypicalCrowd { get; init; }
     public WaveSize MinWaveSize { get; init; }
     public WaveSize MaxWaveSize { get; init; }
+    public WaveSize CurrentWaveSize { get; init; }
 
     public string Description { get; init; } = "";
 }
