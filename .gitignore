@@ -143,8 +143,8 @@ vite.config.ts.timestamp-*
 .vite/
 
 # .NET build output
-backend/bin/
-backend/obj/
+**/bin/
+**/obj/
 
 # Claude Code
 .claude/
