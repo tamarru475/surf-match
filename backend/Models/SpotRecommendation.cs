@@ -8,7 +8,10 @@ public class SpotRecommendation
     public string Name { get; init; } = "";
     public Region Region { get; init; }
     public WaveType WaveType { get; init; }
+    public SkillLevel MinSkillLevel { get; init; }
+    public CrowdLevel TypicalCrowd { get; init; }
     public IReadOnlyList<Facility> Facilities { get; init; } = [];
+    public WaveSize CurrentWaveSize { get; init; }
     public string Description { get; init; } = "";
 
     public int Score { get; init; }

@@ -8,5 +8,7 @@ public enum Region
     BayOfPlenty,
     Waikato,
     Gisborne,
-    Christchurch
+    Christchurch,
+    Taranaki,
+    Kaikoura
 }

@@ -1,0 +1,25 @@
+@reference "tailwindcss";
+
+@keyframes loadingSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes loadingWavePulse {
+  0%, 100% { transform: scale(1);    opacity: 0.65; }
+  50%       { transform: scale(1.2); opacity: 1; }
+}
+
+.root     { @apply flex flex-col items-center justify-center gap-5 py-24; }
+
+.waveIcon {
+  @apply w-12 h-12 text-sky-500;
+  animation: loadingWavePulse 1.6s ease-in-out infinite;
+}
+
+.spinner {
+  @apply w-14 h-14 border-4 border-sky-200 border-t-sky-600 rounded-full;
+  animation: loadingSpin 0.9s linear infinite;
+}
+
+.label    { @apply text-gray-500 text-base; }

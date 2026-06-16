@@ -1,0 +1,8 @@
+@reference "tailwindcss";
+
+.button {
+  @apply px-5 py-3 rounded-xl border-2 font-medium text-base transition-all cursor-pointer;
+}
+
+.selected   { @apply bg-sky-600 border-sky-600 text-white; }
+.unselected { @apply bg-white border-gray-200 text-gray-700 hover:border-sky-400 hover:text-sky-600; }

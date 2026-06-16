@@ -1,0 +1,30 @@
+@reference "tailwindcss";
+
+.root   { @apply min-h-screen bg-gray-50; }
+
+.header {
+  @apply bg-white border-b border-gray-100 px-6 py-4
+         flex items-center justify-between;
+}
+.headerTitle    { @apply text-xl font-bold text-gray-900; }
+.headerSubtitle { @apply text-sm text-gray-400; }
+
+.startOver {
+  @apply text-sm font-medium text-sky-600 hover:text-sky-700
+         transition-colors cursor-pointer;
+}
+
+.grid {
+  @apply px-4 py-6 max-w-2xl mx-auto grid grid-cols-1 gap-4;
+}
+
+@media (min-width: 640px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.empty  { @apply text-center py-20 px-6; }
+.emptyTitle  { @apply text-gray-700 text-lg font-semibold; }
+.emptyText   { @apply text-gray-400 text-sm mt-2; }
+.emptyAction {
+  @apply mt-6 text-sky-600 font-medium hover:underline cursor-pointer;
+}

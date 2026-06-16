@@ -1,0 +1,8 @@
+@reference "tailwindcss";
+
+.root    { @apply flex flex-col min-h-screen bg-white; }
+.topBar  { @apply px-6 pt-8 pb-4 max-w-lg mx-auto w-full; }
+.body    { @apply flex-1 px-6 py-8 max-w-lg mx-auto w-full; }
+.error   { @apply mt-4 text-sm text-red-500; }
+.nav     { @apply px-6 pb-10 max-w-lg mx-auto w-full flex gap-3; }
+.loading { @apply flex flex-col items-center justify-center min-h-screen bg-white px-6; }

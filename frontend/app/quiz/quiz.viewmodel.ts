@@ -1,0 +1,82 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { fetchRecommendations } from '@/lib/api';
+import { QUESTIONS } from '@/lib/questions';
+import type {
+  BoardType,
+  CrowdLevel,
+  Facility,
+  Region,
+  SkillLevel,
+  UserPreferences,
+  WaveSize,
+  WaveType,
+} from '@/lib/types';
+
+export type Answers = {
+  skillLevel: string;
+  crowdTolerance: string;
+  preferredRegion: string;
+  boardTypes: string[];
+  preferredWaveTypes: string[];
+  preferredWaveSizes: string[];
+  preferredFacilities: string[];
+};
+
+export const INITIAL_ANSWERS: Answers = {
+  skillLevel: '',
+  crowdTolerance: '',
+  preferredRegion: '',
+  boardTypes: [],
+  preferredWaveTypes: [],
+  preferredWaveSizes: [],
+  preferredFacilities: [],
+};
+
+export const buildPreferences = (answers: Answers): UserPreferences => ({
+  skillLevel:          answers.skillLevel as SkillLevel,
+  crowdTolerance:      answers.crowdTolerance as CrowdLevel,
+  preferredRegion:     answers.preferredRegion ? (answers.preferredRegion as Region) : undefined,
+  boardTypes:          answers.boardTypes as BoardType[],
+  preferredWaveTypes:  answers.preferredWaveTypes as WaveType[],
+  preferredWaveSizes:  answers.preferredWaveSizes as WaveSize[],
+  preferredFacilities: answers.preferredFacilities as Facility[],
+});
+
+export const useQuizViewModel = () => {
+  const router = useRouter();
+  const [step, setStep]       = useState(0);
+  const [answers, setAnswers] = useState<Answers>(INITIAL_ANSWERS);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState<string | null>(null);
+
+  const question      = QUESTIONS[step];
+  const isLastStep    = step === QUESTIONS.length - 1;
+  const value         = answers[question.field as keyof Answers];
+  const isNextDisabled = question.required && (Array.isArray(value) ? value.length === 0 : !value);
+
+  const handleChange = (next: string | string[]) =>
+    setAnswers((prev) => ({ ...prev, [question.field]: next }));
+
+  const handleBack = () => (step === 0 ? router.push('/') : setStep((s) => s - 1));
+
+  const handleNext = async () => {
+    if (!isLastStep) { setStep((s) => s + 1); return; }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await fetchRecommendations(buildPreferences(answers));
+      sessionStorage.setItem('surfmatch_results', JSON.stringify(data));
+      router.push('/results');
+    } catch {
+      setError('Could not reach the server. Is the backend running?');
+      setLoading(false);
+    }
+  };
+
+  return { question, step, value, loading, error, isLastStep, isNextDisabled, handleChange, handleBack, handleNext };
+};

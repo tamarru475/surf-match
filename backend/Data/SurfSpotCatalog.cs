@@ -321,6 +321,138 @@ public static class SurfSpotCatalog
             MaxWaveSize = WaveSize.HeadHigh,
             CurrentWaveSize = WaveSize.WaistHigh,
             Description = "A hidden gem near Tutukaka in Northland. Sandy bottom beach break that rarely gets crowded — worth tracking down."
+        },
+
+        // ── Taranaki ─────────────────────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000022"),
+            Name = "Stent Road",
+            Region = Region.Taranaki,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Advanced,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms],
+            TypicalCrowd = CrowdLevel.Moderate,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "A long, walling left-hand reef break near Oakura. One of Taranaki's most consistent and rewarding waves — best at solid swell with a light offshore."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000023"),
+            Name = "Kumara Patch",
+            Region = Region.Taranaki,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish, BoardType.Funboard],
+            Facilities = [Facility.Bathrooms],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.KneeHigh,
+            MaxWaveSize = WaveSize.HeadHigh,
+            CurrentWaveSize = WaveSize.KneeHigh,
+            Description = "A mellow reef break in Taranaki that turns on when other spots are too big. A local favourite that stays quiet even on good days."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000024"),
+            Name = "Back Beach",
+            Region = Region.Taranaki,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish, BoardType.Funboard],
+            Facilities = [Facility.Bathrooms, Facility.Showers, Facility.SurfClub],
+            TypicalCrowd = CrowdLevel.Moderate,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "The main surf break in New Plymouth, breaking over a mix of reef and sand beneath the volcanic headland. Punchy and powerful when it lines up."
+        },
+
+        // ── Auckland reef breaks ──────────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000025"),
+            Name = "Takapuna Reef",
+            Region = Region.Auckland,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms, Facility.Showers, Facility.SurfClub],
+            TypicalCrowd = CrowdLevel.Moderate,
+            MinWaveSize = WaveSize.KneeHigh,
+            MaxWaveSize = WaveSize.HeadHigh,
+            CurrentWaveSize = WaveSize.KneeHigh,
+            Description = "A reef break sitting just off Takapuna Beach on Auckland's North Shore. Can produce surprisingly good waves when the swell direction lines up."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000026"),
+            Name = "Daniels Reef",
+            Region = Region.Auckland,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.KneeHigh,
+            MaxWaveSize = WaveSize.HeadHigh,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "A lesser-known Auckland reef that rewards those in the know with uncrowded, hollow waves when conditions align. Worth checking on a small easterly swell."
+        },
+
+        // ── Gisborne ──────────────────────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000027"),
+            Name = "Wainui Beach",
+            Region = Region.Gisborne,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Beginner,
+            SuitableBoardTypes = [BoardType.Rental, BoardType.Longboard, BoardType.Funboard, BoardType.Fish, BoardType.Shortboard],
+            Facilities = [Facility.Bathrooms, Facility.Lifeguard],
+            TypicalCrowd = CrowdLevel.Moderate,
+            MinWaveSize = WaveSize.AnkleHigh,
+            MaxWaveSize = WaveSize.HeadHigh,
+            CurrentWaveSize = WaveSize.KneeHigh,
+            Description = "A long sandy beach just north of Gisborne city with consistent beach break peaks. Popular with locals and a reliable option when the easterly swells arrive."
+        },
+
+        // ── Kaikoura ──────────────────────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000028"),
+            Name = "Meatworks",
+            Region = Region.Kaikoura,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Advanced,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "A powerful left-hand reef break tucked below the Kaikoura mountains. Named after the old meatworks nearby — raw, heavy, and stunning when it's firing."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000029"),
+            Name = "Mangamaunu",
+            Region = Region.Kaikoura,
+            WaveType = WaveType.PointBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Longboard, BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "One of New Zealand's longest right-hand point breaks, walling for hundreds of metres along the Kaikoura coastline. A remote gem that makes the drive from Christchurch very worthwhile."
         }
     ];
 }

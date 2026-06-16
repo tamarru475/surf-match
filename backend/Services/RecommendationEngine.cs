@@ -70,12 +70,15 @@ public static class RecommendationEngine
 
         return new SpotRecommendation
         {
-            SpotId      = spot.Id,
-            Name        = spot.Name,
-            Region      = spot.Region,
-            WaveType    = spot.WaveType,
-            Facilities  = spot.Facilities,
-            Description = spot.Description,
+            SpotId        = spot.Id,
+            Name          = spot.Name,
+            Region        = spot.Region,
+            WaveType      = spot.WaveType,
+            MinSkillLevel = spot.MinSkillLevel,
+            TypicalCrowd  = spot.TypicalCrowd,
+            Facilities      = spot.Facilities,
+            CurrentWaveSize = spot.CurrentWaveSize,
+            Description     = spot.Description,
             Score       = breakdown.BoardMatch + breakdown.CrowdMatch + breakdown.FacilityMatch,
             Summary     = BuildNotes(spot, prefs, breakdown),
             Breakdown   = breakdown

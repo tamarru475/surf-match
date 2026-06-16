@@ -1,0 +1,55 @@
+@reference "tailwindcss";
+
+.root {
+  @apply relative flex flex-col items-center justify-center min-h-screen
+         overflow-hidden text-white px-6;
+  padding-top: 25vh;
+}
+
+.bgImage {
+  @apply object-cover;
+}
+
+.overlay {
+  @apply absolute inset-0 bg-black/15;
+}
+
+.content {
+  @apply relative z-10 flex flex-col items-center text-center gap-8 max-w-md;
+}
+
+.titleRow {
+  @apply flex items-center gap-3;
+}
+
+.logoIcon {
+  height: 80px;
+  width: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+}
+
+.title {
+  @apply text-5xl font-extrabold tracking-tight drop-shadow-lg;
+}
+.tagline {
+  @apply text-lg text-white/80 leading-relaxed;
+}
+.ctaGroup {
+  @apply flex flex-col items-center gap-3;
+}
+
+.ctaButton {
+  @apply inline-flex items-center justify-center bg-white text-sky-700 font-bold
+         text-lg px-10 py-4 rounded-2xl shadow-lg cursor-pointer
+         transition-all duration-200 hover:shadow-xl hover:bg-sky-50 active:scale-[0.98];
+  transform-origin: center;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.ctaCaption {
+  @apply text-white/60 text-sm;
+}

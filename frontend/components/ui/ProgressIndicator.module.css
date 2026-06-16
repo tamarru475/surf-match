@@ -1,0 +1,6 @@
+@reference "tailwindcss";
+
+.root  { @apply w-full; }
+.label { @apply text-sm text-gray-400 mb-2; }
+.track { @apply h-1.5 bg-gray-200 rounded-full overflow-hidden; }
+.fill  { @apply h-full bg-sky-500 rounded-full transition-all duration-300; }

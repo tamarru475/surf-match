@@ -1,0 +1,7 @@
+@reference "tailwindcss";
+
+.root     { @apply flex flex-col gap-8; }
+.header   { @apply flex flex-col gap-2; }
+.title    { @apply text-2xl font-bold text-gray-900; }
+.subtitle { @apply text-sm text-gray-400; }
+.options  { @apply flex flex-wrap gap-3; }

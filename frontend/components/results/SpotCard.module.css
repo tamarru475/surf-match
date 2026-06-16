@@ -1,0 +1,55 @@
+@reference "tailwindcss";
+
+.card {
+  @apply relative text-left rounded-2xl overflow-hidden shadow-md bg-white w-full cursor-pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.13);
+}
+
+.photo {
+  @apply relative h-44 overflow-hidden;
+}
+
+.photo img {
+  @apply object-cover w-full h-full;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .photo img {
+  transform: scale(1.06);
+}
+
+.photoOverlay {
+  @apply absolute inset-0 bg-black/10;
+}
+
+.matchBadge {
+  @apply absolute top-3 right-3 bg-white/90 backdrop-blur-sm
+         text-sky-700 font-bold text-sm px-3 py-1 rounded-full;
+}
+
+.body     { @apply p-4 flex flex-col gap-2; }
+.name     { @apply text-lg font-bold text-gray-900 transition-colors duration-200; }
+.card:hover .name { @apply text-sky-600; }
+
+.location     { @apply flex items-center gap-1.5 text-sm text-gray-500; }
+.locationIcon { @apply w-3.5 h-3.5 flex-shrink-0; }
+.caption      { @apply text-sm text-gray-600 line-clamp-2; }
+.badges       { @apply flex flex-wrap gap-2 mt-1; }
+
+.badge {
+  @apply text-xs font-medium px-2.5 py-1 rounded-full;
+}
+
+/* Badge colour variants */
+.badgeGreen  { @apply bg-emerald-100 text-emerald-700; }
+.badgeAmber  { @apply bg-amber-100   text-amber-700; }
+.badgeRed    { @apply bg-red-100     text-red-700; }
+.badgeBlue   { @apply bg-blue-100    text-blue-700; }
+.badgePurple { @apply bg-purple-100  text-purple-700; }
+.badgeSky    { @apply bg-sky-100     text-sky-700; }
+.badgeIndigo { @apply bg-indigo-100  text-indigo-700; }

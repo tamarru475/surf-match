@@ -1,0 +1,128 @@
+@reference "tailwindcss";
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalSlideDown {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(32px); }
+}
+
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modalScaleOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.96); }
+}
+
+.backdrop {
+  @apply fixed inset-0 z-50 flex items-end justify-center p-0;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .backdrop { @apply items-center p-4; }
+}
+
+.overlay {
+  @apply absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer;
+}
+
+.panel {
+  @apply relative z-10 w-full bg-white rounded-t-3xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col;
+  animation: modalSlideUp 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (min-width: 640px) {
+  .panel {
+    @apply max-w-lg rounded-2xl;
+    animation: modalScaleIn 0.22s ease;
+  }
+}
+
+.photo {
+  @apply relative h-52 flex-shrink-0 overflow-hidden;
+}
+
+.photo img   { @apply object-cover w-full h-full; }
+.photoTint   { @apply absolute inset-0 bg-black/25; }
+
+.closeBtn {
+  @apply absolute top-4 right-4 w-9 h-9 rounded-full bg-black/30 text-white
+         flex items-center justify-center hover:bg-black/55
+         transition-colors duration-200 cursor-pointer;
+}
+
+.closeBtn :global(svg) {
+  transition: transform 0.2s ease;
+}
+
+.closeBtn:hover :global(svg) {
+  transform: rotate(90deg);
+}
+
+.backdropClosing {
+  animation: modalFadeOut 0.24s ease forwards;
+}
+
+.panelClosing {
+  animation: modalSlideDown 0.24s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+@media (min-width: 640px) {
+  .panelClosing {
+    animation: modalScaleOut 0.2s ease forwards;
+  }
+}
+
+.photoMeta   { @apply absolute bottom-4 left-4 right-4; }
+.photoTitle  { @apply text-2xl font-bold text-white drop-shadow; }
+
+.photoRegion {
+  @apply text-white/80 text-sm flex items-center gap-1.5 mt-0.5;
+}
+
+.regionIcon  { @apply w-3.5 h-3.5 flex-shrink-0; }
+.matchBadge  { @apply absolute top-4 left-4 bg-white/90 text-sky-700 font-bold text-sm px-3 py-1 rounded-full; }
+
+.body        { @apply overflow-y-auto p-5 flex flex-col gap-5; }
+.description { @apply text-gray-700 leading-relaxed; }
+
+.mapsLink {
+  @apply flex items-center gap-2 text-sky-600 hover:text-sky-700 font-medium text-sm
+         border border-sky-200 rounded-xl px-4 py-3 hover:bg-sky-50
+         transition-all duration-200 cursor-pointer;
+}
+
+.mapsIcon { @apply w-4 h-4 flex-shrink-0; }
+
+.detailGrid { @apply grid grid-cols-2 gap-3; }
+
+.detailItem  { @apply bg-gray-50 rounded-xl px-3 py-2.5; }
+.detailLabel { @apply text-xs text-gray-400 mb-0.5; }
+.detailValue { @apply text-sm font-semibold text-gray-800; }
+
+.facilitiesHeading {
+  @apply text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2;
+}
+.facilitiesList { @apply flex flex-wrap gap-2; }
+.facilityChip   { @apply text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full; }
+
+.notes      { @apply bg-amber-50 border border-amber-200 rounded-xl px-4 py-3; }
+.notesTitle { @apply text-xs font-semibold text-amber-600 uppercase tracking-wide mb-1; }
+.notesText  { @apply text-sm text-amber-800 capitalize; }
