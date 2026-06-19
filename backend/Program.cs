@@ -4,9 +4,10 @@ using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var corsOrigin = builder.Configuration["CORS_ORIGIN"] ?? "http://localhost:3000";
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(corsOrigin)
               .AllowAnyHeader()
               .AllowAnyMethod()));
 
@@ -27,7 +28,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-app.UseHttpsRedirection();
+if (!app.Environment.IsProduction())
+    app.UseHttpsRedirection();
 
 app.MapPost("/recommendations", (UserPreferences prefs) =>
     Results.Ok(RecommendationEngine.GetRecommendations(prefs)))
