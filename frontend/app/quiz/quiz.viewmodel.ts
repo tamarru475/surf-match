@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchRecommendations } from '@/lib/api';
 import { QUESTIONS } from '@/lib/questions';
+import type { Question } from '@/lib/questions';
 import type {
   BoardType,
   CrowdLevel,
@@ -14,6 +15,11 @@ import type {
   WaveSize,
   WaveType,
 } from '@/lib/types';
+
+export const isQuestionAnswered = (question: Question, value: string | string[]): boolean => {
+  if (!question.required) return true;
+  return Array.isArray(value) ? value.length > 0 : Boolean(value);
+};
 
 export type Answers = {
   skillLevel: string;
@@ -55,7 +61,7 @@ export const useQuizViewModel = () => {
   const question      = QUESTIONS[step];
   const isLastStep    = step === QUESTIONS.length - 1;
   const value         = answers[question.field as keyof Answers];
-  const isNextDisabled = question.required && (Array.isArray(value) ? value.length === 0 : !value);
+  const isNextDisabled = !isQuestionAnswered(question, value);
 
   const handleChange = (next: string | string[]) =>
     setAnswers((prev) => ({ ...prev, [question.field]: next }));

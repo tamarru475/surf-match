@@ -28,6 +28,19 @@ surf-match/
 
 ### Frontend (`/frontend`)
 
+**Tests (`/frontend/__tests__`)**
+
+58 tests across 7 suites:
+- **Pure function tests** — `computeMatchPercent` (table-driven across all board/facility combinations), `buildPreferences`, `isQuestionAnswered`, `cx`
+- **Component tests** — Button, ProgressIndicator, AnswerButton, SpotCard, SpotModal (including 240ms close animation and Escape key dismiss)
+
+Run with:
+
+```bash
+cd frontend
+npm test
+```
+
 - **4-page flow:** landing → quiz → loading → results
 - **7-question quiz** — skill level, crowd tolerance, region (optional), board types, wave type, wave size, facilities
 - **Results page** — ranked spot cards with real photos, match percentage, and wave info badges

@@ -41,8 +41,8 @@ export const QUESTIONS: Question[] = [
   {
     field: 'preferredRegion',
     title: 'Which region are you in?',
-    subtitle: 'Optional · choose one, or skip to search all regions',
-    required: false,
+    subtitle: 'Required · choose one',
+    required: true,
     multiSelect: false,
     options: [
       { label: 'Northland', value: 'Northland' },
