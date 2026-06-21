@@ -2,6 +2,8 @@
 
 SurfMatch helps New Zealand surfers find the right wave by matching their skill level, board type, crowd tolerance, and wave preferences to suitable surf spots across New Zealand.
 
+**Live:** https://surf-match.vercel.app
+
 Figma design: https://www.figma.com/make/1zPtZDVsRfjrsyEbO38UZG/SurfMatch?t=9GfOeqqtHAnXZaeC-1
 
 ## Project Structure
@@ -42,11 +44,18 @@ npm test
 ```
 
 - **4-page flow:** landing → quiz → loading → results
-- **7-question quiz** — skill level, crowd tolerance, region (optional), board types, wave type, wave size, facilities
+- **7-question quiz** — skill level, crowd tolerance, region, board types, wave type, wave size, facilities
 - **Results page** — ranked spot cards with real photos, match percentage, and wave info badges
 - **Spot modal** — full detail view with description, current wave height, facilities, Google Maps link, and match notes
 - **MVVM pattern** — `SpotCard.viewmodel.ts` and `quiz.viewmodel.ts` separate data logic from rendering
 - **Animations** — card hover lift + photo zoom, modal slide-in/out, loading wave pulse
+
+## Deployment
+
+| Service | Platform | URL |
+|---|---|---|
+| Frontend | Vercel | https://surf-match.vercel.app |
+| Backend API | Google Cloud Run (`australia-southeast1`) | https://surf-match-api-518426856978.australia-southeast1.run.app |
 
 ## Running locally
 

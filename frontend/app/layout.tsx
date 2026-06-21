@@ -15,7 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SurfMatch — Find your perfect wave",
   description: "Match your skill level and preferences to the best New Zealand surf spots for today.",
-  icons: { icon: '/Logo.svg' },
 };
 
 export default function RootLayout({
