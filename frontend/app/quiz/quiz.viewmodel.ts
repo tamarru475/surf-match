@@ -21,6 +21,12 @@ export const isQuestionAnswered = (question: Question, value: string | string[])
   return Array.isArray(value) ? value.length > 0 : Boolean(value);
 };
 
+export const getNextLabel = (question: Question, value: string | string[], isLastStep: boolean): string => {
+  if (isLastStep) return 'Find my spot';
+  const hasValue = Array.isArray(value) ? value.length > 0 : Boolean(value);
+  return !question.required && !hasValue ? 'Skip' : 'Next';
+};
+
 export type Answers = {
   skillLevel: string;
   crowdTolerance: string;
@@ -62,6 +68,7 @@ export const useQuizViewModel = () => {
   const isLastStep    = step === QUESTIONS.length - 1;
   const value         = answers[question.field as keyof Answers];
   const isNextDisabled = !isQuestionAnswered(question, value);
+  const nextLabel      = getNextLabel(question, value, isLastStep);
 
   const handleChange = (next: string | string[]) =>
     setAnswers((prev) => ({ ...prev, [question.field]: next }));
@@ -84,5 +91,5 @@ export const useQuizViewModel = () => {
     }
   };
 
-  return { question, step, value, loading, error, isLastStep, isNextDisabled, handleChange, handleBack, handleNext };
+  return { question, step, value, loading, error, isLastStep, isNextDisabled, nextLabel, handleChange, handleBack, handleNext };
 };
