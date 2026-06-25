@@ -8,13 +8,11 @@ on:
       - '.github/workflows/frontend.yml'
   pull_request:
     branches: [main]
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend.yml'
   workflow_dispatch:
 
 jobs:
   test:
+    name: frontend-test
     runs-on: ubuntu-latest
     defaults:
       run:
