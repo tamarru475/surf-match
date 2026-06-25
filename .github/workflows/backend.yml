@@ -8,7 +8,7 @@ on:
       - 'backend.Tests/**'
       - '.github/workflows/backend.yml'
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
