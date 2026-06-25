@@ -7,6 +7,12 @@ on:
       - 'backend/**'
       - 'backend.Tests/**'
       - '.github/workflows/backend.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'backend.Tests/**'
+      - '.github/workflows/backend.yml'
   workflow_dispatch:
 
 jobs:
@@ -21,6 +27,7 @@ jobs:
 
   deploy:
     needs: test
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
