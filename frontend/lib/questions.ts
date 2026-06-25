@@ -59,7 +59,7 @@ export const QUESTIONS: Question[] = [
   {
     field: 'boardTypes',
     title: 'What boards do you have?',
-    subtitle: 'Optional · select all that apply',
+    subtitle: "Optional · select all that apply, or tap Skip — you don't have to answer",
     required: false,
     multiSelect: true,
     options: [
@@ -73,7 +73,7 @@ export const QUESTIONS: Question[] = [
   {
     field: 'preferredWaveTypes',
     title: 'What type of waves are you after?',
-    subtitle: 'Optional · select all that apply',
+    subtitle: "Optional · select all that apply, or tap Skip — you don't have to answer",
     required: false,
     multiSelect: true,
     options: [
@@ -85,7 +85,7 @@ export const QUESTIONS: Question[] = [
   {
     field: 'preferredWaveSizes',
     title: "What wave sizes are you comfortable with?",
-    subtitle: 'Optional · select all that apply',
+    subtitle: "Optional · select all that apply, or tap Skip — you don't have to answer",
     required: false,
     multiSelect: true,
     options: [
@@ -99,7 +99,7 @@ export const QUESTIONS: Question[] = [
   {
     field: 'preferredFacilities',
     title: 'Any facilities you need?',
-    subtitle: 'Optional · select all that apply',
+    subtitle: "Optional · select all that apply, or tap Skip — you don't have to answer",
     required: false,
     multiSelect: true,
     options: [
