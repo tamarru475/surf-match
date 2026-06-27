@@ -21,6 +21,21 @@ public class RecommendationEngineTests
     }
 
     [Fact]
+    public void New_to_surfing_sees_beginner_spots_instead_of_zero_results()
+    {
+        var result = Recommend(skill: SkillLevel.NewToSurfing);
+
+        var beginnerSpotNames = Backend.Data.SurfSpotCatalog.All
+            .Where(s => s.MinSkillLevel == SkillLevel.Beginner)
+            .Select(s => s.Name)
+            .ToHashSet();
+
+        var returnedNames = result.Select(r => r.Name).ToHashSet();
+        Assert.True(beginnerSpotNames.SetEquals(returnedNames),
+            "New to surfing should be clamped to see exactly the beginner spots");
+    }
+
+    [Fact]
     public void Intermediate_sees_beginner_spots()
     {
         var result = Recommend(skill: SkillLevel.Intermediate);

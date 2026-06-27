@@ -71,10 +71,11 @@ export const CROWD_BADGES: Record<CrowdLevel, Badge> = {
 // ── Skill badge ───────────────────────────────────────────────────────────────
 
 export const SKILL_BADGES: Record<SkillLevel, Badge> = {
-  Beginner:     { label: 'Beginner',     variant: 'badgeGreen'  },
-  Intermediate: { label: 'Intermediate', variant: 'badgeBlue'   },
-  Advanced:     { label: 'Advanced',     variant: 'badgePurple' },
-  Expert:       { label: 'Expert',       variant: 'badgeRed'    },
+  NewToSurfing: { label: 'New to surfing', variant: 'badgeGreen'  },
+  Beginner:     { label: 'Beginner',       variant: 'badgeGreen'  },
+  Intermediate: { label: 'Intermediate',   variant: 'badgeBlue'   },
+  Advanced:     { label: 'Advanced',       variant: 'badgePurple' },
+  Expert:       { label: 'Expert',         variant: 'badgeRed'    },
 };
 
 // ── Spot photos ───────────────────────────────────────────────────────────────

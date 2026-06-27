@@ -3,6 +3,18 @@ export interface QuestionOption {
   value: string;
 }
 
+export interface TooltipItem {
+  label: string;
+  description: string;
+  /** Path under /public to a representative photo for this item. */
+  image: string;
+}
+
+export interface TooltipTerm {
+  label: string;
+  description: string;
+}
+
 export interface Question {
   field: string;
   title: string;
@@ -10,6 +22,17 @@ export interface Question {
   required: boolean;
   multiSelect: boolean;
   options: QuestionOption[];
+  /** Short explainer shown behind an info icon next to the title. */
+  tooltip?: string;
+  /** A label + description per line, e.g. one row per skill level. */
+  tooltipTerms?: TooltipTerm[];
+  /** A colored, warning-styled note (e.g. "many spots have no facilities"). */
+  tooltipWarning?: string;
+  /** Richer alternative shown as a full modal: an image + description per item. */
+  tooltipItems?: TooltipItem[];
+  /** For multi-select questions: a sentinel option value that's mutually
+   *  exclusive with all the others (e.g. "No facilities needed"). */
+  noneValue?: string;
 }
 
 export const QUESTIONS: Question[] = [
@@ -19,7 +42,15 @@ export const QUESTIONS: Question[] = [
     subtitle: 'Required · choose one',
     required: true,
     multiSelect: false,
+    tooltipTerms: [
+      { label: 'New to surfing', description: "Never been on a board." },
+      { label: 'Beginner', description: 'Still learning to stand up and catch whitewater.' },
+      { label: 'Intermediate', description: 'Can catch unbroken waves and turn.' },
+      { label: 'Advanced', description: 'Comfortable in bigger surf and steeper drops.' },
+      { label: 'Expert', description: 'Chasing high-performance or heavy waves.' },
+    ],
     options: [
+      { label: 'New to surfing', value: 'NewToSurfing' },
       { label: 'Beginner', value: 'Beginner' },
       { label: 'Intermediate', value: 'Intermediate' },
       { label: 'Advanced', value: 'Advanced' },
@@ -45,6 +76,7 @@ export const QUESTIONS: Question[] = [
     required: true,
     multiSelect: false,
     options: [
+      { label: 'Anywhere in NZ', value: 'Anywhere' },
       { label: 'Northland', value: 'Northland' },
       { label: 'Auckland', value: 'Auckland' },
       { label: 'Coromandel', value: 'Coromandel' },
@@ -76,6 +108,23 @@ export const QUESTIONS: Question[] = [
     subtitle: "Optional · select all that apply, or tap Skip — you don't have to answer",
     required: false,
     multiSelect: true,
+    tooltipItems: [
+      {
+        label: 'Beach Break',
+        description: 'Sand bottom, peels along an open beach — most forgiving.',
+        image: '/images/beachbreak.jpg',
+      },
+      {
+        label: 'Point Break',
+        description: 'Wraps around a headland, often a longer, easier ride.',
+        image: '/images/pointbreak.jpg',
+      },
+      {
+        label: 'Reef Break',
+        description: 'Breaks over rock or coral — can be shallow and intense.',
+        image: '/images/reefbreak.jpg',
+      },
+    ],
     options: [
       { label: 'Beach Break', value: 'BeachBreak' },
       { label: 'Point Break', value: 'PointBreak' },
@@ -102,7 +151,11 @@ export const QUESTIONS: Question[] = [
     subtitle: "Optional · select all that apply, or tap Skip — you don't have to answer",
     required: false,
     multiSelect: true,
+    noneValue: 'None',
+    tooltipWarning:
+      "Many NZ surf spots are remote beaches with no bathrooms, showers, or shops nearby. Pick what matters and we'll favor spots that have it, but we'll still show you great spots either way.",
     options: [
+      { label: 'No facilities needed', value: 'None' },
       { label: 'Bathrooms', value: 'Bathrooms' },
       { label: 'Showers', value: 'Showers' },
       { label: 'Surf Club', value: 'SurfClub' },

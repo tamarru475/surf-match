@@ -44,6 +44,21 @@ describe('buildPreferences', () => {
     const prefs = buildPreferences(answers);
     expect(prefs.boardTypes).toEqual(['Longboard', 'Fish']);
   });
+
+  it('maps the "Anywhere" region sentinel to undefined', () => {
+    const prefs = buildPreferences({ ...answers, preferredRegion: 'Anywhere' });
+    expect(prefs.preferredRegion).toBeUndefined();
+  });
+
+  it('strips the "None" facilities sentinel down to an empty array', () => {
+    const prefs = buildPreferences({ ...answers, preferredFacilities: ['None'] });
+    expect(prefs.preferredFacilities).toEqual([]);
+  });
+
+  it('keeps real facilities untouched when "None" is not selected', () => {
+    const prefs = buildPreferences({ ...answers, preferredFacilities: ['Bathrooms', 'Showers'] });
+    expect(prefs.preferredFacilities).toEqual(['Bathrooms', 'Showers']);
+  });
 });
 
 // ── isQuestionAnswered ────────────────────────────────────────────────────────
