@@ -25,9 +25,12 @@ public static class RecommendationEngine
     private static IEnumerable<SurfSpot> Filter(IEnumerable<SurfSpot> spots, UserPreferences prefs)
     {
         // Always: don't show spots beyond the user's skill level.
+        // No spot in the catalog has a MinSkillLevel below Beginner, so clamp
+        // NewToSurfing up to Beginner here rather than returning zero results.
         // TODO: in future, a spot's effective skill level will vary with CurrentWaveSize
         //       (e.g. a normally-intermediate break becomes advanced at double overhead).
-        spots = spots.Where(s => s.MinSkillLevel <= prefs.SkillLevel);
+        var effectiveSkill = prefs.SkillLevel < SkillLevel.Beginner ? SkillLevel.Beginner : prefs.SkillLevel;
+        spots = spots.Where(s => s.MinSkillLevel <= effectiveSkill);
 
         if (prefs.PreferredRegion.HasValue)
             spots = spots.Where(s => s.Region == prefs.PreferredRegion.Value);

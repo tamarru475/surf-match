@@ -50,11 +50,13 @@ export const INITIAL_ANSWERS: Answers = {
 export const buildPreferences = (answers: Answers): UserPreferences => ({
   skillLevel:          answers.skillLevel as SkillLevel,
   crowdTolerance:      answers.crowdTolerance as CrowdLevel,
-  preferredRegion:     answers.preferredRegion ? (answers.preferredRegion as Region) : undefined,
+  preferredRegion:     answers.preferredRegion && answers.preferredRegion !== 'Anywhere'
+                          ? (answers.preferredRegion as Region)
+                          : undefined,
   boardTypes:          answers.boardTypes as BoardType[],
   preferredWaveTypes:  answers.preferredWaveTypes as WaveType[],
   preferredWaveSizes:  answers.preferredWaveSizes as WaveSize[],
-  preferredFacilities: answers.preferredFacilities as Facility[],
+  preferredFacilities: answers.preferredFacilities.filter((f) => f !== 'None') as Facility[],
 });
 
 export const useQuizViewModel = () => {
