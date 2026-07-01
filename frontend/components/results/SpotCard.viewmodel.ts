@@ -49,7 +49,7 @@ export interface SpotModalViewModel extends SpotCardViewModel {
   waveType: string;
   currentHeight: string;
   hasNotes: boolean;
-  notes: string;
+  notes: string[];
 }
 
 export const toSpotModalViewModel = (
@@ -65,7 +65,7 @@ export const toSpotModalViewModel = (
     crowdLevel: spot.typicalCrowd,
     waveType: WAVE_TYPE_LABELS[spot.waveType],
     currentHeight: WAVE_SIZE_LABELS[spot.currentWaveSize],
-    hasNotes: Boolean(spot.summary) && spot.summary !== 'Good match.',
-    notes: spot.summary,
+    hasNotes: spot.notes.length > 0,
+    notes: spot.notes,
   };
 };

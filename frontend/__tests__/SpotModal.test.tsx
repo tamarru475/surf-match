@@ -17,7 +17,7 @@ const spot: SpotRecommendation = {
   facilities: ['Bathrooms', 'Showers'],
   description: "Auckland's most famous surf beach.",
   score: 20,
-  summary: 'Good match.',
+  notes: [],
   breakdown: {
     skillMatch: 0, boardMatch: 0, crowdMatch: 20,
     regionMatch: 0, waveTypeMatch: 0, waveSizeMatch: 0, facilityMatch: 0,
@@ -61,16 +61,20 @@ describe('SpotModal', () => {
     expect(screen.getByText('Showers')).toBeInTheDocument();
   });
 
-  it('does not show the Notes section for a generic summary', () => {
+  it('does not show the Notes section when there are no notes', () => {
     render(<SpotModal spot={spot} preferences={prefs} onClose={jest.fn()} />);
     expect(screen.queryByText('Notes')).not.toBeInTheDocument();
   });
 
-  it('shows the Notes section when summary is meaningful', () => {
-    const withNotes = { ...spot, summary: 'none of your boards suit this spot.' };
+  it('shows each note as a separate list item', () => {
+    const withNotes = {
+      ...spot,
+      notes: ['None of your boards are ideal for this spot.', 'Big conditions today.'],
+    };
     render(<SpotModal spot={withNotes} preferences={prefs} onClose={jest.fn()} />);
     expect(screen.getByText('Notes')).toBeInTheDocument();
-    expect(screen.getByText('none of your boards suit this spot.')).toBeInTheDocument();
+    expect(screen.getByText('None of your boards are ideal for this spot.')).toBeInTheDocument();
+    expect(screen.getByText('Big conditions today.')).toBeInTheDocument();
   });
 
   it('calls onClose after 240ms when the close button is clicked', () => {

@@ -12,7 +12,7 @@ const spot: SpotRecommendation = {
   facilities: ['Bathrooms', 'Showers'],
   description: "Auckland's most famous surf beach.",
   score: 20,
-  summary: 'Good match.',
+  notes: [],
   breakdown: {
     skillMatch: 0, boardMatch: 0, crowdMatch: 20,
     regionMatch: 0, waveTypeMatch: 0, waveSizeMatch: 0, facilityMatch: 0,
@@ -91,18 +91,21 @@ describe('toSpotModalViewModel', () => {
     expect(vm.mapsUrl).toContain('New%20Zealand');
   });
 
-  it('sets hasNotes to false for generic summary', () => {
+  it('sets hasNotes to false when there are no notes', () => {
     const vm = toSpotModalViewModel(spot, prefs);
     expect(vm.hasNotes).toBe(false);
   });
 
-  it('sets hasNotes to true for meaningful notes', () => {
+  it('sets hasNotes to true and passes through all notes', () => {
     const vm = toSpotModalViewModel(
-      { ...spot, summary: 'none of your boards are ideal for this spot.' },
+      { ...spot, notes: ['None of your boards are ideal for this spot.', 'Big conditions today.'] },
       prefs,
     );
     expect(vm.hasNotes).toBe(true);
-    expect(vm.notes).toBe('none of your boards are ideal for this spot.');
+    expect(vm.notes).toEqual([
+      'None of your boards are ideal for this spot.',
+      'Big conditions today.',
+    ]);
   });
 
   it('converts current wave size to display label', () => {

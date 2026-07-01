@@ -1,5 +1,48 @@
-import { computeMatchPercent } from '@/lib/api';
+import { computeMatchPercent, fetchRecommendations } from '@/lib/api';
 import type { UserPreferences } from '@/lib/types';
+
+// ── fetchRecommendations ──────────────────────────────────────────────────────
+
+const minPrefs: UserPreferences = {
+  skillLevel: 'Beginner',
+  crowdTolerance: 'Quiet',
+  boardTypes: [],
+  preferredWaveTypes: [],
+  preferredWaveSizes: [],
+  preferredFacilities: [],
+};
+
+const fakeResponse = { recommendations: [], preferences: minPrefs, warnings: [] };
+
+describe('fetchRecommendations', () => {
+  beforeEach(() => { global.fetch = jest.fn(); });
+  afterEach(() => { jest.resetAllMocks(); });
+
+  it('returns parsed JSON on a successful response', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      json: async () => fakeResponse,
+    });
+
+    const result = await fetchRecommendations(minPrefs);
+
+    expect(result).toEqual(fakeResponse);
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.stringContaining('/recommendations'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('throws when the server returns a non-ok status', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({}),
+    });
+
+    await expect(fetchRecommendations(minPrefs)).rejects.toThrow('API error: 500');
+  });
+});
 
 const base: UserPreferences = {
   skillLevel: 'Beginner',

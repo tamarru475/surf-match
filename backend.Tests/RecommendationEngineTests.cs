@@ -176,7 +176,7 @@ public class RecommendationEngineTests
             SpotByName(r.Name).TypicalCrowd > CrowdLevel.Quiet);
 
         Assert.All(busierThanTolerance, r =>
-            Assert.Contains("busier than your preference", r.Summary));
+            Assert.Contains(r.Notes, n => n.Contains("busier than your preference")));
     }
 
     [Fact]
@@ -187,12 +187,95 @@ public class RecommendationEngineTests
         var noMatch = result.Where(r => r.Breakdown.BoardMatch == 0);
 
         Assert.All(noMatch, r =>
-            Assert.Contains("none of your boards are ideal", r.Summary));
+            Assert.Contains(r.Notes, n => n.Contains("None of your boards are ideal")));
+    }
+
+    [Fact]
+    public void Big_conditions_note_added_for_head_high_or_bigger()
+    {
+        var result = Recommend(skill: SkillLevel.Expert);
+
+        var big = result.Where(r => r.CurrentWaveSize >= WaveSize.HeadHigh);
+        var small = result.Where(r => r.CurrentWaveSize < WaveSize.HeadHigh);
+
+        Assert.NotEmpty(big);
+        Assert.All(big, r => Assert.Contains(r.Notes, n => n.Contains("Big conditions today")));
+        Assert.All(small, r => Assert.DoesNotContain(r.Notes, n => n.Contains("Big conditions today")));
+    }
+
+    [Fact]
+    public void Multiple_notes_are_returned_as_separate_items()
+    {
+        var result = Recommend(skill: SkillLevel.Expert, crowd: CrowdLevel.Quiet, boards: [BoardType.Rental]);
+
+        var manuBay = result.First(r => r.Name == "Manu Bay");
+
+        Assert.Equal(3, manuBay.Notes.Count);
+    }
+
+    // ── Never-zero-results fallback ──────────────────────────────────────────
+
+    [Fact]
+    public void No_relaxation_needed_returns_no_warnings()
+    {
+        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Auckland);
+
+        Assert.NotEmpty(response.Recommendations);
+        Assert.Empty(response.Warnings);
+    }
+
+    [Fact]
+    public void Wave_size_alone_is_relaxed_when_it_is_the_only_blocker()
+    {
+        // Beginner + Auckland has 4 spots, but none currently DoubleOverhead.
+        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Auckland,
+            waveSizes: [WaveSize.DoubleOverhead]);
+
+        Assert.NotEmpty(response.Recommendations);
+        Assert.All(response.Recommendations, r => Assert.Equal(Region.Auckland, r.Region));
+        Assert.Contains(response.Warnings, w => w.Contains("wave size"));
+        Assert.DoesNotContain(response.Warnings, w => w.Contains("wave type"));
+        Assert.DoesNotContain(response.Warnings, w => w.Contains("Auckland"));
+    }
+
+    [Fact]
+    public void Wave_size_and_wave_type_are_both_relaxed_when_needed()
+    {
+        // Beginner + Auckland has no reef breaks at all, so dropping wave size
+        // alone isn't enough — wave type must go too.
+        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Auckland,
+            waveTypes: [WaveType.ReefBreak], waveSizes: [WaveSize.DoubleOverhead]);
+
+        Assert.NotEmpty(response.Recommendations);
+        Assert.All(response.Recommendations, r => Assert.Equal(Region.Auckland, r.Region));
+        Assert.Contains(response.Warnings, w => w.Contains("wave size"));
+        Assert.Contains(response.Warnings, w => w.Contains("wave type"));
+    }
+
+    [Fact]
+    public void Region_is_relaxed_as_a_last_resort_when_skill_alone_would_be_empty()
+    {
+        // Taranaki has no Beginner-level spots at all.
+        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Taranaki);
+
+        Assert.NotEmpty(response.Recommendations);
+        Assert.Contains(response.Warnings, w => w.Contains("Taranaki"));
+        Assert.DoesNotContain(response.Recommendations, r => r.Region == Region.Taranaki);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private static List<SpotRecommendation> Recommend(
+        SkillLevel skill = SkillLevel.Intermediate,
+        CrowdLevel crowd = CrowdLevel.Moderate,
+        Region? region = null,
+        IReadOnlyList<BoardType>? boards = null,
+        IReadOnlyList<WaveType>? waveTypes = null,
+        IReadOnlyList<WaveSize>? waveSizes = null,
+        IReadOnlyList<Facility>? facilities = null) =>
+        RecommendFull(skill, crowd, region, boards, waveTypes, waveSizes, facilities).Recommendations.ToList();
+
+    private static RecommendationResponse RecommendFull(
         SkillLevel skill = SkillLevel.Intermediate,
         CrowdLevel crowd = CrowdLevel.Moderate,
         Region? region = null,
@@ -212,7 +295,7 @@ public class RecommendationEngineTests
             PreferredFacilities = facilities ?? []
         };
 
-        return RecommendationEngine.GetRecommendations(prefs).Recommendations.ToList();
+        return RecommendationEngine.GetRecommendations(prefs);
     }
 
     private static Backend.Models.SurfSpot SpotByName(string name) =>

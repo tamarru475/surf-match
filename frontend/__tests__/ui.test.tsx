@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event';
 import Button from '@/components/ui/Button';
 import ProgressIndicator from '@/components/ui/ProgressIndicator';
 import AnswerButton from '@/components/ui/AnswerButton';
+import Tooltip from '@/components/ui/Tooltip';
 
 // ── Button ────────────────────────────────────────────────────────────────────
 
@@ -80,5 +81,44 @@ describe('AnswerButton', () => {
     render(<AnswerButton label="Advanced" selected={false} onClick={onClick} />);
     fireEvent.click(screen.getByRole('button'));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ── Tooltip ───────────────────────────────────────────────────────────────────
+
+describe('Tooltip', () => {
+  it('does not show content before the trigger is clicked', () => {
+    render(<Tooltip text="Some info" />);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('shows tooltip content after clicking the trigger', () => {
+    render(<Tooltip text="Some info" />);
+    fireEvent.click(screen.getByLabelText('More info'));
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    expect(screen.getByText('Some info')).toBeInTheDocument();
+  });
+
+  it('hides tooltip when the trigger loses focus (blur)', () => {
+    render(<Tooltip text="Some info" />);
+    fireEvent.click(screen.getByLabelText('More info'));
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    fireEvent.blur(screen.getByLabelText('More info'));
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('renders a warning section when the warning prop is provided', () => {
+    render(<Tooltip warning="Dangerous spot" />);
+    fireEvent.click(screen.getByLabelText('More info'));
+    expect(screen.getByText('Dangerous spot')).toBeInTheDocument();
+  });
+
+  it('renders term labels and descriptions when terms are provided', () => {
+    render(
+      <Tooltip terms={[{ label: 'Beginner', description: 'Still learning to stand.' }]} />,
+    );
+    fireEvent.click(screen.getByLabelText('More info'));
+    expect(screen.getByText('Beginner')).toBeInTheDocument();
+    expect(screen.getByText('Still learning to stand.')).toBeInTheDocument();
   });
 });

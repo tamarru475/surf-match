@@ -99,6 +99,18 @@ describe('QuestionScreen — tooltip', () => {
     expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
     jest.useRealTimers();
   });
+
+  it('closes the info modal (after its exit animation) when Escape is pressed', () => {
+    jest.useFakeTimers();
+    render(<QuestionScreen question={waveTypeQuestion} value={[]} onChange={jest.fn()} />);
+    fireEvent.click(screen.getByLabelText('More info'));
+    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    act(() => { jest.advanceTimersByTime(240); });
+    expect(screen.queryByRole('button', { name: 'Close' })).not.toBeInTheDocument();
+    jest.useRealTimers();
+  });
 });
 
 describe('QuestionScreen — noneValue mutual exclusivity', () => {
