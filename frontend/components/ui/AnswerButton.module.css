@@ -2,6 +2,7 @@
 
 .button {
   @apply px-5 py-3 rounded-xl border-2 font-medium text-base transition-all cursor-pointer;
+  touch-action: manipulation;
 }
 
 .selected   { @apply bg-sky-600 border-sky-600 text-white; }
