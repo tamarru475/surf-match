@@ -37,12 +37,13 @@ export interface SpotRecommendation {
   currentWaveSize: WaveSize;
   description: string;
   score: number;
-  summary: string;
+  notes: string[];
   breakdown: ScoreBreakdown;
 }
 
 export interface RecommendationResponse {
   preferences: UserPreferences;
   recommendations: SpotRecommendation[];
+  warnings: string[];
 }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { TriangleAlert } from 'lucide-react'
 import SpotCard from '@/components/results/SpotCard'
 import SpotModal from '@/components/results/SpotModal'
 import type { RecommendationResponse, SpotRecommendation } from '@/lib/types'
@@ -27,7 +28,7 @@ const ResultsPage = () => {
 
   if (!data) return null
 
-  const { recommendations, preferences } = data
+  const { recommendations, preferences, warnings } = data
 
   return (
     <main className={styles.root}>
@@ -44,31 +45,27 @@ const ResultsPage = () => {
         </button>
       </div>
 
-      {recommendations.length === 0 ? (
-        <div className={styles.empty}>
-          <p className={styles.emptyTitle}>No spots matched those filters.</p>
-          <p className={styles.emptyText}>
-            Try removing the wave size or wave type filter and search again.
-          </p>
-          <button
-            className={styles.emptyAction}
-            onClick={() => router.push('/quiz')}
-          >
-            Try different preferences
-          </button>
-        </div>
-      ) : (
-        <div className={styles.grid}>
-          {recommendations.map((spot) => (
-            <SpotCard
-              key={spot.spotId}
-              spot={spot}
-              preferences={preferences}
-              onClick={() => setActiveSpot(spot)}
-            />
-          ))}
+      {warnings.length > 0 && (
+        <div className={styles.warningBanner}>
+          <TriangleAlert size={18} className={styles.warningIcon} />
+          <div className={styles.warningList}>
+            {warnings.map((warning) => (
+              <p key={warning} className={styles.warningText}>{warning}</p>
+            ))}
+          </div>
         </div>
       )}
+
+      <div className={styles.grid}>
+        {recommendations.map((spot) => (
+          <SpotCard
+            key={spot.spotId}
+            spot={spot}
+            preferences={preferences}
+            onClick={() => setActiveSpot(spot)}
+          />
+        ))}
+      </div>
 
       {activeSpot && (
         <SpotModal

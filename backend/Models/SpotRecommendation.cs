@@ -15,7 +15,7 @@ public class SpotRecommendation
     public string Description { get; init; } = "";
 
     public int Score { get; init; }
-    public string Summary { get; init; } = "";
+    public IReadOnlyList<string> Notes { get; init; } = [];
     public ScoreBreakdown Breakdown { get; init; } = new();
 }
 
@@ -34,4 +34,9 @@ public class RecommendationResponse
 {
     public UserPreferences Preferences { get; init; } = new();
     public IReadOnlyList<SpotRecommendation> Recommendations { get; init; } = [];
+
+    // Plain-language notes about hard filters that had to be relaxed to avoid
+    // showing zero results, e.g. "today's wave size didn't match anything, so
+    // we're showing all sizes". Empty when no relaxation was needed.
+    public IReadOnlyList<string> Warnings { get; init; } = [];
 }

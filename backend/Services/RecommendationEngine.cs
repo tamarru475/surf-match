@@ -8,40 +8,81 @@ public static class RecommendationEngine
 {
     public static RecommendationResponse GetRecommendations(UserPreferences prefs)
     {
-        var spots = Filter(SurfSpotCatalog.All, prefs);
+        var (spots, warnings) = FilterWithFallback(SurfSpotCatalog.All, prefs);
         var ranked = Rank(spots, prefs);
 
         return new RecommendationResponse
         {
             Preferences = prefs,
-            Recommendations = ranked
+            Recommendations = ranked,
+            Warnings = warnings
         };
     }
 
     // ── Hard filters ─────────────────────────────────────────────────────────
-    // Applied in order. Skill is always enforced; the rest only apply if the
-    // user set that preference.
+    // Skill is always enforced and never relaxed — recommending a spot above
+    // the user's ability is a safety issue, not a UX one. Region, wave type,
+    // and wave size are dropped one at a time, least-essential first, only if
+    // the stricter combination would otherwise return zero spots. This is what
+    // guarantees the response is never empty.
 
-    private static IEnumerable<SurfSpot> Filter(IEnumerable<SurfSpot> spots, UserPreferences prefs)
+    private static (List<SurfSpot> Spots, List<string> Warnings) FilterWithFallback(
+        IEnumerable<SurfSpot> allSpots, UserPreferences prefs)
     {
-        // Always: don't show spots beyond the user's skill level.
         // No spot in the catalog has a MinSkillLevel below Beginner, so clamp
         // NewToSurfing up to Beginner here rather than returning zero results.
         // TODO: in future, a spot's effective skill level will vary with CurrentWaveSize
         //       (e.g. a normally-intermediate break becomes advanced at double overhead).
         var effectiveSkill = prefs.SkillLevel < SkillLevel.Beginner ? SkillLevel.Beginner : prefs.SkillLevel;
-        spots = spots.Where(s => s.MinSkillLevel <= effectiveSkill);
+        var bySkill = allSpots.Where(s => s.MinSkillLevel <= effectiveSkill).ToList();
 
-        if (prefs.PreferredRegion.HasValue)
-            spots = spots.Where(s => s.Region == prefs.PreferredRegion.Value);
+        var relaxWaveSize = false;
+        var relaxWaveType = false;
+        var relaxRegion = false;
 
-        if (prefs.PreferredWaveTypes.Count > 0)
-            spots = spots.Where(s => prefs.PreferredWaveTypes.Contains(s.WaveType));
+        List<SurfSpot> Apply()
+        {
+            var spots = bySkill.AsEnumerable();
 
-        if (prefs.PreferredWaveSizes.Count > 0)
-            spots = spots.Where(s => prefs.PreferredWaveSizes.Contains(s.CurrentWaveSize));
+            if (!relaxRegion && prefs.PreferredRegion.HasValue)
+                spots = spots.Where(s => s.Region == prefs.PreferredRegion.Value);
 
-        return spots;
+            if (!relaxWaveType && prefs.PreferredWaveTypes.Count > 0)
+                spots = spots.Where(s => prefs.PreferredWaveTypes.Contains(s.WaveType));
+
+            if (!relaxWaveSize && prefs.PreferredWaveSizes.Count > 0)
+                spots = spots.Where(s => prefs.PreferredWaveSizes.Contains(s.CurrentWaveSize));
+
+            return spots.ToList();
+        }
+
+        var spots = Apply();
+        var warnings = new List<string>();
+
+        if (spots.Count == 0 && prefs.PreferredWaveSizes.Count > 0)
+        {
+            relaxWaveSize = true;
+            warnings.Add("Today's wave size didn't match anything else you picked, so we're showing all sizes.");
+            spots = Apply();
+        }
+
+        if (spots.Count == 0 && prefs.PreferredWaveTypes.Count > 0)
+        {
+            relaxWaveType = true;
+            warnings.Add("Your preferred wave type didn't match anything else you picked, so we're showing all wave types.");
+            spots = Apply();
+        }
+
+        if (spots.Count == 0 && prefs.PreferredRegion.HasValue)
+        {
+            relaxRegion = true;
+            warnings.Add($"No spots in {prefs.PreferredRegion.Value} matched your skill level, so we're showing spots from other regions too.");
+            spots = Apply();
+        }
+
+        // bySkill always contains at least the catalog's Beginner spots, so
+        // this is guaranteed non-empty once region/type/size are all relaxed.
+        return (spots, warnings);
     }
 
     // ── Soft ranking ─────────────────────────────────────────────────────────
@@ -83,7 +124,7 @@ public static class RecommendationEngine
             CurrentWaveSize = spot.CurrentWaveSize,
             Description     = spot.Description,
             Score       = breakdown.BoardMatch + breakdown.CrowdMatch + breakdown.FacilityMatch,
-            Summary     = BuildNotes(spot, prefs, breakdown),
+            Notes       = BuildNotes(spot, prefs, breakdown),
             Breakdown   = breakdown
         };
     }
@@ -110,19 +151,24 @@ public static class RecommendationEngine
         return prefs.PreferredFacilities.Count(f => spot.Facilities.Contains(f));
     }
 
-    // Plain-language notes about soft mismatches — shown alongside the result.
-    private static string BuildNotes(SurfSpot spot, UserPreferences prefs, ScoreBreakdown breakdown)
+    // Plain-language notes about soft mismatches and current conditions —
+    // shown alongside the result, one note per item rather than one joined
+    // sentence, so the frontend can list them individually.
+    private static List<string> BuildNotes(SurfSpot spot, UserPreferences prefs, ScoreBreakdown breakdown)
     {
         var notes = new List<string>();
 
         if (prefs.BoardTypes.Count > 0 && breakdown.BoardMatch == 0)
-            notes.Add("none of your boards are ideal for this spot");
+            notes.Add("None of your boards are ideal for this spot.");
 
         if ((int)spot.TypicalCrowd > (int)prefs.CrowdTolerance)
-            notes.Add($"typically {spot.TypicalCrowd.ToString().ToLower()} — busier than your preference");
+            notes.Add($"Typically {spot.TypicalCrowd.ToString().ToLower()} — busier than your preference.");
 
-        return notes.Count == 0
-            ? "Good match."
-            : string.Join("; ", notes) + ".";
+        // TODO: once forecast data is wired up, replace this static threshold
+        // with real conditions, e.g. "strong onshore" or "strong rips".
+        if (spot.CurrentWaveSize >= WaveSize.HeadHigh)
+            notes.Add("Big conditions today.");
+
+        return notes;
     }
 }
