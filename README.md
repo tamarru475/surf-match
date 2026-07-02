@@ -19,22 +19,30 @@ surf-match/
 
 ### Backend (`/backend`)
 
-- **29 hardcoded NZ surf spots** across 9 regions (Northland, Auckland, Coromandel, Bay of Plenty, Waikato, Gisborne, Christchurch, Taranaki, Kaikoura)
-- **Filter-first recommendation engine** — hard filters on skill level, region, wave type, and current wave size; soft ranking by board match, crowd tolerance, and facilities
-- **`POST /recommendations`** endpoint — accepts user preferences, returns ranked surf spots with scores and plain-language notes
+- **37 NZ surf spots** across 11 regions (Northland, Auckland, Coromandel, Bay of Plenty, Waikato, Gisborne, Taranaki, Christchurch, Kaikoura, Wellington, Otago)
+- **Filter-first recommendation engine** — hard filters on skill level, region, wave type, and current wave size; soft ranking by board match, crowd tolerance, and facilities. Never returns an empty result set — relaxes filters one at a time with a plain-English warning when it does.
+- **`POST /recommendations`** endpoint — accepts user preferences, returns ranked surf spots with scores and per-spot notes
 - Swagger UI available in development at `/swagger`
 
 ### Tests (`/backend.Tests`)
 
-15 unit tests covering skill filters, region/wave-type/wave-size filters, soft ranking, and summary notes.
+22 unit tests covering skill filters, region/wave-type/wave-size filters, always-show-results fallback, soft ranking, and per-spot notes.
 
 ### Frontend (`/frontend`)
 
+- **4-page flow:** landing → quiz → loading → results
+- **8-question quiz** — skill level, crowd tolerance, region, board types, wave type, wave size, facilities
+- **Results page** — ranked spot cards with real photos, match percentage, wave info badges, and a warning banner when filters were relaxed
+- **Spot modal** — full detail view with description, current wave height, facilities, Google Maps link, and per-spot notes listed individually
+- **MVVM pattern** — `SpotCard.viewmodel.ts` and `quiz.viewmodel.ts` separate data logic from rendering
+- **Animations** — card hover lift + photo zoom, modal slide-in/out, loading wave pulse
+
 **Tests (`/frontend/__tests__`)**
 
-58 tests across 7 suites:
-- **Pure function tests** — `computeMatchPercent` (table-driven across all board/facility combinations), `buildPreferences`, `isQuestionAnswered`, `cx`
-- **Component tests** — Button, ProgressIndicator, AnswerButton, SpotCard, SpotModal (including 240ms close animation and Escape key dismiss)
+115 tests across 10 suites (99.5% statement coverage):
+- **Hook tests** — full quiz submit flow including API call, sessionStorage, navigation, and error handling
+- **Pure function tests** — `computeMatchPercent`, `buildPreferences`, `isQuestionAnswered`, `cx`
+- **Component tests** — Button, ProgressIndicator, AnswerButton, Tooltip, SpotCard, SpotModal, QuestionScreen, InfoModal
 
 Run with:
 
@@ -42,13 +50,6 @@ Run with:
 cd frontend
 npm test
 ```
-
-- **4-page flow:** landing → quiz → loading → results
-- **7-question quiz** — skill level, crowd tolerance, region, board types, wave type, wave size, facilities
-- **Results page** — ranked spot cards with real photos, match percentage, and wave info badges
-- **Spot modal** — full detail view with description, current wave height, facilities, Google Maps link, and match notes
-- **MVVM pattern** — `SpotCard.viewmodel.ts` and `quiz.viewmodel.ts` separate data logic from rendering
-- **Animations** — card hover lift + photo zoom, modal slide-in/out, loading wave pulse
 
 ## Deployment
 
@@ -84,10 +85,10 @@ npm run dev
 {
   "skillLevel": "Intermediate",
   "crowdTolerance": "Moderate",
-  "preferredRegion": "Auckland",
-  "boardTypes": ["Longboard", "Funboard"],
-  "preferredWaveTypes": ["BeachBreak"],
-  "preferredWaveSizes": ["AnkleHigh", "KneeHigh", "WaistHigh"],
+  "preferredRegion": "Wellington",
+  "boardTypes": ["Shortboard", "Fish"],
+  "preferredWaveTypes": ["BeachBreak", "ReefBreak"],
+  "preferredWaveSizes": ["WaistHigh", "HeadHigh"],
   "preferredFacilities": []
 }
 ```
