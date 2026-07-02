@@ -40,7 +40,7 @@ const QuizPage = () => {
           disabled={vm.isNextDisabled}
           className="flex-[2]"
         >
-          {vm.isLastStep ? 'Find my spot' : 'Next'}
+          {vm.nextLabel}
         </Button>
       </div>
     </main>

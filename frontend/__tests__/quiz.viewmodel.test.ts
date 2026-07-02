@@ -1,4 +1,4 @@
-import { buildPreferences, INITIAL_ANSWERS, isQuestionAnswered } from '@/app/quiz/quiz.viewmodel';
+import { buildPreferences, getNextLabel, INITIAL_ANSWERS, isQuestionAnswered } from '@/app/quiz/quiz.viewmodel';
 import type { Question } from '@/lib/questions';
 
 // ── INITIAL_ANSWERS ───────────────────────────────────────────────────────────
@@ -44,6 +44,21 @@ describe('buildPreferences', () => {
     const prefs = buildPreferences(answers);
     expect(prefs.boardTypes).toEqual(['Longboard', 'Fish']);
   });
+
+  it('maps the "Anywhere" region sentinel to undefined', () => {
+    const prefs = buildPreferences({ ...answers, preferredRegion: 'Anywhere' });
+    expect(prefs.preferredRegion).toBeUndefined();
+  });
+
+  it('strips the "None" facilities sentinel down to an empty array', () => {
+    const prefs = buildPreferences({ ...answers, preferredFacilities: ['None'] });
+    expect(prefs.preferredFacilities).toEqual([]);
+  });
+
+  it('keeps real facilities untouched when "None" is not selected', () => {
+    const prefs = buildPreferences({ ...answers, preferredFacilities: ['Bathrooms', 'Showers'] });
+    expect(prefs.preferredFacilities).toEqual(['Bathrooms', 'Showers']);
+  });
 });
 
 // ── isQuestionAnswered ────────────────────────────────────────────────────────
@@ -75,5 +90,28 @@ describe('isQuestionAnswered', () => {
 
   it('returns true for an optional multi-select with an empty array (skippable)', () => {
     expect(isQuestionAnswered(makeQ(false, true), [])).toBe(true);
+  });
+});
+
+// ── getNextLabel ──────────────────────────────────────────────────────────────
+
+describe('getNextLabel', () => {
+  it('returns "Find my spot" on the last step regardless of answer state', () => {
+    expect(getNextLabel(makeQ(true, false), '', true)).toBe('Find my spot');
+    expect(getNextLabel(makeQ(false, true), [], true)).toBe('Find my spot');
+  });
+
+  it('returns "Skip" for an unanswered optional question that is not the last step', () => {
+    expect(getNextLabel(makeQ(false, false), '', false)).toBe('Skip');
+    expect(getNextLabel(makeQ(false, true), [], false)).toBe('Skip');
+  });
+
+  it('returns "Next" for an answered question that is not the last step', () => {
+    expect(getNextLabel(makeQ(false, false), 'Auckland', false)).toBe('Next');
+    expect(getNextLabel(makeQ(true, false), 'Intermediate', false)).toBe('Next');
+  });
+
+  it('returns "Next" for a required, unanswered question (button is disabled, but label stays Next)', () => {
+    expect(getNextLabel(makeQ(true, false), '', false)).toBe('Next');
   });
 });

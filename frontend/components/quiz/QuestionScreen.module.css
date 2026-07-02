@@ -2,6 +2,9 @@
 
 .root     { @apply flex flex-col gap-8; }
 .header   { @apply flex flex-col gap-2; }
+.titleRow { @apply flex items-center gap-2; }
 .title    { @apply text-2xl font-bold text-gray-900; }
 .subtitle { @apply text-sm text-gray-400; }
 .options  { @apply flex flex-wrap gap-3; }
+
+.infoTrigger { @apply flex items-center justify-center w-6 h-6 rounded-full text-gray-400 hover:text-sky-600 hover:bg-sky-50 transition-colors cursor-pointer; }

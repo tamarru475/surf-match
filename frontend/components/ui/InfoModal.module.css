@@ -1,0 +1,73 @@
+@reference "tailwindcss";
+
+@keyframes modalFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalFadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalSlideDown {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(32px); }
+}
+
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modalScaleOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.96); }
+}
+
+.backdrop {
+  @apply fixed inset-0 z-50 flex items-end justify-center p-0;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .backdrop { @apply items-center p-4; }
+}
+
+.overlay { @apply absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer; }
+
+.panel {
+  @apply relative z-10 w-full bg-white rounded-t-3xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col;
+  animation: modalSlideUp 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (min-width: 640px) {
+  .panel {
+    @apply max-w-lg rounded-2xl;
+    animation: modalScaleIn 0.22s ease;
+  }
+}
+
+.backdropClosing { animation: modalFadeOut 0.24s ease forwards; }
+.panelClosing     { animation: modalSlideDown 0.24s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+
+@media (min-width: 640px) {
+  .panelClosing { animation: modalScaleOut 0.2s ease forwards; }
+}
+
+.header {
+  @apply flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0;
+}
+.title { @apply text-lg font-bold text-gray-900; }
+
+.closeBtn {
+  @apply w-9 h-9 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center
+         hover:bg-gray-200 transition-colors duration-200 cursor-pointer flex-shrink-0;
+}
+.closeBtn :global(svg)        { transition: transform 0.2s ease; }
+.closeBtn:hover :global(svg)  { transform: rotate(90deg); }
+
+.body { @apply overflow-y-auto p-5 flex flex-col gap-6; }
+
+.item             { @apply flex flex-col gap-2; }
+.itemImage        { @apply relative w-full h-44 rounded-xl overflow-hidden bg-gray-100; }
+.itemLabel        { @apply text-base font-semibold text-gray-900; }
+.itemDescription  { @apply text-sm text-gray-600 leading-relaxed; }

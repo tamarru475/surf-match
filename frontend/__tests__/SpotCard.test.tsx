@@ -17,7 +17,7 @@ const spot: SpotRecommendation = {
   facilities: ['Bathrooms', 'Showers'],
   description: "Auckland's most famous surf beach.",
   score: 20,
-  summary: 'Good match.',
+  notes: [],
   breakdown: {
     skillMatch: 0, boardMatch: 0, crowdMatch: 20,
     regionMatch: 0, waveTypeMatch: 0, waveSizeMatch: 0, facilityMatch: 0,

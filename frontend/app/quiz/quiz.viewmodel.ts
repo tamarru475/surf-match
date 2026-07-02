@@ -21,6 +21,12 @@ export const isQuestionAnswered = (question: Question, value: string | string[])
   return Array.isArray(value) ? value.length > 0 : Boolean(value);
 };
 
+export const getNextLabel = (question: Question, value: string | string[], isLastStep: boolean): string => {
+  if (isLastStep) return 'Find my spot';
+  const hasValue = Array.isArray(value) ? value.length > 0 : Boolean(value);
+  return !question.required && !hasValue ? 'Skip' : 'Next';
+};
+
 export type Answers = {
   skillLevel: string;
   crowdTolerance: string;
@@ -44,11 +50,13 @@ export const INITIAL_ANSWERS: Answers = {
 export const buildPreferences = (answers: Answers): UserPreferences => ({
   skillLevel:          answers.skillLevel as SkillLevel,
   crowdTolerance:      answers.crowdTolerance as CrowdLevel,
-  preferredRegion:     answers.preferredRegion ? (answers.preferredRegion as Region) : undefined,
+  preferredRegion:     answers.preferredRegion && answers.preferredRegion !== 'Anywhere'
+                          ? (answers.preferredRegion as Region)
+                          : undefined,
   boardTypes:          answers.boardTypes as BoardType[],
   preferredWaveTypes:  answers.preferredWaveTypes as WaveType[],
   preferredWaveSizes:  answers.preferredWaveSizes as WaveSize[],
-  preferredFacilities: answers.preferredFacilities as Facility[],
+  preferredFacilities: answers.preferredFacilities.filter((f) => f !== 'None') as Facility[],
 });
 
 export const useQuizViewModel = () => {
@@ -62,6 +70,7 @@ export const useQuizViewModel = () => {
   const isLastStep    = step === QUESTIONS.length - 1;
   const value         = answers[question.field as keyof Answers];
   const isNextDisabled = !isQuestionAnswered(question, value);
+  const nextLabel      = getNextLabel(question, value, isLastStep);
 
   const handleChange = (next: string | string[]) =>
     setAnswers((prev) => ({ ...prev, [question.field]: next }));
@@ -84,5 +93,5 @@ export const useQuizViewModel = () => {
     }
   };
 
-  return { question, step, value, loading, error, isLastStep, isNextDisabled, handleChange, handleBack, handleNext };
+  return { question, step, value, loading, error, isLastStep, isNextDisabled, nextLabel, handleChange, handleBack, handleNext };
 };

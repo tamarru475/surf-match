@@ -122,7 +122,11 @@ const SpotModal = ({ spot, preferences, onClose }: SpotModalProps) => {
           {vm.hasNotes && (
             <div className={styles.notes}>
               <p className={styles.notesTitle}>Notes</p>
-              <p className={styles.notesText}>{vm.notes}</p>
+              <ul className={styles.notesList}>
+                {vm.notes.map((note) => (
+                  <li key={note} className={styles.notesText}>{note}</li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

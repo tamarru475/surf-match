@@ -10,5 +10,7 @@ public enum Region
     Gisborne,
     Christchurch,
     Taranaki,
-    Kaikoura
+    Kaikoura,
+    Wellington,
+    Otago
 }

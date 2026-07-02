@@ -1,0 +1,19 @@
+@reference "tailwindcss";
+
+.root    { @apply relative inline-flex; }
+.trigger { @apply flex items-center justify-center w-6 h-6 rounded-full text-gray-400 hover:text-sky-600 hover:bg-sky-50 transition-colors cursor-pointer; }
+
+.bubble {
+  @apply absolute top-8 left-0 z-20 w-80 rounded-xl border border-gray-100 bg-white p-4 shadow-xl;
+}
+
+.text { @apply text-sm leading-relaxed text-gray-700; }
+
+.termList { @apply flex flex-col divide-y divide-gray-100; }
+.term            { @apply flex flex-col gap-0.5 py-2 first:pt-0 last:pb-0; }
+.termLabel       { @apply text-sm font-semibold text-gray-900; }
+.termDescription { @apply text-sm text-gray-500 leading-relaxed; }
+
+.warningBox  { @apply flex items-start gap-2.5 rounded-lg bg-amber-50 border border-amber-200 p-3; }
+.warningIcon { @apply text-amber-500 flex-shrink-0 mt-0.5; }
+.warningText { @apply text-sm text-amber-800 leading-relaxed; }
