@@ -453,6 +453,141 @@ public static class SurfSpotCatalog
             MaxWaveSize = WaveSize.DoubleOverhead,
             CurrentWaveSize = WaveSize.WaistHigh,
             Description = "One of New Zealand's longest right-hand point breaks, walling for hundreds of metres along the Kaikoura coastline. A remote gem that makes the drive from Christchurch very worthwhile."
+        },
+
+        // ── Christchurch (additional) ─────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000030"),
+            Name = "Taylor's Mistake",
+            Region = Region.Christchurch,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish, BoardType.Longboard],
+            Facilities = [],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "A hidden bay east of Sumner with rocky headland rights that reward surfers willing to make the hike from the car park. One of Canterbury's most scenic and consistent breaks."
+        },
+
+        // ── Bay of Plenty (additional) ────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000031"),
+            Name = "Ohope Beach",
+            Region = Region.BayOfPlenty,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Beginner,
+            SuitableBoardTypes = [BoardType.Rental, BoardType.Longboard, BoardType.Funboard, BoardType.Shortboard],
+            Facilities = [Facility.Bathrooms, Facility.Showers, Facility.Lifeguard, Facility.Campground],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.AnkleHigh,
+            MaxWaveSize = WaveSize.WaistHigh,
+            CurrentWaveSize = WaveSize.KneeHigh,
+            Description = "A long, sandy stretch east of Whakatane with mellow beach break peaks and plenty of space. One of the Bay of Plenty's quietest surf beaches — ideal for beginners wanting room to learn."
+        },
+
+        // ── Coromandel (additional) ───────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000032"),
+            Name = "Tairua",
+            Region = Region.Coromandel,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Beginner,
+            SuitableBoardTypes = [BoardType.Rental, BoardType.Longboard, BoardType.Funboard, BoardType.Shortboard],
+            Facilities = [Facility.Bathrooms, Facility.SurfClub],
+            TypicalCrowd = CrowdLevel.Moderate,
+            MinWaveSize = WaveSize.AnkleHigh,
+            MaxWaveSize = WaveSize.WaistHigh,
+            CurrentWaveSize = WaveSize.KneeHigh,
+            Description = "A sheltered harbour-mouth beach break on the Coromandel's east coast that picks up east and northeast swells well. A reliable option when the west side is flat."
+        },
+
+        // ── Wellington ────────────────────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000033"),
+            Name = "Lyall Bay",
+            Region = Region.Wellington,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Beginner,
+            SuitableBoardTypes = [BoardType.Rental, BoardType.Longboard, BoardType.Funboard, BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms, Facility.Showers, Facility.SurfClub, Facility.Lifeguard, Facility.Rentals],
+            TypicalCrowd = CrowdLevel.Busy,
+            MinWaveSize = WaveSize.AnkleHigh,
+            MaxWaveSize = WaveSize.HeadHigh,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "Wellington's most accessible surf beach, right next to the airport. Consistent swell from Cook Strait makes it reliable year-round, though it fires best on calm mornings before the afternoon northerly kicks in."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000034"),
+            Name = "Castlepoint",
+            Region = Region.Wellington,
+            WaveType = WaveType.ReefBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms, Facility.Campground],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.HeadHigh,
+            Description = "A dramatic lighthouse bay on the Wairarapa coast, two hours from Wellington. A reef break that fires with powerful East Coast swells — the remote setting and iconic scenery make the drive very much worth it."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000035"),
+            Name = "Makara Beach",
+            Region = Region.Wellington,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Intermediate,
+            SuitableBoardTypes = [BoardType.Shortboard, BoardType.Fish, BoardType.Funboard],
+            Facilities = [],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.WaistHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "A raw, wind-exposed beach break on Wellington's rugged west coast. Gets open-ocean swell that rarely reaches Lyall Bay — worth the extra drive when conditions align and the wind is light."
+        },
+
+        // ── Otago ─────────────────────────────────────────────────────────────
+
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000036"),
+            Name = "St Clair Beach",
+            Region = Region.Otago,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Beginner,
+            SuitableBoardTypes = [BoardType.Rental, BoardType.Longboard, BoardType.Funboard, BoardType.Shortboard, BoardType.Fish],
+            Facilities = [Facility.Bathrooms, Facility.Showers, Facility.SurfClub, Facility.Lifeguard, Facility.Rentals],
+            TypicalCrowd = CrowdLevel.Moderate,
+            MinWaveSize = WaveSize.AnkleHigh,
+            MaxWaveSize = WaveSize.DoubleOverhead,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "Dunedin's iconic surf beach at the foot of the Otago Peninsula. Reliable Southern Ocean swells, a surf club that's been running for over a century, and a famous saltwater hot pool right on the beachfront."
+        },
+        new()
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000037"),
+            Name = "St Kilda",
+            Region = Region.Otago,
+            WaveType = WaveType.BeachBreak,
+            MinSkillLevel = SkillLevel.Beginner,
+            SuitableBoardTypes = [BoardType.Rental, BoardType.Longboard, BoardType.Funboard, BoardType.Shortboard],
+            Facilities = [Facility.Bathrooms, Facility.SurfClub],
+            TypicalCrowd = CrowdLevel.Quiet,
+            MinWaveSize = WaveSize.AnkleHigh,
+            MaxWaveSize = WaveSize.HeadHigh,
+            CurrentWaveSize = WaveSize.WaistHigh,
+            Description = "Dunedin's quieter neighbour to St Clair, sharing the same reliable Southern Ocean swells on a long exposed beach with consistent peaks. A good choice when St Clair is too busy."
         }
     ];
 }

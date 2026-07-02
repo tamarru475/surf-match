@@ -86,6 +86,8 @@ export const QUESTIONS: Question[] = [
       { label: 'Christchurch', value: 'Christchurch' },
       { label: 'Taranaki', value: 'Taranaki' },
       { label: 'Kaikoura', value: 'Kaikoura' },
+      { label: 'Wellington', value: 'Wellington' },
+      { label: 'Otago', value: 'Otago' },
     ],
   },
   {

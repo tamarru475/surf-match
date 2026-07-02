@@ -12,6 +12,8 @@ export const REGION_LABELS: Record<Region, string> = {
   Christchurch: 'Christchurch',
   Taranaki:     'Taranaki',
   Kaikoura:     'Kaikoura',
+  Wellington:   'Wellington',
+  Otago:        'Otago',
 };
 
 export const REGION_GRADIENTS: Record<Region, string> = {
@@ -24,6 +26,8 @@ export const REGION_GRADIENTS: Record<Region, string> = {
   Christchurch: 'linear-gradient(135deg, #64748b, #1d4ed8)',
   Taranaki:     'linear-gradient(135deg, #10b981, #0369a1)',
   Kaikoura:     'linear-gradient(135deg, #6366f1, #0e7490)',
+  Wellington:   'linear-gradient(135deg, #8b5cf6, #1d4ed8)',
+  Otago:        'linear-gradient(135deg, #475569, #0f172a)',
 };
 
 // ── Wave size display ─────────────────────────────────────────────────────────
@@ -112,4 +116,12 @@ export const SPOT_IMAGES: Partial<Record<string, string>> = {
   'Wainui Beach':    '/images/Pines-Wainui-Beach.jpg',
   'Meatworks':       '/images/meatworks.jpg',
   'Mangamaunu':      '/images/Mangamaunu.jpg',
+  "Taylor's Mistake": '/images/Taylors-Mistake.jpg',
+  'Ohope Beach':      '/images/Ohope-Beach.jpg',
+  'Tairua':           '/images/Tairua.jpg',
+  'Lyall Bay':        '/images/Lyall-Bay.jpg',
+  'Castlepoint':      '/images/Castlepoint.jpg',
+  'Makara Beach':     '/images/Makara-Beach.jpg',
+  'St Clair Beach':   '/images/St-Clair-Beach.jpg',
+  'St Kilda':         '/images/St-Kilda.jpg',
 };

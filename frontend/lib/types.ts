@@ -1,6 +1,6 @@
 export type SkillLevel = 'NewToSurfing' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
 export type CrowdLevel = 'Quiet' | 'Moderate' | 'Busy';
-export type Region = 'Northland' | 'Auckland' | 'Coromandel' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura';
+export type Region = 'Northland' | 'Auckland' | 'Coromandel' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
 export type WaveType = 'BeachBreak' | 'PointBreak' | 'ReefBreak';
 export type WaveSize = 'AnkleHigh' | 'KneeHigh' | 'WaistHigh' | 'HeadHigh' | 'DoubleOverhead';
 export type BoardType = 'Rental' | 'Longboard' | 'Shortboard' | 'Fish' | 'Funboard';
