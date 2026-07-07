@@ -4,6 +4,7 @@ using Backend.Models;
 using Backend.Services;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 // Load .env from repo root when running locally — production uses real env vars.
 var envPath = Path.Combine(Directory.GetCurrentDirectory(), "..", ".env");
@@ -30,7 +31,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString)
+           .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
 var app = builder.Build();
 
