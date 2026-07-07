@@ -3,6 +3,7 @@ using Backend.Database;
 using Backend.Models;
 using Backend.Services;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -34,6 +35,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
            .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
+var supabaseUrl = builder.Configuration["SUPABASE_URL"]
+    ?? throw new InvalidOperationException("SUPABASE_URL is not configured.");
+
+// Use Supabase's JWKS endpoint for token validation — no secret needed.
+// The middleware fetches and caches the public signing keys automatically.
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = $"{supabaseUrl}/auth/v1";
+        options.TokenValidationParameters.ValidAudience = "authenticated";
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -47,6 +62,9 @@ app.UseCors();
 if (!app.Environment.IsProduction())
     app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapGet("/health", async (AppDbContext db) =>
 {
     await db.Database.ExecuteSqlRawAsync("SELECT 1");
@@ -57,5 +75,12 @@ app.MapGet("/health", async (AppDbContext db) =>
 app.MapPost("/recommendations", (UserPreferences prefs) =>
     Results.Ok(RecommendationEngine.GetRecommendations(prefs)))
     .WithName("GetRecommendations");
+
+// Smoke test for auth — returns the caller's user ID from the JWT.
+// Remove once real protected endpoints exist.
+app.MapGet("/me", (HttpContext ctx) =>
+    Results.Ok(new { userId = ctx.User.FindFirst("sub")?.Value }))
+    .RequireAuthorization()
+    .WithName("Me");
 
 app.Run();
