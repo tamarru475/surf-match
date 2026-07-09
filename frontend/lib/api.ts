@@ -1,6 +1,24 @@
 import type { RecommendationResponse, UserPreferences } from './types';
+import { supabase } from './supabase';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5116';
+
+async function authHeaders(): Promise<HeadersInit> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  return token
+    ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+    : { 'Content-Type': 'application/json' };
+}
+
+// Throws if the user has no saved preferences (404 from backend).
+// Used after auth to decide whether to route to profile or home.
+export async function fetchUserPreferences(): Promise<UserPreferences> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/preferences`, { headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
 
 export async function fetchRecommendations(prefs: UserPreferences): Promise<RecommendationResponse> {
   const res = await fetch(`${API_BASE}/recommendations`, {
