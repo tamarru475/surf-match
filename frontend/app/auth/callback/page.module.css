@@ -1,0 +1,9 @@
+@reference "tailwindcss";
+
+.root {
+  @apply flex items-center justify-center min-h-screen;
+}
+
+.message {
+  @apply text-sm text-gray-500;
+}

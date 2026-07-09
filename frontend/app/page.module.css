@@ -6,6 +6,25 @@
   padding-top: 25vh;
 }
 
+.topBar {
+  @apply absolute top-5 right-5 z-10 flex items-center gap-3;
+}
+
+.userRow {
+  @apply flex items-center gap-3;
+}
+
+.authBtn {
+  @apply text-sm font-semibold text-sky-900 bg-white hover:bg-sky-50
+         px-5 py-2.5 rounded-xl shadow-md transition-all duration-200 cursor-pointer
+         hover:shadow-lg active:scale-[0.97];
+  touch-action: manipulation;
+}
+
+.authBtn:hover {
+  transform: translateY(-1px);
+}
+
 .bgImage {
   @apply object-cover;
 }

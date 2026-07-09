@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation'
 import { TriangleAlert } from 'lucide-react'
 import SpotCard from '@/components/results/SpotCard'
 import SpotModal from '@/components/results/SpotModal'
+import { useAuth } from '@/lib/AuthContext'
 import type { RecommendationResponse, SpotRecommendation } from '@/lib/types'
 import styles from './page.module.css'
 
 const ResultsPage = () => {
   const router = useRouter()
+  const { user, openAuthModal } = useAuth()
   const [data, setData] = useState<RecommendationResponse | null>(null)
   const [activeSpot, setActiveSpot] = useState<SpotRecommendation | null>(null)
 
@@ -40,9 +42,16 @@ const ResultsPage = () => {
             {recommendations.length !== 1 ? 's' : ''} found
           </p>
         </div>
-        <button className={styles.startOver} onClick={() => router.push('/')}>
-          Start over
-        </button>
+        <div className={styles.headerActions}>
+          {!user && (
+            <button className={styles.createAccount} onClick={() => openAuthModal('signup')}>
+              Create account
+            </button>
+          )}
+          <button className={styles.startOver} onClick={() => router.push('/')}>
+            Start over
+          </button>
+        </div>
       </div>
 
       {warnings.length > 0 && (

@@ -10,6 +10,8 @@ const config: Config = {
   // default crawler will otherwise try to read, causing multi-minute hangs.
   modulePathIgnorePatterns: ['<rootDir>/.next/'],
   watchPathIgnorePatterns: ['<rootDir>/.next/'],
+  // Set stub Supabase env vars before any module is loaded.
+  setupFiles: ['<rootDir>/jest.setup.env.ts'],
 };
 
 export default createJestConfig(config);
