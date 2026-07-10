@@ -52,6 +52,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ProfileService>();
+builder.Services.AddScoped<PreferencesService>();
 
 var app = builder.Build();
 
@@ -98,5 +99,23 @@ app.MapPut("/me", async (HttpContext ctx, UpdateProfileRequest req, ProfileServi
 
 static ProfileResponse ToProfileResponse(UserEntity u) =>
     new(u.Id, u.Email, u.DisplayName, u.Bio, u.InstagramHandle, u.TikTokHandle);
+
+app.MapGet("/me/preferences", async (HttpContext ctx, PreferencesService prefs) =>
+{
+    var result = await prefs.GetAsync(ctx.User.GetUserId());
+    return result is null ? Results.NotFound() : Results.Ok(result);
+})
+.RequireAuthorization()
+.WithName("GetPreferences");
+
+app.MapPut("/me/preferences", async (HttpContext ctx, UserPreferences req, PreferencesService prefs, ProfileService profiles) =>
+{
+    // Ensure user row exists before inserting preferences (FK constraint).
+    await profiles.GetOrCreateAsync(ctx.User.GetUserId(), ctx.User.GetEmail());
+    var result = await prefs.UpsertAsync(ctx.User.GetUserId(), req);
+    return Results.Ok(result);
+})
+.RequireAuthorization()
+.WithName("UpsertPreferences");
 
 app.Run();
