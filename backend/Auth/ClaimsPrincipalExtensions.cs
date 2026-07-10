@@ -13,4 +13,9 @@ public static class ClaimsPrincipalExtensions
 
         return Guid.Parse(sub);
     }
+
+    public static string GetEmail(this ClaimsPrincipal user) =>
+        user.FindFirstValue(ClaimTypes.Email)
+        ?? user.FindFirstValue("email")
+        ?? throw new UnauthorizedAccessException("No email claim found.");
 }

@@ -1,6 +1,9 @@
 using System.Text.Json.Serialization;
+using Backend.Auth;
 using Backend.Database;
+using Backend.Database.Entities;
 using Backend.Models;
+using Backend.Models.Dtos;
 using Backend.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,6 +51,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<ProfileService>();
 
 var app = builder.Build();
 
@@ -76,11 +80,23 @@ app.MapPost("/recommendations", (UserPreferences prefs) =>
     Results.Ok(RecommendationEngine.GetRecommendations(prefs)))
     .WithName("GetRecommendations");
 
-// Smoke test for auth — returns the caller's user ID from the JWT.
-// Remove once real protected endpoints exist.
-app.MapGet("/me", (HttpContext ctx) =>
-    Results.Ok(new { userId = ctx.User.FindFirst("sub")?.Value }))
-    .RequireAuthorization()
-    .WithName("Me");
+app.MapGet("/me", async (HttpContext ctx, ProfileService profiles) =>
+{
+    var user = await profiles.GetOrCreateAsync(ctx.User.GetUserId(), ctx.User.GetEmail());
+    return Results.Ok(ToProfileResponse(user));
+})
+.RequireAuthorization()
+.WithName("GetProfile");
+
+app.MapPut("/me", async (HttpContext ctx, UpdateProfileRequest req, ProfileService profiles) =>
+{
+    var user = await profiles.UpdateAsync(ctx.User.GetUserId(), req);
+    return user is null ? Results.NotFound() : Results.Ok(ToProfileResponse(user));
+})
+.RequireAuthorization()
+.WithName("UpdateProfile");
+
+static ProfileResponse ToProfileResponse(UserEntity u) =>
+    new(u.Id, u.Email, u.DisplayName, u.Bio, u.InstagramHandle, u.TikTokHandle);
 
 app.Run();
