@@ -4,11 +4,19 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchProfile, updateProfile, fetchUserPreferences, fetchRecommendations } from '@/lib/api';
 import { useAuth } from '@/lib/AuthContext';
+import { REGIONS } from '@/lib/types';
 import type { Profile, UserPreferences } from '@/lib/types';
+
+export interface PrefRow {
+  label: string;
+  getValue: (p: UserPreferences) => string;
+}
 
 export interface ProfileViewModel {
   profile: Profile | null;
   preferences: UserPreferences | null;
+  avatarLetter: string;
+  prefRows: PrefRow[];
   displayName: string;
   location: string;
   bio: string;
@@ -28,6 +36,18 @@ export interface ProfileViewModel {
   handleSave: () => void;
   handleFindWave: () => void;
 }
+
+export const REGION_OPTIONS = REGIONS;
+
+const PREF_ROWS: PrefRow[] = [
+  { label: 'Skill Level',     getValue: (p) => formatEnum(p.skillLevel) },
+  { label: 'Crowd Tolerance', getValue: (p) => formatEnum(p.crowdTolerance) },
+  { label: 'Search Region',   getValue: (p) => p.preferredRegion ? formatEnum(p.preferredRegion) : 'Any' },
+  { label: 'Board Types',     getValue: (p) => p.boardTypes.length ? p.boardTypes.map(formatEnum).join(', ') : 'Any' },
+  { label: 'Wave Types',      getValue: (p) => p.preferredWaveTypes.length ? p.preferredWaveTypes.map(formatEnum).join(', ') : 'Any' },
+  { label: 'Wave Sizes',      getValue: (p) => p.preferredWaveSizes.length ? p.preferredWaveSizes.map(formatEnum).join(', ') : 'Any' },
+  { label: 'Facilities',      getValue: (p) => p.preferredFacilities.length ? p.preferredFacilities.map(formatEnum).join(', ') : 'None' },
+];
 
 export const useProfileViewModel = (): ProfileViewModel => {
   const { user } = useAuth();
@@ -120,8 +140,11 @@ export const useProfileViewModel = (): ProfileViewModel => {
     }
   }, [preferences, router]);
 
+  const avatarLetter = (profile?.displayName ?? profile?.email ?? '?')[0].toUpperCase();
+
   return {
     profile, preferences,
+    avatarLetter, prefRows: PREF_ROWS,
     displayName, location, bio, instagramHandle, tikTokHandle,
     loading, saving, findingWave, saveSuccess, isDirty, error,
     setDisplayName, setLocation, setBio, setInstagramHandle, setTikTokHandle,

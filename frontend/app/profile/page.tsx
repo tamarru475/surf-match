@@ -5,22 +5,8 @@ import Button from '@/components/ui/Button';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { CameraIcon, InstagramIcon, TikTokIcon, LinesIcon, SendIcon, PinIcon } from '@/components/ui/Icons';
 import { useAuth } from '@/lib/AuthContext';
-import { useProfileViewModel, formatEnum } from './profile.viewmodel';
-import { REGIONS } from '@/lib/types';
-import type { UserPreferences } from '@/lib/types';
+import { useProfileViewModel, REGION_OPTIONS, formatEnum } from './profile.viewmodel';
 import styles from './page.module.css';
-
-// ── Preference rows ───────────────────────────────────────────────────────────
-
-const prefRows: { label: string; getValue: (p: UserPreferences) => string }[] = [
-  { label: 'Skill Level',     getValue: (p) => formatEnum(p.skillLevel) },
-  { label: 'Crowd Tolerance', getValue: (p) => formatEnum(p.crowdTolerance) },
-  { label: 'Search Region',   getValue: (p) => p.preferredRegion ? formatEnum(p.preferredRegion) : 'Any' },
-  { label: 'Board Types',     getValue: (p) => p.boardTypes.length ? p.boardTypes.map(formatEnum).join(', ') : 'Any' },
-  { label: 'Wave Types',      getValue: (p) => p.preferredWaveTypes.length ? p.preferredWaveTypes.map(formatEnum).join(', ') : 'Any' },
-  { label: 'Wave Sizes',      getValue: (p) => p.preferredWaveSizes.length ? p.preferredWaveSizes.map(formatEnum).join(', ') : 'Any' },
-  { label: 'Facilities',      getValue: (p) => p.preferredFacilities.length ? p.preferredFacilities.map(formatEnum).join(', ') : 'None' },
-];
 
 // ── Page ─────────────────────────────────────────────────────────────────────
 
@@ -31,8 +17,6 @@ const ProfilePage = () => {
   if (vm.loading) {
     return <div className={styles.loading}><LoadingSpinner /></div>;
   }
-
-  const avatarLetter = (vm.profile?.displayName ?? vm.profile?.email ?? '?')[0].toUpperCase();
 
   return (
     <div className={styles.root}>
@@ -51,7 +35,7 @@ const ProfilePage = () => {
         <div className={styles.card}>
           <div className={styles.profileHeader}>
             <div className={styles.photoWrap}>
-              <div className={styles.avatar}>{avatarLetter}</div>
+              <div className={styles.avatar}>{vm.avatarLetter}</div>
               <button className={styles.cameraBtn} title="Upload photo (coming soon)" disabled>
                 <CameraIcon />
               </button>
@@ -72,7 +56,7 @@ const ProfilePage = () => {
                   onChange={(e) => vm.setLocation(e.target.value)}
                 >
                   <option value="">Your region</option>
-                  {REGIONS.map((r) => (
+                  {REGION_OPTIONS.map((r) => (
                     <option key={r} value={r}>{formatEnum(r)}</option>
                   ))}
                 </select>
@@ -132,7 +116,7 @@ const ProfilePage = () => {
 
           {vm.preferences ? (
             <div className={styles.prefsGrid}>
-              {prefRows.map(({ label, getValue }) => (
+              {vm.prefRows.map(({ label, getValue }) => (
                 <div key={label} className={styles.prefItem}>
                   <span className={styles.prefLabel}>{label}</span>
                   <span className={styles.prefPill}>{getValue(vm.preferences!)}</span>
