@@ -20,6 +20,16 @@ export async function fetchUserPreferences(): Promise<UserPreferences> {
   return res.json();
 }
 
+export async function saveUserPreferences(prefs: UserPreferences): Promise<void> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/preferences`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(prefs),
+  });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+}
+
 export async function fetchRecommendations(prefs: UserPreferences): Promise<RecommendationResponse> {
   const res = await fetch(`${API_BASE}/recommendations`, {
     method: 'POST',
