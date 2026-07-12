@@ -51,7 +51,7 @@ public class ProfileServiceTests
         var id = Guid.NewGuid();
         await svc.GetOrCreateAsync(id, "surfer@example.com");
 
-        var req = new UpdateProfileRequest("Tamar", "Loves big waves", "tamar_surfs", "tamar_surfs");
+        var req = new UpdateProfileRequest("Tamar", "Raglan, NZ", "Loves big waves", "tamar_surfs", "tamar_surfs");
         var updated = await svc.UpdateAsync(id, req);
 
         Assert.NotNull(updated);
@@ -68,9 +68,9 @@ public class ProfileServiceTests
         var svc = new ProfileService(db);
         var id = Guid.NewGuid();
         await svc.GetOrCreateAsync(id, "surfer@example.com");
-        await svc.UpdateAsync(id, new UpdateProfileRequest("Tamar", "Bio", "ig", "tt"));
+        await svc.UpdateAsync(id, new UpdateProfileRequest("Tamar", "Raglan, NZ", "Bio", "ig", "tt"));
 
-        var updated = await svc.UpdateAsync(id, new UpdateProfileRequest(null, null, null, null));
+        var updated = await svc.UpdateAsync(id, new UpdateProfileRequest(null, null, null, null, null));
 
         Assert.NotNull(updated);
         Assert.Null(updated.DisplayName);
@@ -83,7 +83,7 @@ public class ProfileServiceTests
         await using var db = CreateDb();
         var svc = new ProfileService(db);
 
-        var result = await svc.UpdateAsync(Guid.NewGuid(), new UpdateProfileRequest(null, null, null, null));
+        var result = await svc.UpdateAsync(Guid.NewGuid(), new UpdateProfileRequest(null, null, null, null, null));
 
         Assert.Null(result);
     }

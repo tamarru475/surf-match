@@ -1,4 +1,4 @@
-import type { RecommendationResponse, UserPreferences } from './types';
+import type { Profile, RecommendationResponse, UpdateProfileData, UserPreferences } from './types';
 import { supabase } from './supabase';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5116';
@@ -16,6 +16,24 @@ async function authHeaders(): Promise<HeadersInit> {
 export async function fetchUserPreferences(): Promise<UserPreferences> {
   const headers = await authHeaders();
   const res = await fetch(`${API_BASE}/me/preferences`, { headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchProfile(): Promise<Profile> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me`, { headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function updateProfile(data: UpdateProfileData): Promise<Profile> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(data),
+  });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   return res.json();
 }
