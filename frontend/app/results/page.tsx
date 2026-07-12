@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { TriangleAlert } from 'lucide-react'
 import SpotCard from '@/components/results/SpotCard'
 import SpotModal from '@/components/results/SpotModal'
@@ -43,7 +44,9 @@ const ResultsPage = () => {
           </p>
         </div>
         <div className={styles.headerActions}>
-          {!user && (
+          {user ? (
+            <Link href="/profile" className={styles.createAccount}>My profile</Link>
+          ) : (
             <button className={styles.createAccount} onClick={() => openAuthModal('signup')}>
               Create account
             </button>

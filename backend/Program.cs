@@ -98,7 +98,7 @@ app.MapPut("/me", async (HttpContext ctx, UpdateProfileRequest req, ProfileServi
 .WithName("UpdateProfile");
 
 static ProfileResponse ToProfileResponse(UserEntity u) =>
-    new(u.Id, u.Email, u.DisplayName, u.Bio, u.InstagramHandle, u.TikTokHandle);
+    new(u.Id, u.Email, u.DisplayName, u.AvatarUrl, u.Location, u.Bio, u.InstagramHandle, u.TikTokHandle);
 
 app.MapGet("/me/preferences", async (HttpContext ctx, PreferencesService prefs) =>
 {

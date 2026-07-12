@@ -1,7 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
-import GoogleIcon from '@/components/ui/GoogleIcon';
+import { GoogleIcon } from '@/components/ui/Icons';
 import { useAuth } from '@/lib/AuthContext';
 import { useAuthModalViewModel } from './AuthModal.viewmodel';
 import styles from './AuthModal.module.css';

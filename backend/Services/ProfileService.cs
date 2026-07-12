@@ -32,6 +32,7 @@ public class ProfileService(AppDbContext db)
         if (user is null) return null;
 
         user.DisplayName = req.DisplayName;
+        user.Location = req.Location;
         user.Bio = req.Bio;
         user.InstagramHandle = req.InstagramHandle;
         user.TikTokHandle = req.TikTokHandle;

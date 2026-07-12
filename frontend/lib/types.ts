@@ -1,6 +1,7 @@
 export type SkillLevel = 'NewToSurfing' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
 export type CrowdLevel = 'Quiet' | 'Moderate' | 'Busy';
 export type Region = 'Northland' | 'Auckland' | 'Coromandel' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
+export const REGIONS: Region[] = ['Northland', 'Auckland', 'Coromandel', 'BayOfPlenty', 'Waikato', 'Gisborne', 'Christchurch', 'Taranaki', 'Kaikoura', 'Wellington', 'Otago'];
 export type WaveType = 'BeachBreak' | 'PointBreak' | 'ReefBreak';
 export type WaveSize = 'AnkleHigh' | 'KneeHigh' | 'WaistHigh' | 'HeadHigh' | 'DoubleOverhead';
 export type BoardType = 'Rental' | 'Longboard' | 'Shortboard' | 'Fish' | 'Funboard';
@@ -39,6 +40,25 @@ export interface SpotRecommendation {
   score: number;
   notes: string[];
   breakdown: ScoreBreakdown;
+}
+
+export interface Profile {
+  id: string;
+  email: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  location: string | null;
+  bio: string | null;
+  instagramHandle: string | null;
+  tikTokHandle: string | null;
+}
+
+export interface UpdateProfileData {
+  displayName: string | null;
+  location: string | null;
+  bio: string | null;
+  instagramHandle: string | null;
+  tikTokHandle: string | null;
 }
 
 export interface RecommendationResponse {
