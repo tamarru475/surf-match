@@ -1,0 +1,58 @@
+@reference "tailwindcss";
+
+.card { @apply bg-white rounded-2xl shadow-sm p-6; }
+
+.header {
+  @apply flex items-center justify-between mb-4;
+}
+
+.title {
+  @apply text-xs font-semibold tracking-widest text-slate-400 uppercase;
+}
+
+.subLabel {
+  @apply text-xs text-slate-400 flex items-center gap-1;
+}
+
+.grid {
+  @apply grid grid-cols-2 gap-x-6 gap-y-4 mb-4;
+}
+
+.item       { @apply flex flex-col gap-1.5; }
+.itemFull   { @apply col-span-2; }
+
+.label {
+  @apply text-xs font-semibold tracking-widest text-slate-400 uppercase;
+}
+
+.selectWrap   { @apply relative w-full; }
+
+.selectArrow {
+  @apply absolute right-4 top-1/2 -translate-y-1/2 text-xs text-sky-500 pointer-events-none;
+}
+
+.selectPill {
+  @apply bg-sky-100 text-sky-900 text-base rounded-2xl px-4 py-3 font-medium
+         cursor-pointer outline-none border-none w-full
+         hover:bg-sky-200 transition-colors;
+  appearance: none;
+  padding-right: 36px;
+}
+
+.noPrefs {
+  @apply text-sm text-slate-400 text-center py-4;
+}
+
+/* ── Save row ── */
+.saveRow { @apply flex items-center gap-3 mt-4 min-h-[36px]; }
+.error   { @apply text-sm text-red-500; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.savedText {
+  @apply text-sm text-green-600 font-medium;
+  animation: fadeIn 0.2s ease-out;
+}

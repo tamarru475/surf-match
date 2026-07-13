@@ -1,11 +1,23 @@
 export type SkillLevel = 'NewToSurfing' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+export const SKILL_LEVELS: SkillLevel[] = ['NewToSurfing', 'Beginner', 'Intermediate', 'Advanced', 'Expert'];
+
 export type CrowdLevel = 'Quiet' | 'Moderate' | 'Busy';
+export const CROWD_LEVELS: CrowdLevel[] = ['Quiet', 'Moderate', 'Busy'];
+
 export type Region = 'Northland' | 'Auckland' | 'Coromandel' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
 export const REGIONS: Region[] = ['Northland', 'Auckland', 'Coromandel', 'BayOfPlenty', 'Waikato', 'Gisborne', 'Christchurch', 'Taranaki', 'Kaikoura', 'Wellington', 'Otago'];
+
 export type WaveType = 'BeachBreak' | 'PointBreak' | 'ReefBreak';
+export const WAVE_TYPES: WaveType[] = ['BeachBreak', 'PointBreak', 'ReefBreak'];
+
 export type WaveSize = 'AnkleHigh' | 'KneeHigh' | 'WaistHigh' | 'HeadHigh' | 'DoubleOverhead';
+export const WAVE_SIZES: WaveSize[] = ['AnkleHigh', 'KneeHigh', 'WaistHigh', 'HeadHigh', 'DoubleOverhead'];
+
 export type BoardType = 'Rental' | 'Longboard' | 'Shortboard' | 'Fish' | 'Funboard';
+export const BOARD_TYPES: BoardType[] = ['Rental', 'Longboard', 'Shortboard', 'Fish', 'Funboard'];
+
 export type Facility = 'Bathrooms' | 'Showers' | 'SurfClub' | 'Rentals' | 'Lifeguard' | 'Campground';
+export const FACILITIES: Facility[] = ['Bathrooms', 'Showers', 'SurfClub', 'Rentals', 'Lifeguard', 'Campground'];
 
 export interface UserPreferences {
   skillLevel: SkillLevel;
