@@ -1,14 +1,25 @@
-using Backend.Data;
+using Backend.Database;
+using Backend.Database.Entities;
 using Backend.Models;
 using Backend.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services;
 
-public static class RecommendationEngine
+public class RecommendationEngine(AppDbContext db)
 {
-    public static RecommendationResponse GetRecommendations(UserPreferences prefs)
+    // Called by the endpoint — loads spots from the database.
+    public async Task<RecommendationResponse> GetRecommendationsAsync(UserPreferences prefs)
     {
-        var (spots, warnings) = FilterWithFallback(SurfSpotCatalog.All, prefs);
+        var entities = await db.SurfSpots.AsNoTracking().ToListAsync();
+        var spots = entities.Select(ToModel).ToList();
+        return Process(spots, prefs);
+    }
+
+    // Public static entry point — used directly by unit tests to avoid DB setup.
+    public static RecommendationResponse Process(IEnumerable<SurfSpot> allSpots, UserPreferences prefs)
+    {
+        var (spots, warnings) = FilterWithFallback(allSpots, prefs);
         var ranked = Rank(spots, prefs);
 
         return new RecommendationResponse
@@ -18,6 +29,22 @@ public static class RecommendationEngine
             Warnings = warnings
         };
     }
+
+    private static SurfSpot ToModel(SurfSpotEntity e) => new()
+    {
+        Id              = e.Id,
+        Name            = e.Name,
+        Region          = Enum.Parse<Region>(e.Region),
+        WaveType        = Enum.Parse<WaveType>(e.WaveType),
+        MinSkillLevel   = Enum.Parse<SkillLevel>(e.MinSkillLevel),
+        SuitableBoardTypes = e.SuitableBoardTypes.Select(b => Enum.Parse<BoardType>(b)).ToList(),
+        Facilities      = e.Facilities.Select(f => Enum.Parse<Facility>(f)).ToList(),
+        TypicalCrowd    = Enum.Parse<CrowdLevel>(e.TypicalCrowd),
+        MinWaveSize     = Enum.Parse<WaveSize>(e.MinWaveSize),
+        MaxWaveSize     = Enum.Parse<WaveSize>(e.MaxWaveSize),
+        CurrentWaveSize = Enum.Parse<WaveSize>(e.CurrentWaveSize),
+        Description     = e.Description,
+    };
 
     // ── Hard filters ─────────────────────────────────────────────────────────
     // Skill is always enforced and never relaxed — recommending a spot above
@@ -80,8 +107,8 @@ public static class RecommendationEngine
             spots = Apply();
         }
 
-        // bySkill always contains at least the catalog's Beginner spots, so
-        // this is guaranteed non-empty once region/type/size are all relaxed.
+        // bySkill always contains at least the Beginner spots, so this is
+        // guaranteed non-empty once region/type/size are all relaxed.
         return (spots, warnings);
     }
 
@@ -90,13 +117,10 @@ public static class RecommendationEngine
     // Spots that don't fit well are ranked lower and flagged with a note,
     // but never excluded.
 
-    private static List<SpotRecommendation> Rank(IEnumerable<SurfSpot> spots, UserPreferences prefs)
-    {
-        return spots
-            .Select(spot => BuildRecommendation(spot, prefs))
-            .OrderByDescending(r => r.Score)
-            .ToList();
-    }
+    private static List<SpotRecommendation> Rank(IEnumerable<SurfSpot> spots, UserPreferences prefs) =>
+        spots.Select(spot => BuildRecommendation(spot, prefs))
+             .OrderByDescending(r => r.Score)
+             .ToList();
 
     private static SpotRecommendation BuildRecommendation(SurfSpot spot, UserPreferences prefs)
     {
@@ -105,7 +129,6 @@ public static class RecommendationEngine
             BoardMatch    = ScoreBoard(spot, prefs),
             CrowdMatch    = ScoreCrowd(spot, prefs),
             FacilityMatch = ScoreFacilities(spot, prefs),
-
             SkillMatch    = 0,
             RegionMatch   = 0,
             WaveTypeMatch = 0,
@@ -114,18 +137,18 @@ public static class RecommendationEngine
 
         return new SpotRecommendation
         {
-            SpotId        = spot.Id,
-            Name          = spot.Name,
-            Region        = spot.Region,
-            WaveType      = spot.WaveType,
-            MinSkillLevel = spot.MinSkillLevel,
-            TypicalCrowd  = spot.TypicalCrowd,
+            SpotId          = spot.Id,
+            Name            = spot.Name,
+            Region          = spot.Region,
+            WaveType        = spot.WaveType,
+            MinSkillLevel   = spot.MinSkillLevel,
+            TypicalCrowd    = spot.TypicalCrowd,
             Facilities      = spot.Facilities,
             CurrentWaveSize = spot.CurrentWaveSize,
             Description     = spot.Description,
-            Score       = breakdown.BoardMatch + breakdown.CrowdMatch + breakdown.FacilityMatch,
-            Notes       = BuildNotes(spot, prefs, breakdown),
-            Breakdown   = breakdown
+            Score           = breakdown.BoardMatch + breakdown.CrowdMatch + breakdown.FacilityMatch,
+            Notes           = BuildNotes(spot, prefs, breakdown),
+            Breakdown       = breakdown
         };
     }
 
