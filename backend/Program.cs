@@ -53,6 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<PreferencesService>();
+builder.Services.AddScoped<FavoritesService>();
 builder.Services.AddScoped<RecommendationEngine>();
 
 var app = builder.Build();
@@ -100,6 +101,28 @@ app.MapPut("/me", async (HttpContext ctx, UpdateProfileRequest req, ProfileServi
 
 static ProfileResponse ToProfileResponse(UserEntity u) =>
     new(u.Id, u.Email, u.DisplayName, u.AvatarUrl, u.Location, u.Bio, u.InstagramHandle, u.TikTokHandle);
+
+app.MapGet("/me/favorites", async (HttpContext ctx, FavoritesService favs) =>
+    Results.Ok(await favs.GetAsync(ctx.User.GetUserId())))
+    .RequireAuthorization()
+    .WithName("GetFavorites");
+
+app.MapPost("/me/favorites/{spotId:guid}", async (HttpContext ctx, Guid spotId, FavoritesService favs, ProfileService profiles) =>
+{
+    await profiles.GetOrCreateAsync(ctx.User.GetUserId(), ctx.User.GetEmail());
+    var result = await favs.AddAsync(ctx.User.GetUserId(), spotId);
+    return result is null ? Results.NotFound() : Results.Ok(result);
+})
+.RequireAuthorization()
+.WithName("AddFavorite");
+
+app.MapDelete("/me/favorites/{spotId:guid}", async (HttpContext ctx, Guid spotId, FavoritesService favs) =>
+{
+    var removed = await favs.RemoveAsync(ctx.User.GetUserId(), spotId);
+    return removed ? Results.NoContent() : Results.NotFound();
+})
+.RequireAuthorization()
+.WithName("RemoveFavorite");
 
 app.MapGet("/me/preferences", async (HttpContext ctx, PreferencesService prefs) =>
 {
