@@ -53,6 +53,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<PreferencesService>();
+builder.Services.AddScoped<RecommendationEngine>();
 
 var app = builder.Build();
 
@@ -77,8 +78,8 @@ app.MapGet("/health", async (AppDbContext db) =>
 })
 .WithName("Health");
 
-app.MapPost("/recommendations", (UserPreferences prefs) =>
-    Results.Ok(RecommendationEngine.GetRecommendations(prefs)))
+app.MapPost("/recommendations", async (UserPreferences prefs, RecommendationEngine engine) =>
+    Results.Ok(await engine.GetRecommendationsAsync(prefs)))
     .WithName("GetRecommendations");
 
 app.MapGet("/me", async (HttpContext ctx, ProfileService profiles) =>

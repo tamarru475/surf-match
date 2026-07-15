@@ -295,7 +295,7 @@ public class RecommendationEngineTests
             PreferredFacilities = facilities ?? []
         };
 
-        return RecommendationEngine.GetRecommendations(prefs);
+        return RecommendationEngine.Process(Backend.Data.SurfSpotCatalog.All, prefs);
     }
 
     private static Backend.Models.SurfSpot SpotByName(string name) =>
