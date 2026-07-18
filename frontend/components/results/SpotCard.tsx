@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { MapPin } from 'lucide-react';
+import { Heart, MapPin } from 'lucide-react';
 import { cx } from '@/lib/utils';
 import type { SpotRecommendation, UserPreferences } from '@/lib/types';
 import { toSpotCardViewModel } from './SpotCard.viewmodel';
@@ -11,13 +11,16 @@ interface SpotCardProps {
   spot: SpotRecommendation;
   preferences: UserPreferences;
   onClick: () => void;
+  isFavorited?: boolean;
+  onToggleFavorite?: () => void;
 }
 
-const SpotCard = ({ spot, preferences, onClick }: SpotCardProps) => {
+const SpotCard = ({ spot, preferences, onClick, isFavorited, onToggleFavorite }: SpotCardProps) => {
   const vm = toSpotCardViewModel(spot, preferences);
 
   return (
-    <button className={styles.card} onClick={onClick}>
+    <div className={styles.card} role="button" tabIndex={0} onClick={onClick}
+      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onClick()}>
       {/* Photo / gradient header */}
       <div className={styles.photo} style={vm.imageUrl ? undefined : vm.backgroundStyle}>
         {vm.imageUrl && (
@@ -25,6 +28,15 @@ const SpotCard = ({ spot, preferences, onClick }: SpotCardProps) => {
         )}
         <div className={styles.photoOverlay} />
         <span className={styles.matchBadge}>{vm.matchPct}% match</span>
+        {onToggleFavorite && (
+          <button
+            className={cx(styles.heartBtn, isFavorited && styles.heartActive)}
+            onClick={e => { e.stopPropagation(); onToggleFavorite(); }}
+            aria-label={isFavorited ? 'Remove from favourites' : 'Add to favourites'}
+          >
+            <Heart size={16} fill={isFavorited ? 'currentColor' : 'none'} />
+          </button>
+        )}
       </div>
 
       {/* Card body */}
@@ -49,7 +61,7 @@ const SpotCard = ({ spot, preferences, onClick }: SpotCardProps) => {
           </span>
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 

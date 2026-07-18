@@ -6,8 +6,8 @@ import { usePreferencesViewModel } from '@/app/profile/preferences/preferences.v
 import type { UserPreferences } from '@/lib/types';
 
 const mockSaveUserPreferences = jest.fn();
-jest.mock('../lib/api', () => ({
-  ...jest.requireActual('../lib/api'),
+jest.mock('../../../lib/api', () => ({
+  ...jest.requireActual('../../../lib/api'),
   saveUserPreferences: (...args: unknown[]) => mockSaveUserPreferences(...args),
 }));
 

@@ -55,14 +55,15 @@ public class FavoritesService(AppDbContext db)
     }
 
     private static FavoriteSpotResponse ToResponse(FavoriteEntity f, SurfSpotEntity s) => new(
-        SpotId:        s.Id,
-        Name:          s.Name,
-        Region:        Enum.Parse<Region>(s.Region),
-        WaveType:      Enum.Parse<WaveType>(s.WaveType),
-        MinSkillLevel: Enum.Parse<SkillLevel>(s.MinSkillLevel),
-        TypicalCrowd:  Enum.Parse<CrowdLevel>(s.TypicalCrowd),
-        Facilities:    s.Facilities.Select(fac => Enum.Parse<Facility>(fac)).ToList(),
-        Description:   s.Description,
-        FavoritedAt:   f.CreatedAt
+        SpotId:          s.Id,
+        Name:            s.Name,
+        Region:          Enum.Parse<Region>(s.Region),
+        WaveType:        Enum.Parse<WaveType>(s.WaveType),
+        MinSkillLevel:   Enum.Parse<SkillLevel>(s.MinSkillLevel),
+        TypicalCrowd:    Enum.Parse<CrowdLevel>(s.TypicalCrowd),
+        CurrentWaveSize: Enum.Parse<WaveSize>(s.CurrentWaveSize),
+        Facilities:      s.Facilities.Select(fac => Enum.Parse<Facility>(fac)).ToList(),
+        Description:     s.Description,
+        FavoritedAt:     f.CreatedAt
     );
 }

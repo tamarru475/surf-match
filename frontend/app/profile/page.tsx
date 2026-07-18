@@ -6,6 +6,7 @@ import { SendIcon } from '@/components/ui/Icons';
 import { useAuth } from '@/lib/AuthContext';
 import { useProfileViewModel } from './profile.viewmodel';
 import ProfileCard from './profile-card/ProfileCard';
+import FavoritesCard from './favorites/FavoritesCard';
 import PreferencesCard from './preferences/PreferencesCard';
 import styles from './page.module.css';
 
@@ -34,13 +35,7 @@ const ProfilePage = () => {
         <ProfileCard profile={vm.profile} />
 
         {/* ── Card 2: Favourite Spots ── */}
-        <div className={styles.card}>
-          <div className={styles.spotsHeader}>
-            <p className={styles.sectionLabel} style={{ marginBottom: 0 }}>Favourite Spots</p>
-            <button className={styles.addSpotBtn} disabled>+ Add spot</button>
-          </div>
-          <p className={styles.spotsEmpty}>Your favourite spots will appear here.</p>
-        </div>
+        <FavoritesCard />
 
         {/* ── Card 3: Surf Preferences ── */}
         <PreferencesCard preferences={vm.preferences} />

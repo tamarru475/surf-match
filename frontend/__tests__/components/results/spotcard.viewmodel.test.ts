@@ -98,7 +98,7 @@ describe('toSpotModalViewModel', () => {
 
   it('sets hasNotes to true and passes through all notes', () => {
     const vm = toSpotModalViewModel(
-      { ...spot, notes: ['None of your boards are ideal for this spot.', 'Big conditions today.'] },
+      { ...spot, notes: ['None of your boards are ideal for this spot.', 'Big conditions today.'] } as SpotRecommendation,
       prefs,
     );
     expect(vm.hasNotes).toBe(true);

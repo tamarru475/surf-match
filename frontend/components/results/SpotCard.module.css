@@ -32,6 +32,13 @@
          text-sky-700 font-bold text-sm px-3 py-1 rounded-full;
 }
 
+.heartBtn {
+  @apply absolute top-3 left-3 p-2 rounded-full bg-white/80 backdrop-blur-sm
+         text-slate-400 transition-colors cursor-pointer;
+}
+.heartBtn:hover   { @apply bg-white text-red-400; }
+.heartActive      { @apply text-red-500 bg-white; }
+
 .body     { @apply p-4 flex flex-col gap-2; }
 .name     { @apply text-lg font-bold text-gray-900 transition-colors duration-200; }
 .card:hover .name { @apply text-sky-600; }

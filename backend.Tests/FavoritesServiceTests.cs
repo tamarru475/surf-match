@@ -1,5 +1,6 @@
 using Backend.Database;
 using Backend.Database.Entities;
+using Backend.Models.Enums;
 using Backend.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -63,6 +64,7 @@ public class FavoritesServiceTests
         Assert.NotNull(result);
         Assert.Equal(spotId, result.SpotId);
         Assert.Equal("Piha", result.Name);
+        Assert.Equal(WaveSize.WaistHigh, result.CurrentWaveSize);
         Assert.Single(await db.Favorites.ToListAsync());
     }
 

@@ -6,8 +6,8 @@ import { useProfileCardViewModel } from '@/app/profile/profile-card/profile-card
 import type { Profile } from '@/lib/types';
 
 const mockUpdateProfile = jest.fn();
-jest.mock('../lib/api', () => ({
-  ...jest.requireActual('../lib/api'),
+jest.mock('../../../lib/api', () => ({
+  ...jest.requireActual('../../../lib/api'),
   updateProfile: (...args: unknown[]) => mockUpdateProfile(...args),
 }));
 
