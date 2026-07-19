@@ -14,6 +14,8 @@ interface SpotModalProps {
   onClose: () => void
   isFavorited?: boolean
   onToggleFavorite?: () => void
+  onLogSession?: () => void
+  sessionLogged?: boolean
 }
 
 // Renders a single label/value block in the detail grid (wave type, skill level, etc.)
@@ -24,7 +26,7 @@ const DetailItem = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
-const SpotModal = ({ spot, preferences, onClose, isFavorited, onToggleFavorite }: SpotModalProps) => {
+const SpotModal = ({ spot, preferences, onClose, isFavorited, onToggleFavorite, onLogSession, sessionLogged }: SpotModalProps) => {
   const vm = toSpotModalViewModel(spot, preferences)
   const [isClosing, setIsClosing] = useState(false)
 
@@ -142,6 +144,16 @@ const SpotModal = ({ spot, preferences, onClose, isFavorited, onToggleFavorite }
                 ))}
               </ul>
             </div>
+          )}
+
+          {onLogSession && (
+            <button
+              className={cx(styles.logSessionBtn, sessionLogged && styles.logSessionLogged)}
+              onClick={onLogSession}
+              disabled={sessionLogged}
+            >
+              {sessionLogged ? '✓ Session logged!' : 'I\'m going surfing here today'}
+            </button>
           )}
         </div>
       </div>

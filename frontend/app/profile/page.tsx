@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useProfileViewModel } from './profile.viewmodel';
 import ProfileCard from './profile-card/ProfileCard';
 import FavoritesCard from './favorites/FavoritesCard';
+import LastSessionCard from './last-session/LastSessionCard';
 import PreferencesCard from './preferences/PreferencesCard';
 import styles from './page.module.css';
 
@@ -34,10 +35,13 @@ const ProfilePage = () => {
         {/* ── Card 1: Profile ── */}
         <ProfileCard profile={vm.profile} />
 
-        {/* ── Card 2: Favourite Spots ── */}
+        {/* ── Card 2: Active Session ── */}
+        <LastSessionCard />
+
+        {/* ── Card 3: Favourite Spots ── */}
         <FavoritesCard />
 
-        {/* ── Card 3: Surf Preferences ── */}
+        {/* ── Card 4: Surf Preferences ── */}
         <PreferencesCard preferences={vm.preferences} />
 
       </div>

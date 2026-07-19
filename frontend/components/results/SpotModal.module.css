@@ -130,6 +130,15 @@
 .facilitiesList { @apply flex flex-wrap gap-2; }
 .facilityChip   { @apply text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full; }
 
+.logSessionBtn {
+  @apply w-full py-3.5 rounded-2xl font-semibold text-sm
+         bg-sky-500 text-white hover:bg-sky-600
+         transition-colors duration-200 cursor-pointer;
+}
+.logSessionLogged {
+  @apply bg-emerald-500 hover:bg-emerald-500 cursor-default;
+}
+
 .notes      { @apply bg-amber-50 border border-amber-200 rounded-xl px-4 py-3; }
 .notesTitle { @apply text-xs font-semibold text-amber-600 uppercase tracking-wide mb-1; }
 .notesList  { @apply flex flex-col gap-1 list-disc list-inside; }
