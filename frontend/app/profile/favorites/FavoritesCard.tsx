@@ -33,37 +33,36 @@ const FavoritesCard = () => {
           {vm.favorites.map(spot => {
             const imageUrl = SPOT_IMAGES[spot.name];
             return (
-              <div
-                key={spot.spotId}
-                className={styles.spotCard}
-                role="button"
-                tabIndex={0}
-                onClick={() => setActiveSpot(spot)}
-                onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setActiveSpot(spot)}
-              >
-                <div
-                  className={styles.photo}
-                  style={imageUrl ? undefined : { background: REGION_GRADIENTS[spot.region] }}
+              <div key={spot.spotId} className={styles.spotCardWrapper}>
+                <button
+                  className={styles.spotCard}
+                  onClick={() => setActiveSpot(spot)}
+                  aria-label={`View ${spot.name}`}
                 >
-                  {imageUrl && (
-                    <Image src={imageUrl} alt={spot.name} fill sizes="220px" className="object-cover" />
-                  )}
-                  <div className={styles.overlay} />
-                  <button
-                    className={styles.removeBtn}
-                    onClick={e => { e.stopPropagation(); vm.handleRemove(spot.spotId); }}
-                    aria-label={`Remove ${spot.name} from favourites`}
+                  <div
+                    className={styles.photo}
+                    style={imageUrl ? undefined : { background: REGION_GRADIENTS[spot.region] }}
                   >
-                    <X size={12} />
-                  </button>
-                  <div className={styles.meta}>
-                    <p className={styles.spotName}>{spot.name}</p>
-                    <p className={styles.spotRegion}>
-                      <MapPin size={11} className={styles.pin} />
-                      {REGION_LABELS[spot.region]}
-                    </p>
+                    {imageUrl && (
+                      <Image src={imageUrl} alt={spot.name} fill sizes="220px" className="object-cover" />
+                    )}
+                    <div className={styles.overlay} />
+                    <div className={styles.meta}>
+                      <p className={styles.spotName}>{spot.name}</p>
+                      <p className={styles.spotRegion}>
+                        <MapPin size={11} className={styles.pin} />
+                        {REGION_LABELS[spot.region]}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </button>
+                <button
+                  className={styles.removeBtn}
+                  onClick={() => vm.handleRemove(spot.spotId)}
+                  aria-label={`Remove ${spot.name} from favourites`}
+                >
+                  <X size={12} />
+                </button>
               </div>
             );
           })}
