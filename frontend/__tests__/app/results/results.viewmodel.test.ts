@@ -1,0 +1,163 @@
+/**
+ * @jest-environment jsdom
+ */
+import { act, renderHook } from '@testing-library/react'
+import { useResultsViewModel } from '@/app/results/results.viewmodel'
+import type { FavoriteSpot, RecommendationResponse } from '@/lib/types'
+
+const mockReplace = jest.fn()
+const mockPush = jest.fn()
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ replace: mockReplace, push: mockPush }),
+}))
+
+const mockFetchFavorites = jest.fn()
+const mockAddFavorite    = jest.fn()
+const mockRemoveFavorite = jest.fn()
+jest.mock('../../../lib/api', () => ({
+  ...jest.requireActual('../../../lib/api'),
+  fetchFavorites:  (...args: unknown[]) => mockFetchFavorites(...args),
+  addFavorite:     (...args: unknown[]) => mockAddFavorite(...args),
+  removeFavorite:  (...args: unknown[]) => mockRemoveFavorite(...args),
+}))
+
+let mockUser: object | null = { id: 'user-1' }
+jest.mock('../../../lib/AuthContext', () => ({
+  useAuth: () => ({ user: mockUser }),
+}))
+
+const SPOT_ID = 'spot-abc'
+
+const FAKE_DATA: RecommendationResponse = {
+  preferences: {
+    skillLevel: 'Intermediate',
+    crowdTolerance: 'Quiet',
+    boardTypes: [],
+    preferredWaveTypes: [],
+    preferredWaveSizes: [],
+    preferredFacilities: [],
+  },
+  recommendations: [],
+  warnings: [],
+}
+
+const FAKE_FAVORITE: FavoriteSpot = {
+  spotId: SPOT_ID,
+  name: 'Piha',
+  region: 'Auckland',
+  waveType: 'BeachBreak',
+  minSkillLevel: 'Intermediate',
+  typicalCrowd: 'Busy',
+  currentWaveSize: 'WaistHigh',
+  facilities: [],
+  description: 'Famous black-sand beach.',
+  favoritedAt: new Date().toISOString(),
+}
+
+beforeEach(() => {
+  jest.clearAllMocks()
+  mockUser = { id: 'user-1' }
+  sessionStorage.clear()
+  mockFetchFavorites.mockResolvedValue([])
+  mockAddFavorite.mockResolvedValue(FAKE_FAVORITE)
+  mockRemoveFavorite.mockResolvedValue(undefined)
+})
+
+describe('data loading', () => {
+  it('redirects to / when sessionStorage is empty', async () => {
+    await act(async () => { renderHook(() => useResultsViewModel()) })
+    expect(mockReplace).toHaveBeenCalledWith('/')
+  })
+
+  it('redirects to / when sessionStorage contains invalid JSON', async () => {
+    sessionStorage.setItem('surfmatch_results', 'not-json')
+    await act(async () => { renderHook(() => useResultsViewModel()) })
+    expect(mockReplace).toHaveBeenCalledWith('/')
+  })
+
+  it('parses data from sessionStorage', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    expect(result!.current.data).toEqual(FAKE_DATA)
+  })
+})
+
+describe('favorites loading', () => {
+  it('fetches favorites when user is logged in', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    mockFetchFavorites.mockResolvedValue([FAKE_FAVORITE])
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(true)
+  })
+
+  it('does not fetch favorites when logged out', async () => {
+    mockUser = null
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    await act(async () => { renderHook(() => useResultsViewModel()) })
+    expect(mockFetchFavorites).not.toHaveBeenCalled()
+  })
+})
+
+describe('handleToggleFavorite', () => {
+  it('optimistically adds a spot to favoritedIds', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    await act(async () => { result!.current.handleToggleFavorite(SPOT_ID) })
+    expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(true)
+  })
+
+  it('optimistically removes a spot from favoritedIds', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    mockFetchFavorites.mockResolvedValue([FAKE_FAVORITE])
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    await act(async () => { result!.current.handleToggleFavorite(SPOT_ID) })
+    expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(false)
+  })
+
+  it('reverts add when API call fails', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    mockAddFavorite.mockRejectedValue(new Error('Network error'))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    await act(async () => { result!.current.handleToggleFavorite(SPOT_ID) })
+    expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(false)
+  })
+
+  it('reverts remove when API call fails', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    mockFetchFavorites.mockResolvedValue([FAKE_FAVORITE])
+    mockRemoveFavorite.mockRejectedValue(new Error('Network error'))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    await act(async () => { result!.current.handleToggleFavorite(SPOT_ID) })
+    expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(true)
+  })
+})
+
+describe('handleStartOver', () => {
+  it('pushes to /', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    act(() => { result!.current.handleStartOver() })
+    expect(mockPush).toHaveBeenCalledWith('/')
+  })
+})

@@ -1,4 +1,4 @@
-import type { Profile, RecommendationResponse, UpdateProfileData, UserPreferences } from './types';
+import type { FavoriteSpot, Profile, RecommendationResponse, UpdateProfileData, UserPreferences } from './types';
 import { supabase } from './supabase';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5116';
@@ -57,6 +57,26 @@ export async function fetchRecommendations(prefs: UserPreferences): Promise<Reco
 
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   return res.json();
+}
+
+export async function fetchFavorites(): Promise<FavoriteSpot[]> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/favorites`, { headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function addFavorite(spotId: string): Promise<FavoriteSpot> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/favorites/${spotId}`, { method: 'POST', headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function removeFavorite(spotId: string): Promise<void> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/favorites/${spotId}`, { method: 'DELETE', headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
 }
 
 export function computeMatchPercent(score: number, prefs: UserPreferences): number {

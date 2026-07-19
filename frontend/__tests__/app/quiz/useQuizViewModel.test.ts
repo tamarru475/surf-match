@@ -16,8 +16,8 @@ jest.mock('next/navigation', () => ({
 const mockFetchRecommendations = jest.fn();
 const mockFetchUserPreferences = jest.fn();
 const mockSaveUserPreferences  = jest.fn();
-jest.mock('../lib/api', () => ({
-  ...jest.requireActual('../lib/api'),
+jest.mock('../../../lib/api', () => ({
+  ...jest.requireActual('../../../lib/api'),
   fetchRecommendations:  (...args: unknown[]) => mockFetchRecommendations(...args),
   fetchUserPreferences:  (...args: unknown[]) => mockFetchUserPreferences(...args),
   saveUserPreferences:   (...args: unknown[]) => mockSaveUserPreferences(...args),
@@ -25,7 +25,7 @@ jest.mock('../lib/api', () => ({
 
 // Default: guest (not logged in). Override per-test to simulate logged-in user.
 let mockUser: object | null = null;
-jest.mock('../lib/AuthContext', () => ({
+jest.mock('../../../lib/AuthContext', () => ({
   useAuth: () => ({ user: mockUser }),
 }));
 

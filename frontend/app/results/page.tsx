@@ -1,37 +1,20 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { TriangleAlert } from 'lucide-react'
 import SpotCard from '@/components/results/SpotCard'
 import SpotModal from '@/components/results/SpotModal'
 import { useAuth } from '@/lib/AuthContext'
-import type { RecommendationResponse, SpotRecommendation } from '@/lib/types'
+import { useResultsViewModel } from './results.viewmodel'
 import styles from './page.module.css'
 
 const ResultsPage = () => {
-  const router = useRouter()
   const { user, openAuthModal } = useAuth()
-  const [data, setData] = useState<RecommendationResponse | null>(null)
-  const [activeSpot, setActiveSpot] = useState<SpotRecommendation | null>(null)
+  const vm = useResultsViewModel()
 
-  useEffect(() => {
-    const raw = sessionStorage.getItem('surfmatch_results')
-    if (!raw) {
-      router.replace('/')
-      return
-    }
-    try {
-      setData(JSON.parse(raw))
-    } catch {
-      router.replace('/')
-    }
-  }, [router])
+  if (!vm.data) return null
 
-  if (!data) return null
-
-  const { recommendations, preferences, warnings } = data
+  const { recommendations, preferences, warnings } = vm.data
 
   return (
     <main className={styles.root}>
@@ -51,7 +34,7 @@ const ResultsPage = () => {
               Create account
             </button>
           )}
-          <button className={styles.startOver} onClick={() => router.push('/')}>
+          <button className={styles.startOver} onClick={vm.handleStartOver}>
             Start over
           </button>
         </div>
@@ -74,16 +57,20 @@ const ResultsPage = () => {
             key={spot.spotId}
             spot={spot}
             preferences={preferences}
-            onClick={() => setActiveSpot(spot)}
+            onClick={() => vm.setActiveSpot(spot)}
+            isFavorited={vm.favoritedIds.has(spot.spotId)}
+            onToggleFavorite={vm.isLoggedIn ? () => vm.handleToggleFavorite(spot.spotId) : undefined}
           />
         ))}
       </div>
 
-      {activeSpot && (
+      {vm.activeSpot && (
         <SpotModal
-          spot={activeSpot}
+          spot={vm.activeSpot}
           preferences={preferences}
-          onClose={() => setActiveSpot(null)}
+          onClose={() => vm.setActiveSpot(null)}
+          isFavorited={vm.favoritedIds.has(vm.activeSpot.spotId)}
+          onToggleFavorite={vm.isLoggedIn ? () => vm.handleToggleFavorite(vm.activeSpot!.spotId) : undefined}
         />
       )}
     </main>

@@ -13,15 +13,15 @@ jest.mock('next/navigation', () => ({
 const mockFetchProfile          = jest.fn();
 const mockFetchUserPreferences  = jest.fn();
 const mockFetchRecommendations  = jest.fn();
-jest.mock('../lib/api', () => ({
-  ...jest.requireActual('../lib/api'),
+jest.mock('../../../lib/api', () => ({
+  ...jest.requireActual('../../../lib/api'),
   fetchProfile:           (...args: unknown[]) => mockFetchProfile(...args),
   fetchUserPreferences:   (...args: unknown[]) => mockFetchUserPreferences(...args),
   fetchRecommendations:   (...args: unknown[]) => mockFetchRecommendations(...args),
 }));
 
 let mockUser: object | null = { id: 'user-1' };
-jest.mock('../lib/AuthContext', () => ({
+jest.mock('../../../lib/AuthContext', () => ({
   useAuth: () => ({ user: mockUser }),
 }));
 

@@ -9,6 +9,7 @@ public record FavoriteSpotResponse(
     WaveType WaveType,
     SkillLevel MinSkillLevel,
     CrowdLevel TypicalCrowd,
+    WaveSize CurrentWaveSize,
     IReadOnlyList<Facility> Facilities,
     string Description,
     DateTime FavoritedAt

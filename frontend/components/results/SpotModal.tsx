@@ -2,16 +2,18 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { Map, MapPin, X } from 'lucide-react'
+import { Heart, Map, MapPin, X } from 'lucide-react'
 import { cx } from '@/lib/utils'
-import type { SpotRecommendation, UserPreferences } from '@/lib/types'
+import type { SpotBase, UserPreferences } from '@/lib/types'
 import { toSpotModalViewModel } from './SpotCard.viewmodel'
 import styles from './SpotModal.module.css'
 
 interface SpotModalProps {
-  spot: SpotRecommendation
-  preferences: UserPreferences
+  spot: SpotBase
+  preferences?: UserPreferences
   onClose: () => void
+  isFavorited?: boolean
+  onToggleFavorite?: () => void
 }
 
 // Renders a single label/value block in the detail grid (wave type, skill level, etc.)
@@ -22,7 +24,7 @@ const DetailItem = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
-const SpotModal = ({ spot, preferences, onClose }: SpotModalProps) => {
+const SpotModal = ({ spot, preferences, onClose, isFavorited, onToggleFavorite }: SpotModalProps) => {
   const vm = toSpotModalViewModel(spot, preferences)
   const [isClosing, setIsClosing] = useState(false)
 
@@ -76,7 +78,19 @@ const SpotModal = ({ spot, preferences, onClose }: SpotModalProps) => {
             <X size={18} />
           </button>
 
-          <span className={styles.matchBadge}>{vm.matchPct}% match</span>
+          {onToggleFavorite && (
+            <button
+              className={cx(styles.heartBtn, isFavorited && styles.heartActive)}
+              onClick={onToggleFavorite}
+              aria-label={isFavorited ? 'Remove from favourites' : 'Add to favourites'}
+            >
+              <Heart size={18} fill={isFavorited ? 'currentColor' : 'none'} />
+            </button>
+          )}
+
+          {vm.matchPct !== null && (
+            <span className={styles.matchBadge}>{vm.matchPct}% match</span>
+          )}
 
           <div className={styles.photoMeta}>
             <h2 className={styles.photoTitle}>{vm.name}</h2>

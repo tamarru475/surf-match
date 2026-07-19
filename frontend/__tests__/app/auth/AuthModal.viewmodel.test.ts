@@ -12,7 +12,7 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush, replace: mockPush }),
 }));
 
-jest.mock('../lib/AuthContext', () => ({
+jest.mock('../../../lib/AuthContext', () => ({
   useAuth: () => ({
     authModalOpen: true,
     authModalMode: 'login',
@@ -25,7 +25,7 @@ const mockSignInWithPassword = jest.fn();
 const mockSignUp = jest.fn();
 const mockSignInWithOAuth = jest.fn();
 
-jest.mock('../lib/supabase', () => ({
+jest.mock('../../../lib/supabase', () => ({
   supabase: {
     auth: {
       signInWithPassword: (...args: unknown[]) => mockSignInWithPassword(...args),
@@ -35,7 +35,7 @@ jest.mock('../lib/supabase', () => ({
   },
 }));
 
-jest.mock('../lib/api', () => ({
+jest.mock('../../../lib/api', () => ({
   fetchUserPreferences: jest.fn(),
 }));
 

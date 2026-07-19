@@ -68,6 +68,13 @@
          transition-colors duration-200 cursor-pointer;
 }
 
+.heartBtn {
+  @apply absolute top-4 right-16 w-9 h-9 rounded-full bg-black/30 text-white
+         flex items-center justify-center hover:bg-black/55
+         transition-colors duration-200 cursor-pointer;
+}
+.heartActive { @apply text-red-400; }
+
 .closeBtn :global(svg) {
   transition: transform 0.2s ease;
 }

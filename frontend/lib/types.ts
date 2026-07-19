@@ -39,16 +39,19 @@ export interface ScoreBreakdown {
   facilityMatch: number;
 }
 
-export interface SpotRecommendation {
+export interface SpotBase {
   spotId: string;
   name: string;
   region: Region;
   waveType: WaveType;
   minSkillLevel: SkillLevel;
   typicalCrowd: CrowdLevel;
-  facilities: Facility[];
   currentWaveSize: WaveSize;
+  facilities: Facility[];
   description: string;
+}
+
+export interface SpotRecommendation extends SpotBase {
   score: number;
   notes: string[];
   breakdown: ScoreBreakdown;
@@ -77,5 +80,9 @@ export interface RecommendationResponse {
   preferences: UserPreferences;
   recommendations: SpotRecommendation[];
   warnings: string[];
+}
+
+export interface FavoriteSpot extends SpotBase {
+  favoritedAt: string;
 }
 
