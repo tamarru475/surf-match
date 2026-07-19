@@ -14,11 +14,13 @@ jest.mock('next/navigation', () => ({
 const mockFetchFavorites = jest.fn()
 const mockAddFavorite    = jest.fn()
 const mockRemoveFavorite = jest.fn()
+const mockLogSurfSession = jest.fn()
 jest.mock('../../../lib/api', () => ({
   ...jest.requireActual('../../../lib/api'),
-  fetchFavorites:  (...args: unknown[]) => mockFetchFavorites(...args),
-  addFavorite:     (...args: unknown[]) => mockAddFavorite(...args),
-  removeFavorite:  (...args: unknown[]) => mockRemoveFavorite(...args),
+  fetchFavorites:   (...args: unknown[]) => mockFetchFavorites(...args),
+  addFavorite:      (...args: unknown[]) => mockAddFavorite(...args),
+  removeFavorite:   (...args: unknown[]) => mockRemoveFavorite(...args),
+  logSurfSession:   (...args: unknown[]) => mockLogSurfSession(...args),
 }))
 
 let mockUser: object | null = { id: 'user-1' }
@@ -61,6 +63,7 @@ beforeEach(() => {
   mockFetchFavorites.mockResolvedValue([])
   mockAddFavorite.mockResolvedValue(FAKE_FAVORITE)
   mockRemoveFavorite.mockResolvedValue(undefined)
+  mockLogSurfSession.mockResolvedValue({ sessionId: 'sess-1', spotId: SPOT_ID })
 })
 
 describe('data loading', () => {
@@ -147,6 +150,29 @@ describe('handleToggleFavorite', () => {
     })
     await act(async () => { result!.current.handleToggleFavorite(SPOT_ID) })
     expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(true)
+  })
+})
+
+describe('handleLogSession', () => {
+  it('adds spotId to loggedSessionIds on success', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    await act(async () => { result!.current.handleLogSession(SPOT_ID) })
+    expect(result!.current.loggedSessionIds.has(SPOT_ID)).toBe(true)
+  })
+
+  it('does not add spotId to loggedSessionIds when API fails', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    mockLogSurfSession.mockRejectedValue(new Error('Network error'))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    await act(async () => { result!.current.handleLogSession(SPOT_ID) })
+    expect(result!.current.loggedSessionIds.has(SPOT_ID)).toBe(false)
   })
 })
 

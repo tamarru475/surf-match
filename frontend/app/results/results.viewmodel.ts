@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/AuthContext'
-import { addFavorite, fetchFavorites, removeFavorite } from '@/lib/api'
+import { addFavorite, fetchFavorites, logSurfSession, removeFavorite } from '@/lib/api'
 import type { RecommendationResponse, SpotRecommendation } from '@/lib/types'
 
 export interface ResultsViewModel {
@@ -12,6 +12,8 @@ export interface ResultsViewModel {
   setActiveSpot: (spot: SpotRecommendation | null) => void
   favoritedIds: Set<string>
   handleToggleFavorite: (spotId: string) => void
+  loggedSessionIds: Set<string>
+  handleLogSession: (spotId: string) => void
   handleStartOver: () => void
   isLoggedIn: boolean
 }
@@ -22,6 +24,7 @@ export function useResultsViewModel(): ResultsViewModel {
   const [data, setData] = useState<RecommendationResponse | null>(null)
   const [activeSpot, setActiveSpot] = useState<SpotRecommendation | null>(null)
   const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set())
+  const [loggedSessionIds, setLoggedSessionIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const raw = sessionStorage.getItem('surfmatch_results')
@@ -61,6 +64,12 @@ export function useResultsViewModel(): ResultsViewModel {
     })
   }
 
+  const handleLogSession = (spotId: string) => {
+    logSurfSession(spotId)
+      .then(() => setLoggedSessionIds(prev => new Set([...prev, spotId])))
+      .catch(() => {})
+  }
+
   const handleStartOver = () => router.push('/')
 
   return {
@@ -69,6 +78,8 @@ export function useResultsViewModel(): ResultsViewModel {
     setActiveSpot,
     favoritedIds,
     handleToggleFavorite,
+    loggedSessionIds,
+    handleLogSession,
     handleStartOver,
     isLoggedIn: !!user,
   }

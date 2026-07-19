@@ -76,6 +76,16 @@ export interface UpdateProfileData {
   tikTokHandle: string | null;
 }
 
+export interface SurfSession {
+  sessionId: string;
+  spotId: string;
+  spotName: string;
+  region: Region;
+  waveType: WaveType;
+  currentWaveSize: WaveSize;
+  surfedAt: string;
+}
+
 export interface RecommendationResponse {
   preferences: UserPreferences;
   recommendations: SpotRecommendation[];

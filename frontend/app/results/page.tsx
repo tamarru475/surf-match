@@ -59,7 +59,7 @@ const ResultsPage = () => {
             preferences={preferences}
             onClick={() => vm.setActiveSpot(spot)}
             isFavorited={vm.favoritedIds.has(spot.spotId)}
-            onToggleFavorite={vm.isLoggedIn ? () => vm.handleToggleFavorite(spot.spotId) : undefined}
+            onToggleFavorite={user ? () => vm.handleToggleFavorite(spot.spotId) : () => openAuthModal('signup')}
           />
         ))}
       </div>
@@ -70,7 +70,9 @@ const ResultsPage = () => {
           preferences={preferences}
           onClose={() => vm.setActiveSpot(null)}
           isFavorited={vm.favoritedIds.has(vm.activeSpot.spotId)}
-          onToggleFavorite={vm.isLoggedIn ? () => vm.handleToggleFavorite(vm.activeSpot!.spotId) : undefined}
+          onToggleFavorite={user ? () => vm.handleToggleFavorite(vm.activeSpot!.spotId) : () => openAuthModal('signup')}
+          onLogSession={user ? () => vm.handleLogSession(vm.activeSpot!.spotId) : () => openAuthModal('signup')}
+          sessionLogged={vm.loggedSessionIds.has(vm.activeSpot.spotId)}
         />
       )}
     </main>

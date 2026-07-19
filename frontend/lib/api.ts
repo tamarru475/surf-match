@@ -1,4 +1,4 @@
-import type { FavoriteSpot, Profile, RecommendationResponse, UpdateProfileData, UserPreferences } from './types';
+import type { FavoriteSpot, Profile, RecommendationResponse, SurfSession, UpdateProfileData, UserPreferences } from './types';
 import { supabase } from './supabase';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5116';
@@ -77,6 +77,21 @@ export async function removeFavorite(spotId: string): Promise<void> {
   const headers = await authHeaders();
   const res = await fetch(`${API_BASE}/me/favorites/${spotId}`, { method: 'DELETE', headers });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
+}
+
+export async function logSurfSession(spotId: string): Promise<SurfSession> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/sessions/${spotId}`, { method: 'POST', headers });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchLastSession(): Promise<SurfSession | null> {
+  const headers = await authHeaders();
+  const res = await fetch(`${API_BASE}/me/sessions/last`, { headers });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
 }
 
 export function computeMatchPercent(score: number, prefs: UserPreferences): number {

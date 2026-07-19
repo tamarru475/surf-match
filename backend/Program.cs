@@ -1,9 +1,5 @@
 using System.Text.Json.Serialization;
-using Backend.Auth;
 using Backend.Database;
-using Backend.Database.Entities;
-using Backend.Models;
-using Backend.Models.Dtos;
 using Backend.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,8 +24,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
@@ -54,6 +52,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<PreferencesService>();
 builder.Services.AddScoped<FavoritesService>();
+builder.Services.AddScoped<SurfSessionService>();
 builder.Services.AddScoped<RecommendationEngine>();
 
 var app = builder.Build();
@@ -72,74 +71,13 @@ if (!app.Environment.IsProduction())
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
+
 app.MapGet("/health", async (AppDbContext db) =>
 {
     await db.Database.ExecuteSqlRawAsync("SELECT 1");
     return Results.Ok(new { status = "ok" });
 })
 .WithName("Health");
-
-app.MapPost("/recommendations", async (UserPreferences prefs, RecommendationEngine engine) =>
-    Results.Ok(await engine.GetRecommendationsAsync(prefs)))
-    .WithName("GetRecommendations");
-
-app.MapGet("/me", async (HttpContext ctx, ProfileService profiles) =>
-{
-    var user = await profiles.GetOrCreateAsync(ctx.User.GetUserId(), ctx.User.GetEmail());
-    return Results.Ok(ToProfileResponse(user));
-})
-.RequireAuthorization()
-.WithName("GetProfile");
-
-app.MapPut("/me", async (HttpContext ctx, UpdateProfileRequest req, ProfileService profiles) =>
-{
-    var user = await profiles.UpdateAsync(ctx.User.GetUserId(), req);
-    return user is null ? Results.NotFound() : Results.Ok(ToProfileResponse(user));
-})
-.RequireAuthorization()
-.WithName("UpdateProfile");
-
-static ProfileResponse ToProfileResponse(UserEntity u) =>
-    new(u.Id, u.Email, u.DisplayName, u.AvatarUrl, u.Location, u.Bio, u.InstagramHandle, u.TikTokHandle);
-
-app.MapGet("/me/favorites", async (HttpContext ctx, FavoritesService favs) =>
-    Results.Ok(await favs.GetAsync(ctx.User.GetUserId())))
-    .RequireAuthorization()
-    .WithName("GetFavorites");
-
-app.MapPost("/me/favorites/{spotId:guid}", async (HttpContext ctx, Guid spotId, FavoritesService favs, ProfileService profiles) =>
-{
-    await profiles.GetOrCreateAsync(ctx.User.GetUserId(), ctx.User.GetEmail());
-    var result = await favs.AddAsync(ctx.User.GetUserId(), spotId);
-    return result is null ? Results.NotFound() : Results.Ok(result);
-})
-.RequireAuthorization()
-.WithName("AddFavorite");
-
-app.MapDelete("/me/favorites/{spotId:guid}", async (HttpContext ctx, Guid spotId, FavoritesService favs) =>
-{
-    var removed = await favs.RemoveAsync(ctx.User.GetUserId(), spotId);
-    return removed ? Results.NoContent() : Results.NotFound();
-})
-.RequireAuthorization()
-.WithName("RemoveFavorite");
-
-app.MapGet("/me/preferences", async (HttpContext ctx, PreferencesService prefs) =>
-{
-    var result = await prefs.GetAsync(ctx.User.GetUserId());
-    return result is null ? Results.NotFound() : Results.Ok(result);
-})
-.RequireAuthorization()
-.WithName("GetPreferences");
-
-app.MapPut("/me/preferences", async (HttpContext ctx, UserPreferences req, PreferencesService prefs, ProfileService profiles) =>
-{
-    // Ensure user row exists before inserting preferences (FK constraint).
-    await profiles.GetOrCreateAsync(ctx.User.GetUserId(), ctx.User.GetEmail());
-    var result = await prefs.UpsertAsync(ctx.User.GetUserId(), req);
-    return Results.Ok(result);
-})
-.RequireAuthorization()
-.WithName("UpsertPreferences");
 
 app.Run();
