@@ -3,18 +3,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  fetchProfile, fetchUserPreferences, fetchRecommendations,
+  fetchProfile, fetchUserPreferences, fetchRecommendations, saveUserPreferences,
 } from '@/lib/api';
 import { useAuth } from '@/lib/AuthContext';
-import type { Profile, UserPreferences } from '@/lib/types';
+import type { Profile, SkillLevel, UserPreferences } from '@/lib/types';
 
 export interface ProfileViewModel {
   profile: Profile | null;
   preferences: UserPreferences | null;
+  skillLevel: SkillLevel | null;
   loading: boolean;
   findingWave: boolean;
   error: string | null;
   handleFindWave: () => void;
+  handleSaveSkillLevel: (level: SkillLevel) => void;
 }
 
 export const useProfileViewModel = (): ProfileViewModel => {
@@ -23,6 +25,7 @@ export const useProfileViewModel = (): ProfileViewModel => {
 
   const [profile, setProfile]         = useState<Profile | null>(null);
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
+  const [skillLevel, setSkillLevel]   = useState<SkillLevel | null>(null);
   const [loading, setLoading]         = useState(true);
   const [findingWave, setFindingWave] = useState(false);
   const [error, setError]             = useState<string | null>(null);
@@ -38,10 +41,19 @@ export const useProfileViewModel = (): ProfileViewModel => {
         // Seed location from quiz region if not yet saved on profile.
         setProfile({ ...p, location: p.location ?? prefs?.preferredRegion ?? null });
         setPreferences(prefs);
+        setSkillLevel(prefs?.skillLevel ?? null);
       })
       .catch(() => router.push('/'))
       .finally(() => setLoading(false));
   }, [user]);
+
+  const handleSaveSkillLevel = useCallback((level: SkillLevel) => {
+    setSkillLevel(level);
+    if (!preferences) return;
+    const updated = { ...preferences, skillLevel: level };
+    setPreferences(updated);
+    saveUserPreferences(updated).catch(() => {});
+  }, [preferences]);
 
   const handleFindWave = useCallback(async () => {
     setFindingWave(true);
@@ -59,7 +71,7 @@ export const useProfileViewModel = (): ProfileViewModel => {
     }
   }, [router]);
 
-  return { profile, preferences, loading, findingWave, error, handleFindWave };
+  return { profile, preferences, skillLevel, loading, findingWave, error, handleFindWave, handleSaveSkillLevel };
 };
 
 // "WaistHigh" → "Waist High", "BeachBreak" → "Beach Break", etc.

@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { SendIcon } from '@/components/ui/Icons';
+import SkillCheckModal from '@/components/quiz/SkillCheckModal';
 import { useAuth } from '@/lib/AuthContext';
 import { useProfileViewModel } from './profile.viewmodel';
 import ProfileCard from './profile-card/ProfileCard';
@@ -14,6 +16,7 @@ import styles from './page.module.css';
 const ProfilePage = () => {
   const { signOut } = useAuth();
   const vm = useProfileViewModel();
+  const [showSkillQuiz, setShowSkillQuiz] = useState(false);
 
   if (vm.loading) {
     return <div className={styles.loading}><LoadingSpinner /></div>;
@@ -33,7 +36,11 @@ const ProfilePage = () => {
       <div className={styles.page}>
 
         {/* ── Card 1: Profile ── */}
-        <ProfileCard profile={vm.profile} />
+        <ProfileCard
+          profile={vm.profile}
+          skillLevel={vm.skillLevel}
+          onOpenSkillQuiz={() => setShowSkillQuiz(true)}
+        />
 
         {/* ── Card 2: Active Session ── */}
         <LastSessionCard />
@@ -59,6 +66,17 @@ const ProfilePage = () => {
           <p className={`${styles.error} text-center`}>{vm.error}</p>
         )}
       </div>
+
+      {showSkillQuiz && (
+        <SkillCheckModal
+          onClose={() => setShowSkillQuiz(false)}
+          onComplete={(level) => {
+            vm.handleSaveSkillLevel(level);
+            setShowSkillQuiz(false);
+          }}
+          actionLabel="Save to my profile"
+        />
+      )}
     </div>
   );
 };

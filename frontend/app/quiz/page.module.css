@@ -6,3 +6,7 @@
 .error   { @apply mt-4 text-sm text-red-500; }
 .nav     { @apply px-6 pb-10 max-w-lg mx-auto w-full flex gap-3; }
 .loading { @apply flex flex-col items-center justify-center min-h-screen bg-white px-6; }
+
+.skillQuizLink {
+  @apply mt-4 text-sm text-sky-600 hover:text-sky-800 transition-colors cursor-pointer;
+}

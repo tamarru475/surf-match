@@ -43,6 +43,19 @@
 
 .locationRow { @apply flex items-center gap-1.5 text-sm text-slate-500; }
 
+.skillRow {
+  @apply flex items-center gap-2.5 mt-0.5 flex-wrap;
+}
+
+.skillPill {
+  @apply flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full;
+}
+
+.quizLink {
+  @apply flex items-center gap-0.5 text-xs font-medium text-slate-400
+         hover:text-slate-600 transition-colors cursor-pointer;
+}
+
 .locationSelect {
   @apply text-sm text-slate-500 bg-transparent border-b border-dashed
          border-slate-200 outline-none focus:border-sky-400 cursor-pointer;

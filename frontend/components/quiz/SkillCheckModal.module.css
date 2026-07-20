@@ -1,0 +1,97 @@
+@reference "tailwindcss";
+
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes panelIn {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.backdrop {
+  @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+  animation: backdropIn 0.18s ease;
+}
+
+.overlay {
+  @apply absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer;
+}
+
+.panel {
+  @apply relative z-10 w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden;
+  animation: panelIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Quiz phase ── */
+
+.quizHeader {
+  @apply flex items-center justify-between px-6 pt-6 pb-4;
+}
+
+.quizLabel {
+  @apply text-xs font-semibold tracking-widest text-slate-400 uppercase;
+}
+
+.closeBtn {
+  @apply w-8 h-8 rounded-full flex items-center justify-center
+         text-slate-400 hover:bg-slate-100 hover:text-slate-600
+         transition-colors cursor-pointer;
+}
+
+.question {
+  @apply text-xl font-bold text-slate-800 px-6 pb-7 leading-snug;
+}
+
+.yesNo {
+  @apply flex gap-3 px-6 pb-7;
+}
+
+.answerBtn {
+  @apply flex-1 py-5 rounded-2xl text-base font-bold cursor-pointer
+         border transition-colors duration-150;
+}
+
+.noBtn  { @apply bg-rose-50  text-rose-600  border-rose-200  hover:bg-rose-100; }
+.yesBtn { @apply bg-sky-50   text-sky-700   border-sky-200   hover:bg-sky-100; }
+
+/* ── Result phase ── */
+
+.resultTop {
+  @apply relative flex flex-col items-center pt-10 pb-8 px-6;
+}
+
+.resultTop .closeBtn {
+  @apply absolute top-4 right-4;
+}
+
+.iconSquare {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-4;
+}
+
+.yourLevel {
+  @apply text-xs font-bold tracking-widest uppercase mb-2;
+}
+
+.levelName {
+  @apply text-4xl font-black text-slate-900 mb-2 text-center;
+}
+
+.levelDesc {
+  @apply text-sm text-slate-500 text-center leading-relaxed;
+}
+
+.resultBottom {
+  @apply flex flex-col gap-3 p-6 bg-white;
+}
+
+.saveBtn {
+  @apply w-full py-4 rounded-2xl text-white font-semibold text-sm
+         cursor-pointer transition-opacity hover:opacity-90;
+}
+
+.retakeBtn {
+  @apply w-full py-3.5 rounded-2xl bg-slate-100 text-slate-500 font-semibold text-sm
+         cursor-pointer hover:bg-slate-200 transition-colors;
+}
