@@ -54,6 +54,7 @@ builder.Services.AddScoped<PreferencesService>();
 builder.Services.AddScoped<FavoritesService>();
 builder.Services.AddScoped<SurfSessionService>();
 builder.Services.AddScoped<RecommendationEngine>();
+builder.Services.AddHttpClient<AvatarService>();
 
 var app = builder.Build();
 

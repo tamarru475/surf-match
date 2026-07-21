@@ -1,8 +1,11 @@
 'use client';
 
+import { useRef } from 'react';
+import Image from 'next/image';
 import { Award, ChevronRight } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { CameraIcon, InstagramIcon, TikTokIcon, PinIcon } from '@/components/ui/Icons';
+import AvatarCropModal from '@/components/profile/AvatarCropModal';
 import { SKILL_LEVEL_THEMES } from '@/lib/skill-quiz';
 import type { Profile, SkillLevel } from '@/lib/types';
 import { useProfileCardViewModel, REGION_OPTIONS } from './profile-card.viewmodel';
@@ -18,15 +21,42 @@ interface Props {
 const ProfileCard = ({ profile, skillLevel, onOpenSkillQuiz }: Props) => {
   const vm = useProfileCardViewModel(profile);
   const theme = skillLevel ? SKILL_LEVEL_THEMES[skillLevel] : null;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={styles.card}>
       <div className={styles.profileHeader}>
         <div className={styles.photoWrap}>
-          <div className={styles.avatar}>{vm.avatarLetter}</div>
-          <button className={styles.cameraBtn} title="Upload photo (coming soon)" disabled>
+          {vm.avatarUrl ? (
+            <Image
+              src={vm.avatarUrl}
+              alt="Profile photo"
+              width={80}
+              height={80}
+              className={styles.avatarImg}
+            />
+          ) : (
+            <div className={styles.avatar}>{vm.avatarLetter}</div>
+          )}
+          <button
+            className={styles.cameraBtn}
+            title="Upload photo"
+            disabled={vm.uploading}
+            onClick={() => fileInputRef.current?.click()}
+          >
             <CameraIcon />
           </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className={styles.fileInput}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) vm.handleFilePicked(file);
+              e.target.value = '';
+            }}
+          />
         </div>
 
         <div className={styles.headerInfo}>
@@ -123,6 +153,14 @@ const ProfileCard = ({ profile, skillLevel, onOpenSkillQuiz }: Props) => {
         ) : null}
         {vm.error && <span className={styles.error}>{vm.error}</span>}
       </div>
+
+      {vm.pendingImageSrc && (
+        <AvatarCropModal
+          imageSrc={vm.pendingImageSrc}
+          onConfirm={vm.handleCropConfirm}
+          onClose={vm.handleCropCancel}
+        />
+      )}
     </div>
   );
 };

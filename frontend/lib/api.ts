@@ -86,6 +86,23 @@ export async function logSurfSession(spotId: string): Promise<SurfSession> {
   return res.json();
 }
 
+export async function uploadAvatar(file: File): Promise<Profile> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/me/avatar`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
 export async function fetchLastSession(): Promise<SurfSession | null> {
   const headers = await authHeaders();
   const res = await fetch(`${API_BASE}/me/sessions/last`, { headers });

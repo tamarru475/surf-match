@@ -40,4 +40,15 @@ public class ProfileService(AppDbContext db)
         await db.SaveChangesAsync();
         return user;
     }
+
+    public async Task<UserEntity?> UpdateAvatarUrlAsync(Guid userId, string url)
+    {
+        var user = await db.Users.FindAsync(userId);
+        if (user is null) return null;
+
+        user.AvatarUrl = url;
+        user.UpdatedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync();
+        return user;
+    }
 }
