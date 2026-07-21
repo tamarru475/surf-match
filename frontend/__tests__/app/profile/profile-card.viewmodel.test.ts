@@ -6,10 +6,17 @@ import { useProfileCardViewModel } from '@/app/profile/profile-card/profile-card
 import type { Profile } from '@/lib/types';
 
 const mockUpdateProfile = jest.fn();
+const mockUploadAvatar = jest.fn();
 jest.mock('../../../lib/api', () => ({
   ...jest.requireActual('../../../lib/api'),
   updateProfile: (...args: unknown[]) => mockUpdateProfile(...args),
+  uploadAvatar:  (...args: unknown[]) => mockUploadAvatar(...args),
 }));
+
+const mockCreateObjectURL = jest.fn(() => 'blob:fake-url');
+const mockRevokeObjectURL = jest.fn();
+Object.defineProperty(URL, 'createObjectURL', { writable: true, value: mockCreateObjectURL });
+Object.defineProperty(URL, 'revokeObjectURL',  { writable: true, value: mockRevokeObjectURL });
 
 const FAKE_PROFILE: Profile = {
   id: 'user-1',
@@ -60,6 +67,52 @@ describe('useProfileCardViewModel — dirty state', () => {
 
     expect(result.current.isDirty).toBe(false);
     expect(result.current.saveSuccess).toBe(true);
+  });
+});
+
+describe('useProfileCardViewModel — avatar crop flow', () => {
+  const fakeFile = new File(['img'], 'photo.jpg', { type: 'image/jpeg' });
+  const fakeBlob = new Blob(['img'], { type: 'image/jpeg' });
+
+  it('handleFilePicked sets pendingImageSrc via createObjectURL', () => {
+    const { result } = renderHook(() => useProfileCardViewModel(FAKE_PROFILE));
+    act(() => { result.current.handleFilePicked(fakeFile); });
+    expect(mockCreateObjectURL).toHaveBeenCalledWith(fakeFile);
+    expect(result.current.pendingImageSrc).toBe('blob:fake-url');
+  });
+
+  it('handleCropCancel clears pendingImageSrc and revokes object URL', () => {
+    const { result } = renderHook(() => useProfileCardViewModel(FAKE_PROFILE));
+    act(() => { result.current.handleFilePicked(fakeFile); });
+    act(() => { result.current.handleCropCancel(); });
+    expect(result.current.pendingImageSrc).toBeNull();
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:fake-url');
+  });
+
+  it('handleCropConfirm uploads blob and sets avatarUrl on success', async () => {
+    const updatedProfile = { ...FAKE_PROFILE, avatarUrl: 'https://cdn.example.com/avatar.jpg' };
+    mockUploadAvatar.mockResolvedValue(updatedProfile);
+
+    const { result } = renderHook(() => useProfileCardViewModel(FAKE_PROFILE));
+    act(() => { result.current.handleFilePicked(fakeFile); });
+    await act(async () => { await result.current.handleCropConfirm(fakeBlob); });
+
+    expect(mockUploadAvatar).toHaveBeenCalledWith(expect.any(File));
+    expect(result.current.avatarUrl).toBe('https://cdn.example.com/avatar.jpg');
+    expect(result.current.pendingImageSrc).toBeNull();
+    expect(result.current.error).toBeNull();
+  });
+
+  it('handleCropConfirm sets error and clears pending on failure', async () => {
+    mockUploadAvatar.mockRejectedValue(new Error('500'));
+
+    const { result } = renderHook(() => useProfileCardViewModel(FAKE_PROFILE));
+    act(() => { result.current.handleFilePicked(fakeFile); });
+    await act(async () => { await result.current.handleCropConfirm(fakeBlob); });
+
+    expect(result.current.error).toBe('Failed to upload photo. Please try again.');
+    expect(result.current.pendingImageSrc).toBeNull();
+    expect(result.current.avatarUrl).toBeNull();
   });
 });
 

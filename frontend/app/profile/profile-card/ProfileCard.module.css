@@ -12,6 +12,12 @@
          text-3xl font-bold text-sky-600 select-none;
 }
 
+.avatarImg {
+  @apply w-20 h-20 rounded-xl object-cover;
+}
+
+.fileInput { @apply hidden; }
+
 .cameraBtn {
   @apply absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-sky-700
          flex items-center justify-center text-white shadow cursor-pointer

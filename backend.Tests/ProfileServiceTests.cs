@@ -87,4 +87,29 @@ public class ProfileServiceTests
 
         Assert.Null(result);
     }
+
+    [Fact]
+    public async Task UpdateAvatarUrl_persists_url_on_user()
+    {
+        await using var db = CreateDb();
+        var svc = new ProfileService(db);
+        var id = Guid.NewGuid();
+        await svc.GetOrCreateAsync(id, "surfer@example.com");
+
+        var updated = await svc.UpdateAvatarUrlAsync(id, "https://example.com/avatar.jpg");
+
+        Assert.NotNull(updated);
+        Assert.Equal("https://example.com/avatar.jpg", updated.AvatarUrl);
+    }
+
+    [Fact]
+    public async Task UpdateAvatarUrl_returns_null_for_unknown_user()
+    {
+        await using var db = CreateDb();
+        var svc = new ProfileService(db);
+
+        var result = await svc.UpdateAvatarUrlAsync(Guid.NewGuid(), "https://example.com/avatar.jpg");
+
+        Assert.Null(result);
+    }
 }

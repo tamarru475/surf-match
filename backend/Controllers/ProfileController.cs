@@ -10,7 +10,7 @@ namespace Backend.Controllers;
 [ApiController]
 [Route("me")]
 [Authorize]
-public class ProfileController(ProfileService profiles) : ControllerBase
+public class ProfileController(ProfileService profiles, AvatarService avatar) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetProfile()
@@ -23,6 +23,19 @@ public class ProfileController(ProfileService profiles) : ControllerBase
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest req)
     {
         var user = await profiles.UpdateAsync(User.GetUserId(), req);
+        return user is null ? NotFound() : Ok(ToResponse(user));
+    }
+
+    [HttpPost("avatar")]
+    public async Task<IActionResult> UploadAvatar([FromForm] IFormFile? file)
+    {
+        if (file is null) return BadRequest("No file provided.");
+        var (valid, error) = AvatarService.Validate(file);
+        if (!valid) return BadRequest(error);
+
+        var token = Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+        var url = await avatar.UploadAsync(User.GetUserId(), file, token);
+        var user = await profiles.UpdateAvatarUrlAsync(User.GetUserId(), url);
         return user is null ? NotFound() : Ok(ToResponse(user));
     }
 
