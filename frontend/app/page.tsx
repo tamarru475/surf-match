@@ -3,14 +3,34 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/lib/AuthContext';
+import { useHomepageViewModel } from './page.viewmodel';
 import styles from './page.module.css';
 
 const LandingPage = () => {
   const { user, openAuthModal, signOut } = useAuth();
+  const vm = useHomepageViewModel();
 
   return (
     <div className={styles.root}>
       <Image src="/images/home-page.jpg" alt="" fill priority className={styles.bgImage} />
+
+      {vm.tryVideo && (
+        <video
+          className={`${styles.bgVideo}${vm.showVideo ? ` ${styles.bgVideoVisible}` : ''}`}
+          autoPlay muted loop playsInline preload="auto"
+          onPlaying={vm.handlePlaying}
+          onTimeUpdate={(e) => {
+            const v = e.currentTarget;
+            vm.handleTimeUpdate(v.currentTime, v.duration);
+          }}
+        >
+          <source src="/images/homepage-vid.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* Deep-navy dip at the loop point so the seam is invisible */}
+      <div className={`${styles.loopOverlay}${vm.loopFading ? ` ${styles.loopOverlayVisible}` : ''}`} />
+
       <div className={styles.overlay} />
 
       <div className={styles.topBar}>
