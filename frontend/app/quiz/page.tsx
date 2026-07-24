@@ -30,14 +30,16 @@ const QuizPage = () => {
         <ProgressIndicator current={vm.step + 1} total={QUESTIONS.length} />
       </div>
 
-      <div className={styles.body}>
-        <QuestionScreen question={vm.question} value={vm.value} onChange={vm.handleChange} />
+      <div className={`${styles.body}${vm.prefillLoading ? ` ${styles.bodyPrefilling}` : ''}`}>
+        <div key={vm.step} className={styles.question}>
+          <QuestionScreen question={vm.question} value={vm.value} onChange={vm.handleChange} />
 
-        {vm.step === 0 && (
-          <button className={styles.skillQuizLink} onClick={() => setShowSkillQuiz(true)}>
-            Not sure of your level? Take a quick quiz →
-          </button>
-        )}
+          {vm.step === 0 && (
+            <button className={styles.skillQuizLink} onClick={() => setShowSkillQuiz(true)}>
+              Not sure of your level? Take a quick quiz →
+            </button>
+          )}
+        </div>
 
         {vm.error && <p className={styles.error}>{vm.error}</p>}
       </div>

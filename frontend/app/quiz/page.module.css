@@ -1,8 +1,15 @@
 @reference "tailwindcss";
 
+@keyframes questionEnter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .root    { @apply flex flex-col min-h-screen bg-white; }
 .topBar  { @apply px-6 pt-8 pb-4 max-w-lg mx-auto w-full; }
-.body    { @apply flex-1 px-6 py-8 max-w-lg mx-auto w-full; }
+.body    { @apply flex-1 px-6 py-8 max-w-lg mx-auto w-full transition-opacity duration-150; }
+.bodyPrefilling { @apply opacity-40 pointer-events-none; }
+.question { animation: questionEnter 0.2s ease both; }
 .error   { @apply mt-4 text-sm text-red-500; }
 .nav     { @apply px-6 pb-10 max-w-lg mx-auto w-full flex gap-3; }
 .loading { @apply flex flex-col items-center justify-center min-h-screen bg-white px-6; }

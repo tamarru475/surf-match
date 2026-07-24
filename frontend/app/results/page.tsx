@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { TriangleAlert } from 'lucide-react'
 import SpotCard from '@/components/results/SpotCard'
 import SpotModal from '@/components/results/SpotModal'
+import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { useAuth } from '@/lib/AuthContext'
 import { useResultsViewModel } from './results.viewmodel'
 import styles from './page.module.css'
@@ -12,7 +13,13 @@ const ResultsPage = () => {
   const { user, openAuthModal } = useAuth()
   const vm = useResultsViewModel()
 
-  if (!vm.data) return null
+  if (vm.loading || !vm.data) {
+    return (
+      <main className={styles.loadingState}>
+        <LoadingSpinner />
+      </main>
+    )
+  }
 
   const { recommendations, preferences, warnings } = vm.data
 

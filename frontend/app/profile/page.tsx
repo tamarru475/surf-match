@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { SendIcon } from '@/components/ui/Icons';
 import SkillCheckModal from '@/components/quiz/SkillCheckModal';
 import { useAuth } from '@/lib/AuthContext';
@@ -19,7 +18,19 @@ const ProfilePage = () => {
   const [showSkillQuiz, setShowSkillQuiz] = useState(false);
 
   if (vm.loading) {
-    return <div className={styles.loading}><LoadingSpinner /></div>;
+    return (
+      <div className={styles.root}>
+        <nav className={styles.nav}>
+          <span className={styles.navLogo}>SurfMatch</span>
+        </nav>
+        <div className={styles.page}>
+          <div className={`${styles.skeleton} ${styles.skeletonMd}`} />
+          <div className={`${styles.skeleton} ${styles.skeletonSm}`} />
+          <div className={`${styles.skeleton} ${styles.skeletonLg}`} />
+          <div className={`${styles.skeleton} ${styles.skeletonMd}`} />
+        </div>
+      </div>
+    );
   }
 
   return (

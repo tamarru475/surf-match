@@ -86,6 +86,23 @@ describe('data loading', () => {
     })
     expect(result!.current.data).toEqual(FAKE_DATA)
   })
+
+  it('sets loading false after successfully reading sessionStorage', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    expect(result!.current.loading).toBe(false)
+  })
+
+  it('sets loading false even when redirecting due to missing data', async () => {
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    expect(result!.current.loading).toBe(false)
+  })
 })
 
 describe('favorites loading', () => {
