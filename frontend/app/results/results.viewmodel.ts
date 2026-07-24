@@ -8,6 +8,7 @@ import type { RecommendationResponse, SpotRecommendation } from '@/lib/types'
 
 export interface ResultsViewModel {
   data: RecommendationResponse | null
+  loading: boolean
   activeSpot: SpotRecommendation | null
   setActiveSpot: (spot: SpotRecommendation | null) => void
   favoritedIds: Set<string>
@@ -22,6 +23,7 @@ export function useResultsViewModel(): ResultsViewModel {
   const router = useRouter()
   const { user } = useAuth()
   const [data, setData] = useState<RecommendationResponse | null>(null)
+  const [loading, setLoading] = useState(true)
   const [activeSpot, setActiveSpot] = useState<SpotRecommendation | null>(null)
   const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set())
   const [loggedSessionIds, setLoggedSessionIds] = useState<Set<string>>(new Set())
@@ -30,6 +32,7 @@ export function useResultsViewModel(): ResultsViewModel {
     const raw = sessionStorage.getItem('surfmatch_results')
     if (!raw) {
       router.replace('/')
+      setLoading(false)
       return
     }
     try {
@@ -37,6 +40,7 @@ export function useResultsViewModel(): ResultsViewModel {
     } catch {
       router.replace('/')
     }
+    setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -74,6 +78,7 @@ export function useResultsViewModel(): ResultsViewModel {
 
   return {
     data,
+    loading,
     activeSpot,
     setActiveSpot,
     favoritedIds,
