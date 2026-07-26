@@ -32,10 +32,12 @@ public class FavoritesService(AppDbContext db)
 
         var favorite = new FavoriteEntity
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.CreateVersion7(),
             UserId = userId,
             SpotId = spotId,
             CreatedAt = DateTime.UtcNow,
+            Spot = spot,
+            User = null!, // FK-only insert; EF Core populates on load
         };
         db.Favorites.Add(favorite);
         await db.SaveChangesAsync();

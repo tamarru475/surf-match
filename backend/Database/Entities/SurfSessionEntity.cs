@@ -8,6 +8,6 @@ public class SurfSessionEntity
     public DateTime SurfedAt { get; set; }
     public DateTime CreatedAt { get; set; }
 
-    public UserEntity User { get; set; } = null!;
-    public SurfSpotEntity Spot { get; set; } = null!;
+    public required UserEntity User { get; set; }
+    public required SurfSpotEntity Spot { get; set; }
 }
