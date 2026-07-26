@@ -15,11 +15,13 @@ public class SurfSessionService(AppDbContext db)
 
         var session = new SurfSessionEntity
         {
-            Id       = Guid.NewGuid(),
-            UserId   = userId,
-            SpotId   = spotId,
+            Id        = Guid.CreateVersion7(),
+            UserId    = userId,
+            SpotId    = spotId,
             SurfedAt  = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,
+            Spot      = spot,
+            User      = null!, // FK-only insert; EF Core populates on load
         };
         db.SurfSessions.Add(session);
         await db.SaveChangesAsync();

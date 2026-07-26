@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Backend.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260724021151_MakeUserFieldsNonNullable")]
+    partial class MakeUserFieldsNonNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,7 +211,7 @@ namespace backend.Migrations
                             Id = new Guid("fe120869-eb8b-4962-bf24-d9e83a3ef3fe"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "WaistHigh",
-                            Description = "A cruisy right-hand cobblestone point just north of Gisborne — long, fat shoulders ideal for cruising and carving. Sister break to North Makorori Reef across the bay. Gets busy on good days but localism is rare for New Zealand; best on a solid SE swell with a light offshore.",
+                            Description = "A cobblestone right-hander just north of Gisborne. Quieter than the town beach with fun point break walls on a good swell.",
                             Facilities = new List<string> { "Bathrooms" },
                             MaxWaveSize = "DoubleOverhead",
                             MinSkillLevel = "Intermediate",
@@ -216,7 +219,7 @@ namespace backend.Migrations
                             Name = "Makorori Point",
                             Region = "Gisborne",
                             SuitableBoardTypes = new List<string> { "Longboard", "Fish", "Shortboard" },
-                            TypicalCrowd = "Moderate",
+                            TypicalCrowd = "Quiet",
                             WaveType = "PointBreak"
                         },
                         new
@@ -224,16 +227,16 @@ namespace backend.Migrations
                             Id = new Guid("5461358c-f193-4e36-82a0-ad5da43909ae"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "HeadHigh",
-                            Description = "Arguably Christchurch's single best surf spot — a right-hand point that peels from the headland over 100 metres into the bay, protected from easterlies by cliffs and a breakwater. Soft and mellow waves make it a longboarder's dream, while bigger winter swells bring out the performance surfers.",
+                            Description = "Tucked beside Sumner, Scarborough picks up solid South Island swells and offers punchy beach break waves in a scenic setting.",
                             Facilities = new List<string> { "Bathrooms", "Showers" },
                             MaxWaveSize = "DoubleOverhead",
                             MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Scarborough",
                             Region = "Christchurch",
-                            SuitableBoardTypes = new List<string> { "Longboard", "Shortboard", "Fish", "Funboard" },
+                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Longboard" },
                             TypicalCrowd = "Moderate",
-                            WaveType = "PointBreak"
+                            WaveType = "BeachBreak"
                         },
                         new
                         {
@@ -243,7 +246,7 @@ namespace backend.Migrations
                             Description = "A reliable North Auckland beach break that delivers consistent surf and is usually less hectic than the city breaks.",
                             Facilities = new List<string> { "Bathrooms", "Showers", "SurfClub" },
                             MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "KneeHigh",
                             Name = "Mangawhai Heads",
                             Region = "Auckland",
@@ -319,11 +322,11 @@ namespace backend.Migrations
                         {
                             Id = new Guid("a369bf4f-1c77-4a5c-848c-f136d5b866c7"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "Auckland's most powerful West Coast beach break, taking the full force of Tasman Sea swells. Sucky, punchy peaks reward experienced surfers — strong rips make it unsuitable for beginners. Check Maori Bay just around the headland for slightly more sheltered lefts and rights when Muriwai closes out.",
+                            CurrentWaveSize = "HeadHigh",
+                            Description = "Auckland's wild black-sand West Coast beach. Powerful and consistent with strong rips — rewarding for surfers with solid ocean awareness.",
                             Facilities = new List<string> { "Bathrooms", "Showers", "SurfClub", "Lifeguard" },
                             MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Muriwai",
                             Region = "Auckland",
@@ -336,7 +339,7 @@ namespace backend.Migrations
                             Id = new Guid("a539f8d9-e30b-43ef-be31-529f991693b9"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "HeadHigh",
-                            Description = "Auckland's most iconic surf beach — one of the best on the North Island's West Coast. Sucky beach break with excellent lefts and rights off Lion Rock, set against dramatic black-sand cliffs. Heavy rips and powerful shore dump demand solid ocean experience; beginners should surf between the flags only.",
+                            Description = "Auckland's most famous surf beach — powerful, dramatic, and stunning. Heavy rips demand solid ocean experience before paddling out.",
                             Facilities = new List<string> { "Bathrooms", "Showers", "SurfClub", "Lifeguard" },
                             MaxWaveSize = "DoubleOverhead",
                             MinSkillLevel = "Intermediate",
@@ -390,7 +393,7 @@ namespace backend.Migrations
                             MinSkillLevel = "Beginner",
                             MinWaveSize = "KneeHigh",
                             Name = "Pauanui",
-                            Region = "BayOfPlenty",
+                            Region = "Coromandel",
                             SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Fish" },
                             TypicalCrowd = "Moderate",
                             WaveType = "BeachBreak"
@@ -406,7 +409,7 @@ namespace backend.Migrations
                             MinSkillLevel = "Beginner",
                             MinWaveSize = "WaistHigh",
                             Name = "Whangamata",
-                            Region = "BayOfPlenty",
+                            Region = "Coromandel",
                             SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
                             TypicalCrowd = "Busy",
                             WaveType = "BeachBreak"
@@ -447,11 +450,11 @@ namespace backend.Migrations
                         {
                             Id = new Guid("2d8931ef-7b3c-480c-99c1-ac27f1f6df5f"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
+                            CurrentWaveSize = "HeadHigh",
                             Description = "A dramatic black-sand beach tucked in a valley west of Auckland. Powerful beach break that rewards those who respect its conditions.",
                             Facilities = new List<string> { "Bathrooms" },
                             MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Bethells Beach",
                             Region = "Auckland",
@@ -560,7 +563,7 @@ namespace backend.Migrations
                             Id = new Guid("9eeb5861-d0bc-4cb9-84b3-f1174940ea7f"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "KneeHigh",
-                            Description = "Beefy, strong, and occasionally rippable year-round beach break just north of Gisborne — most reliable from autumn to spring. At full tide the reef sections punch up. Stock Route, the short tubular runner on the south end, fires up on the right swell. One of the East Coast's most consistent waves.",
+                            Description = "A long sandy beach just north of Gisborne city with consistent beach break peaks. Popular with locals and a reliable option when the easterly swells arrive.",
                             Facilities = new List<string> { "Bathrooms", "Lifeguard" },
                             MaxWaveSize = "HeadHigh",
                             MinSkillLevel = "Beginner",
@@ -576,7 +579,7 @@ namespace backend.Migrations
                             Id = new Guid("4d237b3e-7a1f-4a45-9935-8913929c5a7e"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "WaistHigh",
-                            Description = "A heavy point/reef break tucked below the Kaikoura mountains, named after the old freezing works nearby. Fast takeoffs into hollow sections over boulders and rocks — unpredictability increased post-2016 earthquake. Expert-only on larger swells; approach with local knowledge.",
+                            Description = "A powerful left-hand reef break tucked below the Kaikoura mountains. Named after the old meatworks nearby — raw, heavy, and stunning when it's firing.",
                             Facilities = new List<string> { "Bathrooms" },
                             MaxWaveSize = "DoubleOverhead",
                             MinSkillLevel = "Advanced",
@@ -592,7 +595,7 @@ namespace backend.Migrations
                             Id = new Guid("674759a2-93b5-4946-aa2f-237b42c7466c"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "WaistHigh",
-                            Description = "The jewel in Kaikoura's surf crown — a long, peeling left-to-right bay break that fills the whole bay with some of the longest rides this side of Raglan. Steady offshore winds, incredible mountain views, and consistent winter swells from the east make this one of the South Island's most celebrated waves.",
+                            Description = "One of New Zealand's longest right-hand point breaks, walling for hundreds of metres along the Kaikoura coastline. A remote gem that makes the drive from Christchurch very worthwhile.",
                             Facilities = new List<string> { "Bathrooms" },
                             MaxWaveSize = "DoubleOverhead",
                             MinSkillLevel = "Intermediate",
@@ -600,7 +603,7 @@ namespace backend.Migrations
                             Name = "Mangamaunu",
                             Region = "Kaikoura",
                             SuitableBoardTypes = new List<string> { "Longboard", "Shortboard", "Fish" },
-                            TypicalCrowd = "Busy",
+                            TypicalCrowd = "Quiet",
                             WaveType = "PointBreak"
                         },
                         new
@@ -646,7 +649,7 @@ namespace backend.Migrations
                             MinSkillLevel = "Beginner",
                             MinWaveSize = "AnkleHigh",
                             Name = "Tairua",
-                            Region = "BayOfPlenty",
+                            Region = "Coromandel",
                             SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
                             TypicalCrowd = "Moderate",
                             WaveType = "BeachBreak"
@@ -656,7 +659,7 @@ namespace backend.Migrations
                             Id = new Guid("222ea40c-6ba4-4b8c-b5d4-8a65f7e0702e"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "WaistHigh",
-                            Description = "Wellington's premier year-round surf beach, right beside the airport. Sand-bottomed peaks work for all levels at all times of year, with minimal localism — the friendliest lineup in the city. Fires best on calm mornings before the notorious afternoon northerly kicks in. Board hire and lessons available from the surf club.",
+                            Description = "Wellington's most accessible surf beach, right next to the airport. Consistent swell from Cook Strait makes it reliable year-round, though it fires best on calm mornings before the afternoon northerly kicks in.",
                             Facilities = new List<string> { "Bathrooms", "Showers", "SurfClub", "Lifeguard", "Rentals" },
                             MaxWaveSize = "HeadHigh",
                             MinSkillLevel = "Beginner",
@@ -691,7 +694,7 @@ namespace backend.Migrations
                             Description = "A raw, wind-exposed beach break on Wellington's rugged west coast. Gets open-ocean swell that rarely reaches Lyall Bay — worth the extra drive when conditions align and the wind is light.",
                             Facilities = new List<string>(),
                             MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Makara Beach",
                             Region = "Wellington",
@@ -749,99 +752,51 @@ namespace backend.Migrations
                         },
                         new
                         {
-                            Id = new Guid("320f04de-34f7-4d2f-8a50-e6d079cf75ec"),
+                            Id = new Guid("b40b8cff-c98f-469c-b78b-b13cdff6d25e"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "KneeHigh",
-                            Description = "A sheltered beach break south of Kaikoura town with low, easy-going waves ideal for novices. Protected from northerlies and shallow enough for foam boards — popular with surf schools on summer mornings. Arrive early to beat the crowds.",
-                            Facilities = new List<string> { "Bathrooms" },
-                            MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "AnkleHigh",
-                            Name = "Okiwi Bay",
-                            Region = "Kaikoura",
-                            SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("1c35bc8a-9789-42a4-9bd4-368f5c774ec7"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "KneeHigh",
-                            Description = "The closest break to Kaikoura town — a convenient option when you only have an hour to spare. Fun peaks go left and right on medium-swell days, and there's enough whitewash on smaller days for beginners. Nothing special, but reliably rideable.",
-                            Facilities = new List<string> { "Bathrooms" },
-                            MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "AnkleHigh",
-                            Name = "Gooch's Beach",
-                            Region = "Kaikoura",
-                            SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("7c926dd3-e07d-496d-81d1-c4821e0546fb"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A beach and point break combo north of Kaikoura that improved noticeably after the 2016 earthquake. Best on bigger swells when both the beach and the point fill in — watch for the shallow shore break and stick to low tide on larger days. Dolphins are common.",
+                            CurrentWaveSize = "HeadHigh",
+                            Description = "A powerful reef break north of Kaikoura accessible only by walking along the rail corridor at low tide. Heavy, hollow waves break over a shallow ledge — for experienced surfers only and best surfed with a local guide.",
                             Facilities = new List<string>(),
                             MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Ward Beach",
+                            MinSkillLevel = "Advanced",
+                            MinWaveSize = "HeadHigh",
+                            Name = "Haumuri Bluffs",
                             Region = "Kaikoura",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
+                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish" },
+                            TypicalCrowd = "Quiet",
+                            WaveType = "ReefBreak"
                         },
                         new
                         {
                             Id = new Guid("82d57d3e-60a4-48b6-bb65-dfb072918add"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "Christchurch's most popular surf beach, stretching north from the famous pier. Consistent beach break peaks on most swells, full facilities, and a surf club that runs lessons — the go-to spot for the city.",
-                            Facilities = new List<string> { "Bathrooms", "Showers", "SurfClub", "Lifeguard", "Rentals" },
-                            MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "AnkleHigh",
-                            Name = "New Brighton",
+                            CurrentWaveSize = "HeadHigh",
+                            Description = "A sheltered cove on the Banks Peninsula, accessed via a winding hill road from Sumner. Offers both left and right reef peaks that are more protected from onshore winds than New Brighton — a favourite when the city beaches go messy.",
+                            Facilities = new List<string> { "Bathrooms" },
+                            MaxWaveSize = "DoubleOverhead",
+                            MinSkillLevel = "Intermediate",
+                            MinWaveSize = "WaistHigh",
+                            Name = "Taylors Mistake",
                             Region = "Christchurch",
-                            SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
+                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
                             TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
+                            WaveType = "ReefBreak"
                         },
                         new
                         {
-                            Id = new Guid("25e8876b-5560-4052-9e23-8fa5bf034073"),
+                            Id = new Guid("755ff886-92a0-4330-97c5-23a84a732fd7"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "KneeHigh",
-                            Description = "A long stretch of sand north of New Brighton with peaky, mellow waves that punch up on winter swells. A good escape when New Brighton gets crowded — shifting sandbanks keep conditions varied, and a local surf school operates here through summer.",
+                            Description = "A wide open beach break stretching north from the Waimakariri River mouth. Rarely crowded and produces gentle, forgiving waves on smaller swells — popular for learners and those wanting a session away from the Sumner crowds.",
                             Facilities = new List<string> { "Bathrooms" },
                             MaxWaveSize = "HeadHigh",
                             MinSkillLevel = "Beginner",
                             MinWaveSize = "AnkleHigh",
-                            Name = "Waimairi Beach",
+                            Name = "Pegasus Bay",
                             Region = "Christchurch",
                             SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
                             TypicalCrowd = "Quiet",
                             WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("6c44f559-d734-4cf1-9a78-beba7b07cf7f"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A longboarder's dream about an hour south of Christchurch — a left-hand point off a boulder-dotted beach that produces some of the longest rides in the Canterbury region. Gets busy on solid south swells; arrive early for a smaller lineup.",
-                            Facilities = new List<string>(),
-                            MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Intermediate",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Magnet Bay",
-                            Region = "Christchurch",
-                            SuitableBoardTypes = new List<string> { "Longboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "PointBreak"
                         },
                         new
                         {
@@ -851,7 +806,7 @@ namespace backend.Migrations
                             Description = "A wild beach break at the mouth of Otago Harbour with a genuine sense of isolation. The sandbars shift constantly and the Southern Ocean swells arrive unimpeded — rewarding for those willing to make the drive out to the peninsula.",
                             Facilities = new List<string>(),
                             MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Aramoana",
                             Region = "Otago",
@@ -877,47 +832,95 @@ namespace backend.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b428d363-06a3-42c1-bed6-4d6f50340717"),
+                            Id = new Guid("337ae4b8-aca6-46e8-a841-e9b99a5e3d92"),
+                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentWaveSize = "WaistHigh",
+                            Description = "A sheltered bay north of Wellington in Porirua, offering some of the most consistent and manageable beach break on the lower North Island. The surf club is active, lifeguards patrol in summer, and the sand-bottom waves are kind to learners.",
+                            Facilities = new List<string> { "Bathrooms", "SurfClub", "Lifeguard" },
+                            MaxWaveSize = "HeadHigh",
+                            MinSkillLevel = "Beginner",
+                            MinWaveSize = "AnkleHigh",
+                            Name = "Titahi Bay",
+                            Region = "Wellington",
+                            SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
+                            TypicalCrowd = "Moderate",
+                            WaveType = "BeachBreak"
+                        },
+                        new
+                        {
+                            Id = new Guid("6206f692-1cb2-4133-8685-fdcabe0ec9fb"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "HeadHigh",
-                            Description = "A peeling left-hand point at the entrance to Wellington Harbour, working best on strong southerly swells through the winter months. A quieter alternative to Lyall Bay with a more committed paddle out — watch for the SW crosswind that can make it choppy in the afternoon.",
+                            Description = "An exposed and remote shingle-beach break at the southern tip of the Wairarapa. Punishing shore-dump sections between powerful peaks make this strictly for experienced surfers — the reward is almost complete solitude and serious South Coast power.",
+                            Facilities = new List<string>(),
+                            MaxWaveSize = "DoubleOverhead",
+                            MinSkillLevel = "Advanced",
+                            MinWaveSize = "HeadHigh",
+                            Name = "Palliser Bay",
+                            Region = "Wellington",
+                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish" },
+                            TypicalCrowd = "Quiet",
+                            WaveType = "BeachBreak"
+                        },
+                        new
+                        {
+                            Id = new Guid("3e820cf6-fcd6-4731-b8e3-25860248bc4f"),
+                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentWaveSize = "WaistHigh",
+                            Description = "A friendly beach break 15 km south of New Plymouth with a strong community surf club. Mellow rolling waves are perfect for learners and longboarders, and the campground makes it easy to stay and score multiple sessions.",
+                            Facilities = new List<string> { "Bathrooms", "Showers", "SurfClub", "Campground" },
+                            MaxWaveSize = "HeadHigh",
+                            MinSkillLevel = "Beginner",
+                            MinWaveSize = "AnkleHigh",
+                            Name = "Oakura",
+                            Region = "Taranaki",
+                            SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard", "Fish" },
+                            TypicalCrowd = "Moderate",
+                            WaveType = "BeachBreak"
+                        },
+                        new
+                        {
+                            Id = new Guid("5252189f-a966-4a43-958f-f4a388883eff"),
+                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CurrentWaveSize = "HeadHigh",
+                            Description = "A semi-secret right-hander on Taranaki's Surf Highway 45 that peels along a rocky point with impressive length on a solid southerly swell. Known mainly to locals, it rewards those willing to hike a short distance from the road.",
                             Facilities = new List<string>(),
                             MaxWaveSize = "DoubleOverhead",
                             MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
-                            Name = "Pencarrow Head",
-                            Region = "Wellington",
+                            Name = "Komene Road",
+                            Region = "Taranaki",
                             SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Longboard" },
                             TypicalCrowd = "Quiet",
                             WaveType = "PointBreak"
                         },
                         new
                         {
-                            Id = new Guid("f06841b9-b3be-49db-82e9-8dec588e3207"),
+                            Id = new Guid("79cfd9cf-0424-4126-bab2-581177c7b3ef"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A dramatic south-facing bay in Wellington's western suburbs with a muscular right-hander point at its south end. A solid option when Lyall Bay is too crowded — the scenery is stunning and the waves have real character. Catches the same south swells as Lyall Bay.",
-                            Facilities = new List<string> { "Bathrooms" },
-                            MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
+                            CurrentWaveSize = "HeadHigh",
+                            Description = "A quality right-hand reef point just north of Gisborne. Long, walling walls peel along a rock shelf and produce some of the most consistent point-break action on the East Coast — often offshore when inland areas are cross-shore.",
+                            Facilities = new List<string>(),
+                            MaxWaveSize = "DoubleOverhead",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
-                            Name = "Houghton Bay",
-                            Region = "Wellington",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
+                            Name = "Tatapouri",
+                            Region = "Gisborne",
+                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Longboard" },
+                            TypicalCrowd = "Quiet",
+                            WaveType = "ReefBreak"
                         },
                         new
                         {
-                            Id = new Guid("cde176c8-1e45-457b-9b30-c1fd73561ea5"),
+                            Id = new Guid("b8698048-bb61-47ac-8a52-0b9424061fb9"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "KneeHigh",
-                            Description = "An uber-fun, accessible beach south of Gisborne with a mellow peeler that sections into glassy walls and frothing whitewash. Both a left and right point wrap around the bay, catching refracted south swells that can be smaller and cleaner than Wainui. Good for all levels on most days.",
-                            Facilities = new List<string> { "Bathrooms" },
+                            Description = "A peaceful and seldom-visited beach break north of Gisborne with gentle, beginner-friendly waves on most swells. The lack of facilities and crowds makes it ideal for a quiet dawn patrol or an uncrowded afternoon session.",
+                            Facilities = new List<string>(),
                             MaxWaveSize = "HeadHigh",
                             MinSkillLevel = "Beginner",
                             MinWaveSize = "AnkleHigh",
-                            Name = "Sponge Bay",
+                            Name = "Pouawa",
                             Region = "Gisborne",
                             SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
                             TypicalCrowd = "Quiet",
@@ -941,130 +944,34 @@ namespace backend.Migrations
                         },
                         new
                         {
-                            Id = new Guid("a69840d9-5d56-41f8-926b-efc39eb7363a"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "HeadHigh",
-                            Description = "Heavy take-off and uber-fast hollow sections with seriously long rides. Two entry points: Outsides for those new to NZ lefts, Insides for the committed expert. Prized by locals and often considered the most rewarding of Raglan's three point breaks.",
-                            Facilities = new List<string>(),
-                            MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Advanced",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Indicators",
-                            Region = "Waikato",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "PointBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("b9d233c7-01f7-48ba-b393-6ab66b91d936"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A consistent swell magnet about 35 minutes from Raglan town on black sand. Multiple peaks for all abilities on smaller days — shoulder-high and mellow at its best. A reliable alternative when Manu Bay and Whale Bay are too heavy.",
-                            Facilities = new List<string>(),
-                            MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "KneeHigh",
-                            Name = "Ruapuke Beach",
-                            Region = "Waikato",
-                            SuitableBoardTypes = new List<string> { "Rental", "Longboard", "Funboard", "Shortboard" },
-                            TypicalCrowd = "Quiet",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
                             Id = new Guid("80bc2dbd-50b6-4396-94a1-bc73a1ef9192"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
                             CurrentWaveSize = "WaistHigh",
                             Description = "Famous for its thermal springs at low tide, Hot Water Beach also delivers solid beach-break surf when a decent easterly swell wraps in. Most visitors come for the springs, which means the water is often surprisingly uncrowded — arrive early and score both.",
                             Facilities = new List<string> { "Bathrooms", "Showers" },
                             MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Hot Water Beach",
-                            Region = "BayOfPlenty",
+                            Region = "Coromandel",
                             SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
                             TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("6c8776eb-d2dc-485d-98dd-24558d15efc1"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A wild beach break beside the famous Pancake Rocks on the Paparoa coast. Raw Tasman Sea swells hit the black-sand beach with real power — almost never crowded, and the scenery is unlike anywhere else in New Zealand.",
-                            Facilities = new List<string> { "Bathrooms" },
-                            MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Punakaiki",
-                            Region = "WestCoast",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Quiet",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("bc88f11c-88ac-4fb1-ac5b-984488ff2800"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "The most accessible surf beach on the West Coast, right at the edge of Hokitika town. Consistent Tasman Sea swells break over dark sand with no crowds — the town's sunsets here are legendary, and the pounamu shops make the trip worthwhile rain or shine.",
-                            Facilities = new List<string> { "Bathrooms", "SurfClub" },
-                            MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Hokitika Beach",
-                            Region = "WestCoast",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Quiet",
                             WaveType = "BeachBreak"
                         },
                         new
                         {
                             Id = new Guid("5de53267-9ae1-4c46-a3e8-3b7fcca20fd8"),
                             CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
+                            CurrentWaveSize = "HeadHigh",
                             Description = "A remote beach break on the East Cape road well north of Opotiki. Powerful, exposed swells hit the bay with little refraction, producing fast and hollow beach-break sections. The campground is basic but the waves — and the absence of crowds — are the whole point.",
                             Facilities = new List<string> { "Bathrooms", "Campground" },
                             MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
+                            MinSkillLevel = "Intermediate",
                             MinWaveSize = "WaistHigh",
                             Name = "Waihau Bay",
                             Region = "BayOfPlenty",
                             SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
                             TypicalCrowd = "Quiet",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("8e89b39f-4425-48ae-8a7b-4b0fc2313168"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A high-quality beach break southeast of Mount Maunganui that gets punchy and responsive on NE swells over two feet. Slightly fewer crowds than the Mount itself, a friendly local surf club with no localism, and fast shoulders on bigger sets. One of the Bay of Plenty's best-kept secrets.",
-                            Facilities = new List<string> { "Bathrooms", "SurfClub" },
-                            MaxWaveSize = "DoubleOverhead",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Papamoa Beach",
-                            Region = "BayOfPlenty",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Moderate",
-                            WaveType = "BeachBreak"
-                        },
-                        new
-                        {
-                            Id = new Guid("5adf6b95-f296-4cd0-9178-24f0e16587ec"),
-                            CreatedAt = new DateTime(2026, 7, 2, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CurrentWaveSize = "WaistHigh",
-                            Description = "A long beachfront strip south of Mount Maunganui main beach where waves lump up over the sandbars with fast drop-ins both left and right. Forgiving sand bottom, fewer swimmers than the Mount, and reliable shape on most NE swells — a great training ground for improving intermediates.",
-                            Facilities = new List<string> { "Bathrooms", "Showers" },
-                            MaxWaveSize = "HeadHigh",
-                            MinSkillLevel = "Beginner",
-                            MinWaveSize = "WaistHigh",
-                            Name = "Tay Street",
-                            Region = "BayOfPlenty",
-                            SuitableBoardTypes = new List<string> { "Shortboard", "Fish", "Funboard" },
-                            TypicalCrowd = "Moderate",
                             WaveType = "BeachBreak"
                         });
                 });

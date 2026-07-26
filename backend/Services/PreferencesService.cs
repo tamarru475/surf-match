@@ -19,13 +19,13 @@ public class PreferencesService(AppDbContext db)
         var entity = await db.UserPreferences.FirstOrDefaultAsync(p => p.UserId == userId);
         if (entity is null)
         {
-            entity = new UserPreferencesEntity { UserId = userId };
+            entity = new UserPreferencesEntity { UserId = userId, User = null! }; // FK-only insert; EF Core populates on load
             db.UserPreferences.Add(entity);
         }
 
         entity.SkillLevel = prefs.SkillLevel.ToString();
         entity.CrowdTolerance = prefs.CrowdTolerance.ToString();
-        entity.PreferredRegion = prefs.PreferredRegion?.ToString();
+        entity.PreferredRegion = prefs.PreferredRegion?.ToString() ?? "";
         entity.BoardTypes = prefs.BoardTypes.Select(b => b.ToString()).ToList();
         entity.PreferredWaveTypes = prefs.PreferredWaveTypes.Select(w => w.ToString()).ToList();
         entity.PreferredWaveSizes = prefs.PreferredWaveSizes.Select(s => s.ToString()).ToList();
@@ -40,7 +40,7 @@ public class PreferencesService(AppDbContext db)
     {
         SkillLevel = Enum.Parse<SkillLevel>(e.SkillLevel),
         CrowdTolerance = Enum.Parse<CrowdLevel>(e.CrowdTolerance),
-        PreferredRegion = e.PreferredRegion is null ? null : Enum.Parse<Region>(e.PreferredRegion),
+        PreferredRegion = e.PreferredRegion == "" ? null : Enum.Parse<Region>(e.PreferredRegion),
         BoardTypes = e.BoardTypes.Select(Enum.Parse<BoardType>).ToList(),
         PreferredWaveTypes = e.PreferredWaveTypes.Select(Enum.Parse<WaveType>).ToList(),
         PreferredWaveSizes = e.PreferredWaveSizes.Select(Enum.Parse<WaveSize>).ToList(),

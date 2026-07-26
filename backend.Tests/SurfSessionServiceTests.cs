@@ -11,12 +11,12 @@ public class SurfSessionServiceTests
     private static AppDbContext CreateDb()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .UseInMemoryDatabase(Guid.CreateVersion7().ToString())
             .Options;
         return new AppDbContext(options);
     }
 
-    private static readonly Guid UserId = Guid.NewGuid();
+    private static readonly Guid UserId = Guid.CreateVersion7();
 
     private static SurfSpotEntity MakeSpot(Guid id, string name = "Test Spot") => new()
     {
@@ -39,7 +39,7 @@ public class SurfSessionServiceTests
     public async Task LogAsync_returns_null_for_unknown_spot()
     {
         using var db = CreateDb();
-        var result = await new SurfSessionService(db).LogAsync(UserId, Guid.NewGuid());
+        var result = await new SurfSessionService(db).LogAsync(UserId, Guid.CreateVersion7());
         Assert.Null(result);
     }
 
@@ -47,7 +47,7 @@ public class SurfSessionServiceTests
     public async Task LogAsync_creates_session_and_returns_details()
     {
         using var db = CreateDb();
-        var spotId = Guid.NewGuid();
+        var spotId = Guid.CreateVersion7();
         db.SurfSpots.Add(MakeSpot(spotId, "Piha"));
         await db.SaveChangesAsync();
 
@@ -64,7 +64,7 @@ public class SurfSessionServiceTests
     public async Task LogAsync_allows_multiple_sessions_for_same_spot()
     {
         using var db = CreateDb();
-        var spotId = Guid.NewGuid();
+        var spotId = Guid.CreateVersion7();
         db.SurfSpots.Add(MakeSpot(spotId));
         await db.SaveChangesAsync();
 
@@ -87,12 +87,12 @@ public class SurfSessionServiceTests
     public async Task GetLastAsync_returns_most_recent_session()
     {
         using var db = CreateDb();
-        var spotId1 = Guid.NewGuid();
-        var spotId2 = Guid.NewGuid();
+        var spotId1 = Guid.CreateVersion7();
+        var spotId2 = Guid.CreateVersion7();
         db.SurfSpots.AddRange(MakeSpot(spotId1, "Piha"), MakeSpot(spotId2, "Muriwai"));
         db.SurfSessions.AddRange(
-            new SurfSessionEntity { Id = Guid.NewGuid(), UserId = UserId, SpotId = spotId1, SurfedAt = DateTime.UtcNow.AddDays(-2), CreatedAt = DateTime.UtcNow },
-            new SurfSessionEntity { Id = Guid.NewGuid(), UserId = UserId, SpotId = spotId2, SurfedAt = DateTime.UtcNow.AddDays(-1), CreatedAt = DateTime.UtcNow }
+            new SurfSessionEntity { Id = Guid.CreateVersion7(), UserId = UserId, SpotId = spotId1, SurfedAt = DateTime.UtcNow.AddDays(-2), CreatedAt = DateTime.UtcNow, User = null!, Spot = null! },
+            new SurfSessionEntity { Id = Guid.CreateVersion7(), UserId = UserId, SpotId = spotId2, SurfedAt = DateTime.UtcNow.AddDays(-1), CreatedAt = DateTime.UtcNow, User = null!, Spot = null! }
         );
         await db.SaveChangesAsync();
 
@@ -106,12 +106,13 @@ public class SurfSessionServiceTests
     public async Task GetLastAsync_only_returns_sessions_for_the_requesting_user()
     {
         using var db = CreateDb();
-        var spotId = Guid.NewGuid();
+        var spotId = Guid.CreateVersion7();
         db.SurfSpots.Add(MakeSpot(spotId));
         db.SurfSessions.Add(new SurfSessionEntity
         {
-            Id = Guid.NewGuid(), UserId = Guid.NewGuid(), SpotId = spotId,
+            Id = Guid.CreateVersion7(), UserId = Guid.CreateVersion7(), SpotId = spotId,
             SurfedAt = DateTime.UtcNow, CreatedAt = DateTime.UtcNow,
+            User = null!, Spot = null!,
         });
         await db.SaveChangesAsync();
 

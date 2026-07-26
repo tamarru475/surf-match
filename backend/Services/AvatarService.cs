@@ -25,6 +25,14 @@ public class AvatarService(HttpClient http, IConfiguration config)
         // Folder = userId so RLS can match auth.uid() to (storage.foldername(name))[1]
         var path = $"{userId}/avatar{ext}";
 
+        // Delete any existing avatar first so the upload is always a clean INSERT.
+        // (POST with x-upsert triggers a combined INSERT+UPDATE RLS check that Supabase
+        // rejects even when both individual policies are permissive.)
+        var deleteRequest = new HttpRequestMessage(HttpMethod.Delete,
+            $"{supabaseUrl}/storage/v1/object/{Bucket}/{path}");
+        deleteRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
+        await http.SendAsync(deleteRequest); // ignore 404 if file didn't exist yet
+
         using var content = new StreamContent(file.OpenReadStream());
         content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 

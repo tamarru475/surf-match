@@ -4,8 +4,8 @@ export const SKILL_LEVELS: SkillLevel[] = ['NewToSurfing', 'Beginner', 'Intermed
 export type CrowdLevel = 'Quiet' | 'Moderate' | 'Busy';
 export const CROWD_LEVELS: CrowdLevel[] = ['Quiet', 'Moderate', 'Busy'];
 
-export type Region = 'Northland' | 'Auckland' | 'Coromandel' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
-export const REGIONS: Region[] = ['Northland', 'Auckland', 'Coromandel', 'BayOfPlenty', 'Waikato', 'Gisborne', 'Christchurch', 'Taranaki', 'Kaikoura', 'Wellington', 'Otago'];
+export type Region = 'Northland' | 'Auckland' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
+export const REGIONS: Region[] = ['Northland', 'Auckland', 'BayOfPlenty', 'Waikato', 'Gisborne', 'Christchurch', 'Taranaki', 'Kaikoura', 'Wellington', 'Otago'];
 
 export type WaveType = 'BeachBreak' | 'PointBreak' | 'ReefBreak';
 export const WAVE_TYPES: WaveType[] = ['BeachBreak', 'PointBreak', 'ReefBreak'];
