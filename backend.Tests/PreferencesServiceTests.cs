@@ -29,7 +29,7 @@ public class PreferencesServiceTests
     {
         SkillLevel = SkillLevel.Intermediate,
         CrowdTolerance = CrowdLevel.Moderate,
-        PreferredRegion = Region.Auckland,
+        PreferredRegions = [Region.Auckland, Region.Waikato],
         BoardTypes = [BoardType.Shortboard],
         PreferredWaveTypes = [WaveType.BeachBreak],
         PreferredWaveSizes = [WaveSize.WaistHigh, WaveSize.HeadHigh],
@@ -61,7 +61,7 @@ public class PreferencesServiceTests
         Assert.NotNull(result);
         Assert.Equal(SkillLevel.Intermediate, result.SkillLevel);
         Assert.Equal(CrowdLevel.Moderate, result.CrowdTolerance);
-        Assert.Equal(Region.Auckland, result.PreferredRegion);
+        Assert.Equal([Region.Auckland, Region.Waikato], result.PreferredRegions);
         Assert.Equal([BoardType.Shortboard], result.BoardTypes);
         Assert.Equal([WaveType.BeachBreak], result.PreferredWaveTypes);
     }
@@ -92,11 +92,11 @@ public class PreferencesServiceTests
         Assert.Equal(SkillLevel.Advanced, result.SkillLevel);
         Assert.Equal([BoardType.Fish, BoardType.Longboard], result.BoardTypes);
         Assert.Equal([Facility.Showers], result.PreferredFacilities);
-        Assert.Null(result.PreferredRegion);
+        Assert.Empty(result.PreferredRegions);
     }
 
     [Fact]
-    public async Task Upsert_round_trips_null_region()
+    public async Task Upsert_round_trips_empty_regions()
     {
         await using var db = CreateDb();
         var svc = new PreferencesService(db);
@@ -106,7 +106,7 @@ public class PreferencesServiceTests
         {
             SkillLevel = SkillLevel.Beginner,
             CrowdTolerance = CrowdLevel.Quiet,
-            PreferredRegion = null,
+            PreferredRegions = [],
             BoardTypes = [],
             PreferredWaveTypes = [],
             PreferredWaveSizes = [],
@@ -116,6 +116,6 @@ public class PreferencesServiceTests
         var result = await svc.GetAsync(userId);
 
         Assert.NotNull(result);
-        Assert.Null(result.PreferredRegion);
+        Assert.Empty(result.PreferredRegions);
     }
 }

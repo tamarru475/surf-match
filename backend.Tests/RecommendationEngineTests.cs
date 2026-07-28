@@ -63,7 +63,7 @@ public class RecommendationEngineTests
     [Fact]
     public void Region_filter_excludes_other_regions()
     {
-        var result = Recommend(skill: SkillLevel.Expert, region: Region.Waikato);
+        var result = Recommend(skill: SkillLevel.Expert, regions: [Region.Waikato]);
 
         Assert.All(result, r => Assert.Equal(Region.Waikato, r.Region));
         Assert.NotEmpty(result);
@@ -218,7 +218,7 @@ public class RecommendationEngineTests
     [Fact]
     public void No_relaxation_needed_returns_no_warnings()
     {
-        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Auckland);
+        var response = RecommendFull(skill: SkillLevel.Beginner, regions: [Region.Auckland]);
 
         Assert.NotEmpty(response.Recommendations);
         Assert.Empty(response.Warnings);
@@ -228,7 +228,7 @@ public class RecommendationEngineTests
     public void Wave_size_alone_is_relaxed_when_it_is_the_only_blocker()
     {
         // Beginner + Auckland has 4 spots, but none currently DoubleOverhead.
-        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Auckland,
+        var response = RecommendFull(skill: SkillLevel.Beginner, regions: [Region.Auckland],
             waveSizes: [WaveSize.DoubleOverhead]);
 
         Assert.NotEmpty(response.Recommendations);
@@ -243,7 +243,7 @@ public class RecommendationEngineTests
     {
         // Beginner + Auckland has no reef breaks at all, so dropping wave size
         // alone isn't enough — wave type must go too.
-        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Auckland,
+        var response = RecommendFull(skill: SkillLevel.Beginner, regions: [Region.Auckland],
             waveTypes: [WaveType.ReefBreak], waveSizes: [WaveSize.DoubleOverhead]);
 
         Assert.NotEmpty(response.Recommendations);
@@ -256,11 +256,22 @@ public class RecommendationEngineTests
     public void Region_is_relaxed_as_a_last_resort_when_skill_alone_would_be_empty()
     {
         // Taranaki has no Beginner-level spots at all.
-        var response = RecommendFull(skill: SkillLevel.Beginner, region: Region.Taranaki);
+        var response = RecommendFull(skill: SkillLevel.Beginner, regions: [Region.Taranaki]);
 
         Assert.NotEmpty(response.Recommendations);
         Assert.Contains(response.Warnings, w => w.Contains("Taranaki"));
         Assert.DoesNotContain(response.Recommendations, r => r.Region == Region.Taranaki);
+    }
+
+    [Fact]
+    public void Multi_region_filter_returns_spots_from_all_requested_regions()
+    {
+        var result = Recommend(skill: SkillLevel.Expert, regions: [Region.Auckland, Region.Waikato]);
+
+        var returnedRegions = result.Select(r => r.Region).Distinct().ToList();
+        Assert.Contains(Region.Auckland, returnedRegions);
+        Assert.Contains(Region.Waikato, returnedRegions);
+        Assert.All(result, r => Assert.True(r.Region == Region.Auckland || r.Region == Region.Waikato));
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -268,17 +279,17 @@ public class RecommendationEngineTests
     private static List<SpotRecommendation> Recommend(
         SkillLevel skill = SkillLevel.Intermediate,
         CrowdLevel crowd = CrowdLevel.Moderate,
-        Region? region = null,
+        IReadOnlyList<Region>? regions = null,
         IReadOnlyList<BoardType>? boards = null,
         IReadOnlyList<WaveType>? waveTypes = null,
         IReadOnlyList<WaveSize>? waveSizes = null,
         IReadOnlyList<Facility>? facilities = null) =>
-        RecommendFull(skill, crowd, region, boards, waveTypes, waveSizes, facilities).Recommendations.ToList();
+        RecommendFull(skill, crowd, regions, boards, waveTypes, waveSizes, facilities).Recommendations.ToList();
 
     private static RecommendationResponse RecommendFull(
         SkillLevel skill = SkillLevel.Intermediate,
         CrowdLevel crowd = CrowdLevel.Moderate,
-        Region? region = null,
+        IReadOnlyList<Region>? regions = null,
         IReadOnlyList<BoardType>? boards = null,
         IReadOnlyList<WaveType>? waveTypes = null,
         IReadOnlyList<WaveSize>? waveSizes = null,
@@ -288,7 +299,7 @@ public class RecommendationEngineTests
         {
             SkillLevel = skill,
             CrowdTolerance = crowd,
-            PreferredRegion = region,
+            PreferredRegions = regions ?? [],
             BoardTypes = boards ?? [],
             PreferredWaveTypes = waveTypes ?? [],
             PreferredWaveSizes = waveSizes ?? [],

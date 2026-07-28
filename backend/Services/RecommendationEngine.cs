@@ -71,8 +71,8 @@ public class RecommendationEngine(AppDbContext db)
         {
             var spots = bySkill.AsEnumerable();
 
-            if (!relaxRegion && prefs.PreferredRegion.HasValue)
-                spots = spots.Where(s => s.Region == prefs.PreferredRegion.Value);
+            if (!relaxRegion && prefs.PreferredRegions.Count > 0)
+                spots = spots.Where(s => prefs.PreferredRegions.Contains(s.Region));
 
             if (!relaxWaveType && prefs.PreferredWaveTypes.Count > 0)
                 spots = spots.Where(s => prefs.PreferredWaveTypes.Contains(s.WaveType));
@@ -100,10 +100,11 @@ public class RecommendationEngine(AppDbContext db)
             spots = Apply();
         }
 
-        if (spots.Count == 0 && prefs.PreferredRegion.HasValue)
+        if (spots.Count == 0 && prefs.PreferredRegions.Count > 0)
         {
             relaxRegion = true;
-            warnings.Add($"No spots in {prefs.PreferredRegion.Value} matched your skill level, so we're showing spots from other regions too.");
+            var regionList = string.Join(", ", prefs.PreferredRegions);
+            warnings.Add($"No spots in {regionList} matched your skill level, so we're showing spots from other regions too.");
             spots = Apply();
         }
 
