@@ -7,7 +7,8 @@ public class UserPreferences
     public SkillLevel SkillLevel { get; init; }
     public CrowdLevel CrowdTolerance { get; init; }
 
-    public Region? PreferredRegion { get; init; }
+    // Empty list means no preference (anywhere in NZ)
+    public IReadOnlyList<Region> PreferredRegions { get; init; } = [];
 
     // Multi-select — empty list means no preference (not filtered / not scored)
     public IReadOnlyList<BoardType> BoardTypes { get; init; } = [];

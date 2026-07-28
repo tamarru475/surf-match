@@ -25,7 +25,7 @@ public class PreferencesService(AppDbContext db)
 
         entity.SkillLevel = prefs.SkillLevel.ToString();
         entity.CrowdTolerance = prefs.CrowdTolerance.ToString();
-        entity.PreferredRegion = prefs.PreferredRegion?.ToString() ?? "";
+        entity.PreferredRegions = prefs.PreferredRegions.Select(r => r.ToString()).ToList();
         entity.BoardTypes = prefs.BoardTypes.Select(b => b.ToString()).ToList();
         entity.PreferredWaveTypes = prefs.PreferredWaveTypes.Select(w => w.ToString()).ToList();
         entity.PreferredWaveSizes = prefs.PreferredWaveSizes.Select(s => s.ToString()).ToList();
@@ -40,7 +40,7 @@ public class PreferencesService(AppDbContext db)
     {
         SkillLevel = Enum.Parse<SkillLevel>(e.SkillLevel),
         CrowdTolerance = Enum.Parse<CrowdLevel>(e.CrowdTolerance),
-        PreferredRegion = e.PreferredRegion == "" ? null : Enum.Parse<Region>(e.PreferredRegion),
+        PreferredRegions = e.PreferredRegions.Select(Enum.Parse<Region>).ToList(),
         BoardTypes = e.BoardTypes.Select(Enum.Parse<BoardType>).ToList(),
         PreferredWaveTypes = e.PreferredWaveTypes.Select(Enum.Parse<WaveType>).ToList(),
         PreferredWaveSizes = e.PreferredWaveSizes.Select(Enum.Parse<WaveSize>).ToList(),

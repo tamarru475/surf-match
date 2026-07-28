@@ -11,7 +11,6 @@ public enum Region
     Taranaki,
     Kaikoura,
     Wellington,
-    Nelson,
     WestCoast,
     Otago
 }
