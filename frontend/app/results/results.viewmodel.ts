@@ -46,8 +46,21 @@ export function useResultsViewModel(): ResultsViewModel {
 
   useEffect(() => {
     if (!user) return
+
+    const pendingFavorite = sessionStorage.getItem('pending_favorite')
+    if (pendingFavorite) sessionStorage.removeItem('pending_favorite')
+
     fetchFavorites()
-      .then(favs => setFavoritedIds(new Set(favs.map(f => f.spotId))))
+      .then(favs => {
+        const ids = new Set(favs.map(f => f.spotId))
+        setFavoritedIds(ids)
+        if (pendingFavorite && !ids.has(pendingFavorite)) {
+          setFavoritedIds(prev => new Set([...prev, pendingFavorite]))
+          addFavorite(pendingFavorite).catch(() => {
+            setFavoritedIds(prev => { const n = new Set(prev); n.delete(pendingFavorite); return n })
+          })
+        }
+      })
       .catch(() => {})
   }, [user])
 

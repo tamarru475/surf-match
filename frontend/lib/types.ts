@@ -22,7 +22,7 @@ export const FACILITIES: Facility[] = ['Bathrooms', 'Showers', 'SurfClub', 'Rent
 export interface UserPreferences {
   skillLevel: SkillLevel;
   crowdTolerance: CrowdLevel;
-  preferredRegion?: Region;
+  preferredRegions: Region[];
   boardTypes: BoardType[];
   preferredWaveTypes: WaveType[];
   preferredWaveSizes: WaveSize[];

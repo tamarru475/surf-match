@@ -34,7 +34,7 @@ const FAKE_RESPONSE = { recommendations: [], preferences: {}, warnings: [] };
 const SAVED_PREFS: UserPreferences = {
   skillLevel: 'Advanced',
   crowdTolerance: 'Quiet',
-  preferredRegion: 'Wellington',
+  preferredRegions: ['Wellington'],
   boardTypes: ['Shortboard'],
   preferredWaveTypes: ['ReefBreak'],
   preferredWaveSizes: ['HeadHigh'],
@@ -212,12 +212,12 @@ describe('prefsToAnswers', () => {
     const answers = prefsToAnswers(SAVED_PREFS);
     expect(answers.skillLevel).toBe('Advanced');
     expect(answers.crowdTolerance).toBe('Quiet');
-    expect(answers.preferredRegion).toBe('Wellington');
+    expect(answers.preferredRegions).toEqual(['Wellington']);
     expect(answers.boardTypes).toEqual(['Shortboard']);
   });
 
-  it('maps undefined preferredRegion to empty string', () => {
-    const answers = prefsToAnswers({ ...SAVED_PREFS, preferredRegion: undefined });
-    expect(answers.preferredRegion).toBe('');
+  it('maps empty regions to empty array', () => {
+    const answers = prefsToAnswers({ ...SAVED_PREFS, preferredRegions: [] });
+    expect(answers.preferredRegions).toEqual([]);
   });
 });

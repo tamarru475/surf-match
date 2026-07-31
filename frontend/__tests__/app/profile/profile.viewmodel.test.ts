@@ -39,6 +39,7 @@ const FAKE_PROFILE: Profile = {
 const FAKE_PREFS: UserPreferences = {
   skillLevel: 'Intermediate',
   crowdTolerance: 'Quiet',
+  preferredRegions: [],
   boardTypes: ['Shortboard'],
   preferredWaveTypes: ['BeachBreak'],
   preferredWaveSizes: ['WaistHigh'],
@@ -66,7 +67,7 @@ describe('useProfileViewModel — load', () => {
 
   it('seeds location from quiz region when profile.location is null', async () => {
     mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: null });
-    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegion: 'Northland' });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['Northland'] });
 
     const { result } = renderHook(() => useProfileViewModel());
     await act(async () => {});

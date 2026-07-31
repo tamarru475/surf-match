@@ -70,13 +70,12 @@ export const QUESTIONS: Question[] = [
     ],
   },
   {
-    field: 'preferredRegion',
-    title: 'Which region are you in?',
-    subtitle: 'Required · choose one',
-    required: true,
-    multiSelect: false,
+    field: 'preferredRegions',
+    title: 'Which regions are you surfing?',
+    subtitle: "Optional · select all that apply, or tap Skip — we'll show all of NZ",
+    required: false,
+    multiSelect: true,
     options: [
-      { label: 'Anywhere in NZ', value: 'Anywhere' },
       { label: 'Northland', value: 'Northland' },
       { label: 'Auckland', value: 'Auckland' },
       { label: 'Coromandel / Bay of Plenty', value: 'BayOfPlenty' },

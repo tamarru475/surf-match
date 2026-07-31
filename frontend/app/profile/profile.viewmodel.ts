@@ -39,7 +39,7 @@ export const useProfileViewModel = (): ProfileViewModel => {
     ])
       .then(([p, prefs]) => {
         // Seed location from quiz region if not yet saved on profile.
-        setProfile({ ...p, location: p.location ?? prefs?.preferredRegion ?? null });
+        setProfile({ ...p, location: p.location ?? prefs?.preferredRegions[0] ?? null });
         setPreferences(prefs);
         setSkillLevel(prefs?.skillLevel ?? null);
       })

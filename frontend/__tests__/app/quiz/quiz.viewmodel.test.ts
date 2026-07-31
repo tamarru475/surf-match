@@ -7,10 +7,10 @@ describe('INITIAL_ANSWERS', () => {
   it('has empty strings for required single-select fields', () => {
     expect(INITIAL_ANSWERS.skillLevel).toBe('');
     expect(INITIAL_ANSWERS.crowdTolerance).toBe('');
-    expect(INITIAL_ANSWERS.preferredRegion).toBe('');
   });
 
   it('has empty arrays for multi-select fields', () => {
+    expect(INITIAL_ANSWERS.preferredRegions).toEqual([]);
     expect(INITIAL_ANSWERS.boardTypes).toEqual([]);
     expect(INITIAL_ANSWERS.preferredWaveTypes).toEqual([]);
     expect(INITIAL_ANSWERS.preferredWaveSizes).toEqual([]);
@@ -25,7 +25,7 @@ describe('buildPreferences', () => {
     ...INITIAL_ANSWERS,
     skillLevel: 'Intermediate',
     crowdTolerance: 'Moderate',
-    preferredRegion: 'Auckland',
+    preferredRegions: ['Auckland', 'Waikato'],
     boardTypes: ['Longboard', 'Fish'],
   };
 
@@ -35,19 +35,19 @@ describe('buildPreferences', () => {
     expect(prefs.crowdTolerance).toBe('Moderate');
   });
 
-  it('maps preferred region', () => {
+  it('maps preferred regions list', () => {
     const prefs = buildPreferences(answers);
-    expect(prefs.preferredRegion).toBe('Auckland');
+    expect(prefs.preferredRegions).toEqual(['Auckland', 'Waikato']);
+  });
+
+  it('maps empty regions to empty array (anywhere in NZ)', () => {
+    const prefs = buildPreferences({ ...answers, preferredRegions: [] });
+    expect(prefs.preferredRegions).toEqual([]);
   });
 
   it('maps board types array', () => {
     const prefs = buildPreferences(answers);
     expect(prefs.boardTypes).toEqual(['Longboard', 'Fish']);
-  });
-
-  it('maps the "Anywhere" region sentinel to undefined', () => {
-    const prefs = buildPreferences({ ...answers, preferredRegion: 'Anywhere' });
-    expect(prefs.preferredRegion).toBeUndefined();
   });
 
   it('strips the "None" facilities sentinel down to an empty array', () => {

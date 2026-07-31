@@ -36,10 +36,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signOut = useCallback(async () => {
+    sessionStorage.removeItem('pending_favorite');
+    sessionStorage.removeItem('auth_return_to');
     await supabase.auth.signOut();
   }, []);
 
   const openAuthModal = useCallback((mode: 'login' | 'signup' = 'login') => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('auth_return_to', window.location.pathname + window.location.search);
+    }
     setAuthModalMode(mode);
     setAuthModalOpen(true);
   }, []);

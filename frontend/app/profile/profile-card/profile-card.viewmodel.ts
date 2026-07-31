@@ -118,7 +118,7 @@ export const useProfileCardViewModel = (profile: Profile | null): ProfileCardVie
     }
   }, [clearPending]);
 
-  const avatarLetter = ((saved?.displayName ?? saved?.email ?? profile?.email ?? '?')[0]).toUpperCase();
+  const avatarLetter = ((saved?.displayName || saved?.email || profile?.email || '?')[0]).toUpperCase();
 
   return {
     avatarUrl, avatarLetter, uploading, pendingImageSrc,
