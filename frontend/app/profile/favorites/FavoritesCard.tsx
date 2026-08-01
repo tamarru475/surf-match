@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, X, Zap } from 'lucide-react';
 import { cx } from '@/lib/utils';
-import { REGION_GRADIENTS, REGION_LABELS, SPOT_IMAGES } from '@/lib/constants';
+import { REGION_GRADIENTS, SPOT_IMAGES, spotRegionLabel } from '@/lib/constants';
 import type { FavoriteSpot } from '@/lib/types';
 import SpotModal from '@/components/results/SpotModal';
 import { useFavoritesViewModel } from './favorites.viewmodel';
@@ -54,7 +54,7 @@ const FavoritesCard = () => {
                         <p className={styles.spotName}>{spot.name}</p>
                         <p className={styles.spotRegion}>
                           <MapPin size={11} className={styles.pin} />
-                          {REGION_LABELS[spot.region]}
+                          {spotRegionLabel(spot.name, spot.region)}
                         </p>
                       </div>
                     </div>

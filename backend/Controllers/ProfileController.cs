@@ -22,8 +22,8 @@ public class ProfileController(ProfileService profiles, AvatarService avatar) : 
     [HttpPut]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest req)
     {
-        var user = await profiles.UpdateAsync(User.GetUserId(), req);
-        return user is null ? NotFound() : Ok(ToResponse(user));
+        var user = await profiles.UpdateAsync(User.GetUserId(), User.GetEmail(), req);
+        return Ok(ToResponse(user));
     }
 
     [HttpPost("avatar")]

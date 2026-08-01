@@ -69,11 +69,11 @@ export interface Profile {
 }
 
 export interface UpdateProfileData {
-  displayName: string | null;
-  location: string | null;
-  bio: string | null;
-  instagramHandle: string | null;
-  tikTokHandle: string | null;
+  displayName: string;
+  location: string;
+  bio: string;
+  instagramHandle: string;
+  tikTokHandle: string;
 }
 
 export interface SurfSession {

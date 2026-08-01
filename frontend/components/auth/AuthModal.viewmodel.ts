@@ -66,7 +66,11 @@ export const useAuthModalViewModel = (): AuthModalViewModel => {
 
     const returnTo = sessionStorage.getItem('auth_return_to') || '/profile';
     sessionStorage.removeItem('auth_return_to');
-    router.push(returnTo);
+    // Skip navigation if already on the target page — pushing the same URL
+    // remounts the page which races with the pending_favorite effect.
+    if (typeof window === 'undefined' || window.location.pathname !== returnTo) {
+      router.push(returnTo);
+    }
   };
 
   const handleSubmit = useCallback(async () => {

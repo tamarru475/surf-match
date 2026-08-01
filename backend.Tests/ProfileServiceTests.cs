@@ -52,9 +52,8 @@ public class ProfileServiceTests
         await svc.GetOrCreateAsync(id, "surfer@example.com");
 
         var req = new UpdateProfileRequest("Tamar", "Raglan, NZ", "Loves big waves", "tamar_surfs", "tamar_surfs");
-        var updated = await svc.UpdateAsync(id, req);
+        var updated = await svc.UpdateAsync(id, "surfer@example.com", req);
 
-        Assert.NotNull(updated);
         Assert.Equal("Tamar", updated.DisplayName);
         Assert.Equal("Loves big waves", updated.Bio);
         Assert.Equal("tamar_surfs", updated.InstagramHandle);
@@ -62,30 +61,35 @@ public class ProfileServiceTests
     }
 
     [Fact]
-    public async Task Update_clears_optional_fields_when_null_is_passed()
+    public async Task Update_clears_optional_fields_when_empty_string_is_passed()
     {
         await using var db = CreateDb();
         var svc = new ProfileService(db);
         var id = Guid.NewGuid();
         await svc.GetOrCreateAsync(id, "surfer@example.com");
-        await svc.UpdateAsync(id, new UpdateProfileRequest("Tamar", "Raglan, NZ", "Bio", "ig", "tt"));
+        await svc.UpdateAsync(id, "surfer@example.com", new UpdateProfileRequest("Tamar", "Raglan, NZ", "Bio", "ig", "tt"));
 
-        var updated = await svc.UpdateAsync(id, new UpdateProfileRequest(null, null, null, null, null));
+        var updated = await svc.UpdateAsync(id, "surfer@example.com", new UpdateProfileRequest("", "", "", "", ""));
 
-        Assert.NotNull(updated);
-        Assert.Null(updated.DisplayName);
-        Assert.Null(updated.Bio);
+        Assert.Equal("", updated.DisplayName);
+        Assert.Equal("", updated.Bio);
     }
 
     [Fact]
-    public async Task Update_returns_null_for_unknown_user()
+    public async Task Update_creates_user_row_when_it_does_not_exist_yet()
     {
+        // PUT /me can be called before GET /me in edge cases; UpdateAsync should
+        // create the row rather than failing.
         await using var db = CreateDb();
         var svc = new ProfileService(db);
+        var id = Guid.NewGuid();
 
-        var result = await svc.UpdateAsync(Guid.NewGuid(), new UpdateProfileRequest(null, null, null, null, null));
+        var updated = await svc.UpdateAsync(id, "surfer@example.com", new UpdateProfileRequest("Tamar", "Auckland", "", "", ""));
 
-        Assert.Null(result);
+        Assert.Equal(id, updated.Id);
+        Assert.Equal("Tamar", updated.DisplayName);
+        Assert.Equal("Auckland", updated.Location);
+        Assert.Equal(1, await db.Users.CountAsync());
     }
 
     [Fact]

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { MapPin, Wind, XCircle } from 'lucide-react';
-import { REGION_GRADIENTS, REGION_LABELS, SPOT_IMAGES } from '@/lib/constants';
+import { REGION_GRADIENTS, SPOT_IMAGES, spotRegionLabel } from '@/lib/constants';
 import { useLastSessionViewModel } from './last-session.viewmodel';
 import styles from './LastSessionCard.module.css';
 
@@ -52,7 +52,7 @@ const LastSessionCard = () => {
           <p className={styles.bannerSpotName}>{spotName}</p>
           <p className={styles.bannerRegion}>
             <MapPin size={13} />
-            {REGION_LABELS[region]}
+            {spotRegionLabel(spotName, region)}
           </p>
         </div>
 

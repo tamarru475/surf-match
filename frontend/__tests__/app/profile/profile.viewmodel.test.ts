@@ -13,11 +13,13 @@ jest.mock('next/navigation', () => ({
 const mockFetchProfile          = jest.fn();
 const mockFetchUserPreferences  = jest.fn();
 const mockFetchRecommendations  = jest.fn();
+const mockUpdateProfile         = jest.fn();
 jest.mock('../../../lib/api', () => ({
   ...jest.requireActual('../../../lib/api'),
   fetchProfile:           (...args: unknown[]) => mockFetchProfile(...args),
   fetchUserPreferences:   (...args: unknown[]) => mockFetchUserPreferences(...args),
   fetchRecommendations:   (...args: unknown[]) => mockFetchRecommendations(...args),
+  updateProfile:          (...args: unknown[]) => mockUpdateProfile(...args),
 }));
 
 let mockUser: object | null = { id: 'user-1' };
@@ -50,6 +52,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockUser = { id: 'user-1' };
   sessionStorage.clear();
+  mockUpdateProfile.mockResolvedValue(FAKE_PROFILE);
 });
 
 describe('useProfileViewModel — load', () => {
@@ -65,14 +68,67 @@ describe('useProfileViewModel — load', () => {
     expect(result.current.loading).toBe(false);
   });
 
-  it('seeds location from quiz region when profile.location is null', async () => {
+  it('seeds location from first quiz region (raw enum value) when profile.location is null', async () => {
     mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: null });
-    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['Northland'] });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['BayOfPlenty'] });
 
     const { result } = renderHook(() => useProfileViewModel());
     await act(async () => {});
 
-    expect(result.current.profile?.location).toBe('Northland');
+    // Raw enum value matches the <select> option values in ProfileCard.
+    expect(result.current.profile?.location).toBe('BayOfPlenty');
+  });
+
+  it('seeds location when profile.location is empty string (new-user backend default)', async () => {
+    // The backend initialises UserEntity.Location to "" — not null — so ?? would
+    // not fall through to the seeded value. We use || to handle this case.
+    mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: '' });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['BayOfPlenty'] });
+
+    const { result } = renderHook(() => useProfileViewModel());
+    await act(async () => {});
+
+    expect(result.current.profile?.location).toBe('BayOfPlenty');
+  });
+
+  it('persists seeded location when profile.location is empty string', async () => {
+    mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: '' });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['Auckland'] });
+
+    renderHook(() => useProfileViewModel());
+    await act(async () => {});
+
+    expect(mockUpdateProfile).toHaveBeenCalledWith(expect.objectContaining({ location: 'Auckland' }));
+  });
+
+  it('persists seeded location via updateProfile', async () => {
+    mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: null });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['Auckland'] });
+
+    renderHook(() => useProfileViewModel());
+    await act(async () => {});
+
+    expect(mockUpdateProfile).toHaveBeenCalledWith(expect.objectContaining({ location: 'Auckland' }));
+  });
+
+  it('does not call updateProfile when profile already has a location', async () => {
+    mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: 'Northland' });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: ['Auckland'] });
+
+    renderHook(() => useProfileViewModel());
+    await act(async () => {});
+
+    expect(mockUpdateProfile).not.toHaveBeenCalled();
+  });
+
+  it('does not call updateProfile when preferredRegions is empty', async () => {
+    mockFetchProfile.mockResolvedValue({ ...FAKE_PROFILE, location: null });
+    mockFetchUserPreferences.mockResolvedValue({ ...FAKE_PREFS, preferredRegions: [] });
+
+    renderHook(() => useProfileViewModel());
+    await act(async () => {});
+
+    expect(mockUpdateProfile).not.toHaveBeenCalled();
   });
 
   it('sets preferences to null when fetchUserPreferences returns 404', async () => {
