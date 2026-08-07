@@ -5,6 +5,6 @@ import { createClient } from '@supabase/supabase-js';
 // set as NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel
 // project settings — without them the app cannot authenticate at runtime.
 export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL      ?? 'https://placeholder.supabase.co',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'placeholder-anon-key',
+  process.env.NEXT_PUBLIC_SUPABASE_URL      || 'https://placeholder.supabase.co',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key',
 );
