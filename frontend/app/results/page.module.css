@@ -2,6 +2,8 @@
 
 .root   { @apply min-h-screen bg-gray-50; }
 
+.loadingState { @apply flex flex-col items-center justify-center min-h-screen bg-gray-50; }
+
 .header {
   @apply bg-white border-b border-gray-100 px-6 py-4
          flex items-center justify-between;
@@ -9,9 +11,20 @@
 .headerTitle    { @apply text-xl font-bold text-gray-900; }
 .headerSubtitle { @apply text-sm text-gray-400; }
 
+.headerActions {
+  @apply flex items-center gap-3;
+}
+
+.createAccount {
+  @apply text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700
+         px-4 py-1.5 rounded-xl transition-colors cursor-pointer;
+  touch-action: manipulation;
+}
+
 .startOver {
   @apply text-sm font-medium text-sky-600 hover:text-sky-700
          transition-colors cursor-pointer;
+  touch-action: manipulation;
 }
 
 .grid {

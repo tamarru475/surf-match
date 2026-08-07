@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchRecommendations } from '@/lib/api';
+import { fetchRecommendations, fetchUserPreferences, saveUserPreferences } from '@/lib/api';
+import { useAuth } from '@/lib/AuthContext';
 import { QUESTIONS } from '@/lib/questions';
 import type { Question } from '@/lib/questions';
 import type {
@@ -30,7 +31,7 @@ export const getNextLabel = (question: Question, value: string | string[], isLas
 export type Answers = {
   skillLevel: string;
   crowdTolerance: string;
-  preferredRegion: string;
+  preferredRegions: string[];
   boardTypes: string[];
   preferredWaveTypes: string[];
   preferredWaveSizes: string[];
@@ -40,7 +41,7 @@ export type Answers = {
 export const INITIAL_ANSWERS: Answers = {
   skillLevel: '',
   crowdTolerance: '',
-  preferredRegion: '',
+  preferredRegions: [],
   boardTypes: [],
   preferredWaveTypes: [],
   preferredWaveSizes: [],
@@ -50,25 +51,45 @@ export const INITIAL_ANSWERS: Answers = {
 export const buildPreferences = (answers: Answers): UserPreferences => ({
   skillLevel:          answers.skillLevel as SkillLevel,
   crowdTolerance:      answers.crowdTolerance as CrowdLevel,
-  preferredRegion:     answers.preferredRegion && answers.preferredRegion !== 'Anywhere'
-                          ? (answers.preferredRegion as Region)
-                          : undefined,
+  preferredRegions:    answers.preferredRegions as Region[],
   boardTypes:          answers.boardTypes as BoardType[],
   preferredWaveTypes:  answers.preferredWaveTypes as WaveType[],
   preferredWaveSizes:  answers.preferredWaveSizes as WaveSize[],
   preferredFacilities: answers.preferredFacilities.filter((f) => f !== 'None') as Facility[],
 });
 
+export const prefsToAnswers = (prefs: UserPreferences): Answers => ({
+  skillLevel:          prefs.skillLevel,
+  crowdTolerance:      prefs.crowdTolerance,
+  preferredRegions:    [...prefs.preferredRegions],
+  boardTypes:          [...prefs.boardTypes],
+  preferredWaveTypes:  [...prefs.preferredWaveTypes],
+  preferredWaveSizes:  [...prefs.preferredWaveSizes],
+  preferredFacilities: [...prefs.preferredFacilities],
+});
+
 export const useQuizViewModel = () => {
   const router = useRouter();
-  const [step, setStep]       = useState(0);
-  const [answers, setAnswers] = useState<Answers>(INITIAL_ANSWERS);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState<string | null>(null);
+  const { user } = useAuth();
+  const [step, setStep]               = useState(0);
+  const [answers, setAnswers]         = useState<Answers>(INITIAL_ANSWERS);
+  const [loading, setLoading]         = useState(false);
+  const [prefillLoading, setPrefillLoading] = useState(false);
+  const [error, setError]             = useState<string | null>(null);
 
-  const question      = QUESTIONS[step];
-  const isLastStep    = step === QUESTIONS.length - 1;
-  const value         = answers[question.field as keyof Answers];
+  // Pre-fill quiz from saved preferences when the user is logged in.
+  useEffect(() => {
+    if (!user) return;
+    setPrefillLoading(true);
+    fetchUserPreferences()
+      .then((prefs) => setAnswers(prefsToAnswers(prefs)))
+      .catch(() => { /* 404 or network error — start blank */ })
+      .finally(() => setPrefillLoading(false));
+  }, [user]);
+
+  const question       = QUESTIONS[step];
+  const isLastStep     = step === QUESTIONS.length - 1;
+  const value          = answers[question.field as keyof Answers];
   const isNextDisabled = !isQuestionAnswered(question, value);
   const nextLabel      = getNextLabel(question, value, isLastStep);
 
@@ -84,7 +105,10 @@ export const useQuizViewModel = () => {
     setError(null);
 
     try {
-      const data = await fetchRecommendations(buildPreferences(answers));
+      const prefs = buildPreferences(answers);
+      const data = await fetchRecommendations(prefs);
+      // Save preferences for logged-in users; don't block navigation on failure.
+      if (user) await saveUserPreferences(prefs).catch(() => {});
       sessionStorage.setItem('surfmatch_results', JSON.stringify(data));
       router.push('/results');
     } catch {
@@ -93,5 +117,5 @@ export const useQuizViewModel = () => {
     }
   };
 
-  return { question, step, value, loading, error, isLastStep, isNextDisabled, nextLabel, handleChange, handleBack, handleNext };
+  return { question, step, value, loading, prefillLoading, error, isLastStep, isNextDisabled, nextLabel, handleChange, handleBack, handleNext };
 };

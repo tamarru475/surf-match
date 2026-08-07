@@ -1,0 +1,107 @@
+@reference "tailwindcss";
+
+.card  { @apply bg-white rounded-2xl shadow-sm p-6; }
+
+.header {
+  @apply flex items-center justify-between mb-5;
+}
+
+.label {
+  @apply text-xs font-semibold tracking-widest text-slate-400 uppercase;
+}
+
+.addBtn {
+  @apply text-sm font-semibold text-slate-600 border border-slate-200
+         rounded-full px-4 py-1.5 hover:border-slate-400 transition-colors;
+}
+
+.empty { @apply text-sm text-slate-400; }
+.error { @apply text-sm text-red-500; }
+
+.gridWrap {
+  overflow-x: auto;
+  padding: 8px;
+  margin: -8px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.grid {
+  @apply flex gap-3;
+}
+
+/* ── Spot card wrapper (relative context for X button) ── */
+
+.spotCardWrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: 180px;
+}
+
+/* ── Unified card: photo + action button ── */
+
+.spotCard {
+  @apply rounded-xl overflow-hidden bg-white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.spotCardWrapper:hover .spotCard {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Photo button ── */
+
+.photoBtn {
+  @apply block w-full cursor-pointer;
+}
+
+.photo {
+  @apply relative w-full overflow-hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.overlay {
+  @apply absolute inset-0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 55%);
+}
+
+/* ── Quick action button ── */
+
+.actionBtn {
+  @apply w-full flex items-center justify-center gap-1.5
+         py-2.5 px-3 text-xs font-semibold text-slate-500
+         border-t border-slate-100
+         hover:bg-sky-50 hover:text-sky-700 hover:border-sky-100
+         transition-colors duration-150 cursor-pointer;
+}
+
+.actionBtnLogged {
+  @apply text-emerald-600 hover:bg-white cursor-default;
+}
+
+/* ── Remove (X) button ── */
+
+.removeBtn {
+  @apply absolute top-2 right-2 w-6 h-6 rounded-full bg-black/40 text-white
+         flex items-center justify-center opacity-0 transition-opacity cursor-pointer
+         hover:bg-black/60 z-10;
+}
+.spotCardWrapper:hover .removeBtn { @apply opacity-100; }
+
+/* ── Spot meta inside photo ── */
+
+.meta {
+  @apply absolute bottom-0 left-0 right-0 p-3 text-left;
+}
+
+.spotName {
+  @apply text-sm font-bold text-white leading-tight;
+}
+
+.spotRegion {
+  @apply flex items-center gap-1 text-xs text-sky-300 mt-0.5 font-medium;
+}
+
+.pin { @apply flex-shrink-0; }

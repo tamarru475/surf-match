@@ -11,7 +11,8 @@ Branching model: `feature/*` or `bugfix/*` -> `develop` -> `main`. `develop` is 
    - Backend: `cd backend.Tests && dotnet test` (or `dotnet test backend.Tests/backend.Tests.csproj` from repo root).
    - Frontend: `cd frontend && npm test`.
    - Add/update tests for any new logic — table-driven (`it.each`) for multi-scenario cases.
-4. **Show the diff for review before committing anything.** Run `git diff` / `git status` and let the user look it over. Do not stage or commit until they explicitly say to proceed.
+4. **Run the app locally and wait for the user to review.** Start the relevant server(s), show the user what to test, and explicitly wait for their feedback. Do not proceed until they confirm the feature works as expected.
+5. **Show the diff for review before committing anything.** Run `git diff` / `git status` and let the user look it over. Do not stage or commit until they explicitly say to proceed.
 5. **Commit** with a short, why-focused message (see repo-wide git commit instructions for format/co-author trailer).
 6. **Push** the branch: `git push -u origin <branch>`.
 7. **Open a PR into `develop`** (not `main`):

@@ -5,8 +5,7 @@ import type { CrowdLevel, Facility, Region, SkillLevel, WaveSize, WaveType } fro
 export const REGION_LABELS: Record<Region, string> = {
   Northland:    'Northland',
   Auckland:     'Auckland',
-  Coromandel:   'Coromandel',
-  BayOfPlenty:  'Bay of Plenty',
+  BayOfPlenty:  'Coromandel / Bay of Plenty',
   Waikato:      'Waikato',
   Gisborne:     'Gisborne',
   Christchurch: 'Christchurch',
@@ -16,11 +15,35 @@ export const REGION_LABELS: Record<Region, string> = {
   Otago:        'Otago',
 };
 
+// Spot-level sub-area for BayOfPlenty — distinguishes Coromandel Peninsula
+// spots from Bay of Plenty (Tauranga / Eastern Bay) spots.
+export const BAYOFPLENTY_SUBAREA: Partial<Record<string, string>> = {
+  // Coromandel Peninsula
+  'Pauanui':         'Coromandel',
+  'Whangamata':      'Coromandel',
+  'Tairua':          'Coromandel',
+  'Hot Water Beach': 'Coromandel',
+  'Waihi Beach':     'Coromandel',
+  // Bay of Plenty (Tauranga / Eastern Bay)
+  'Mount Maunganui': 'Bay of Plenty',
+  'Papamoa Beach':   'Bay of Plenty',
+  'Ohope Beach':     'Bay of Plenty',
+  'Waihau Bay':      'Bay of Plenty',
+  'Tay Street':      'Bay of Plenty',
+};
+
+// Returns a spot-specific region label. For BayOfPlenty spots this resolves to
+// 'Coromandel' or 'Bay of Plenty' rather than the combined quiz label, so the
+// user knows exactly where each spot is.
+export const spotRegionLabel = (spotName: string, region: Region): string =>
+  region === 'BayOfPlenty'
+    ? (BAYOFPLENTY_SUBAREA[spotName] ?? REGION_LABELS[region])
+    : REGION_LABELS[region];
+
 export const REGION_GRADIENTS: Record<Region, string> = {
   Northland:    'linear-gradient(135deg, #06b6d4, #1d4ed8)',
   Auckland:     'linear-gradient(135deg, #0ea5e9, #4338ca)',
-  Coromandel:   'linear-gradient(135deg, #14b8a6, #0891b2)',
-  BayOfPlenty:  'linear-gradient(135deg, #38bdf8, #0284c7)',
+  BayOfPlenty:  'linear-gradient(135deg, #14b8a6, #0284c7)',
   Waikato:      'linear-gradient(135deg, #0284c7, #1e3a5f)',
   Gisborne:     'linear-gradient(135deg, #22d3ee, #0f766e)',
   Christchurch: 'linear-gradient(135deg, #64748b, #1d4ed8)',
@@ -124,4 +147,25 @@ export const SPOT_IMAGES: Partial<Record<string, string>> = {
   'Makara Beach':     '/images/Makara-Beach.jpg',
   'St Clair Beach':   '/images/St-Clair-Beach.jpg',
   'St Kilda':         '/images/St-Kilda.jpg',
+  'Aramoana':         '/images/aramoana.jpg',
+  'Blackhead':        '/images/blackhead.jpg',
+  "Gooch's Beach":    '/images/goochs-beach.jpg',
+  'Hokitika Beach':   '/images/hokitika-beach.jpg',
+  'Hot Water Beach':  '/images/hot-water-beach.jpg',
+  'Houghton Bay':     '/images/houghton-bay.jpg',
+  'Indicators':       '/images/indicators.jpg',
+  'Kaikoura Point':   '/images/kaikoura-point.jpg',
+  'Magnet Bay':       '/images/magnet-bay.jpeg',
+  'New Brighton':     '/images/new-brighton.jpg',
+  'Okiwi Bay':        '/images/okiwi-bay.jpg',
+  'Papamoa Beach':    '/images/papamoa-beach.jpg',
+  'Pencarrow Head':   '/images/pencarrow-head.jpg',
+  'Punakaiki':        '/images/punakaiki.jpg',
+  'Ruapuke Beach':    '/images/ruapuke.jpg',
+  'Sponge Bay':       '/images/sponge-bay.jpg',
+  'Tay Street':       '/images/tay-street.jpg',
+  'Waihau Bay':       '/images/waihau-bay.jpg',
+  'Waimairi Beach':   '/images/waimairi-beach.jpg',
+  'Ward Beach':       '/images/ward-beach.jpg',
+  'Whale Bay':        '/images/whale-bay.jpg',
 };

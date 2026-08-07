@@ -1,0 +1,99 @@
+@reference "tailwindcss";
+
+.root {
+  @apply min-h-screen pb-12;
+  background-image: url('/images/profile-background.jpg');
+  background-size: cover;
+  background-position: top center;
+  background-attachment: fixed;
+}
+
+@media (min-width: 768px) {
+  .root {
+    background-image: url('/images/profile-landscape-background.jpg');
+    background-position: center center;
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+.skeleton {
+  @apply rounded-2xl;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonSm  { height: 96px; }
+.skeletonMd  { height: 140px; }
+.skeletonLg  { height: 200px; }
+
+/* ── Top nav ── */
+.nav {
+  @apply flex items-center justify-between px-6 py-5 max-w-2xl mx-auto;
+}
+
+.navLogo {
+  @apply text-xl font-extrabold text-white tracking-tight;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.navRight { @apply flex items-center gap-3; }
+
+.navPill {
+  @apply text-sm font-semibold text-sky-800 border border-sky-200
+         bg-white px-4 py-1.5 rounded-full;
+}
+
+.logoutBtn {
+  @apply text-sm transition-colors cursor-pointer;
+  color: rgba(255,255,255,0.7);
+  touch-action: manipulation;
+}
+.logoutBtn:hover { color: white; }
+
+/* ── Cards ── */
+.page { @apply flex flex-col gap-4 px-4 max-w-2xl mx-auto; }
+.card { @apply bg-white rounded-2xl shadow-sm p-6; }
+
+/* ── Spots card ── */
+.sectionLabel {
+  @apply text-xs font-semibold tracking-widest text-slate-400 uppercase mb-2;
+}
+
+.spotsHeader { @apply flex items-center justify-between mb-4; }
+
+.addSpotBtn {
+  @apply text-sm font-medium text-sky-700 border border-sky-200
+         bg-white rounded-full px-4 py-1.5 hover:bg-sky-50
+         transition-colors cursor-pointer;
+  touch-action: manipulation;
+}
+
+.spotsEmpty { @apply text-sm text-slate-400 text-center py-6; }
+
+/* ── Bottom actions ── */
+.actions { @apply flex flex-col gap-3 px-4 max-w-2xl mx-auto mt-2; }
+
+.findWaveBtn {
+  @apply w-full flex items-center justify-center gap-2 bg-sky-900 hover:bg-sky-800
+         text-white font-bold text-base py-4 rounded-2xl shadow-md
+         transition-colors cursor-pointer;
+  touch-action: manipulation;
+}
+
+.findWaveBtn:disabled { @apply opacity-60 cursor-not-allowed; }
+
+.updatePrefsBtn {
+  @apply w-full flex items-center justify-center gap-2 text-slate-500
+         border border-dashed border-slate-300 font-medium text-sm
+         py-3.5 rounded-2xl hover:border-slate-400 hover:text-slate-600
+         transition-colors cursor-pointer bg-transparent;
+  touch-action: manipulation;
+}
+
+.error { @apply text-red-500; }

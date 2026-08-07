@@ -4,7 +4,6 @@ public enum Region
 {
     Northland,
     Auckland,
-    Coromandel,
     BayOfPlenty,
     Waikato,
     Gisborne,
@@ -12,5 +11,6 @@ public enum Region
     Taranaki,
     Kaikoura,
     Wellington,
+    WestCoast,
     Otago
 }

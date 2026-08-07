@@ -1,0 +1,104 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/AuthContext'
+import { addFavorite, fetchFavorites, logSurfSession, removeFavorite } from '@/lib/api'
+import type { RecommendationResponse, SpotRecommendation } from '@/lib/types'
+
+export interface ResultsViewModel {
+  data: RecommendationResponse | null
+  loading: boolean
+  activeSpot: SpotRecommendation | null
+  setActiveSpot: (spot: SpotRecommendation | null) => void
+  favoritedIds: Set<string>
+  handleToggleFavorite: (spotId: string) => void
+  loggedSessionIds: Set<string>
+  handleLogSession: (spotId: string) => void
+  handleStartOver: () => void
+  isLoggedIn: boolean
+}
+
+export function useResultsViewModel(): ResultsViewModel {
+  const router = useRouter()
+  const { user } = useAuth()
+  const [data, setData] = useState<RecommendationResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [activeSpot, setActiveSpot] = useState<SpotRecommendation | null>(null)
+  const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set())
+  const [loggedSessionIds, setLoggedSessionIds] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    const raw = sessionStorage.getItem('surfmatch_results')
+    if (!raw) {
+      router.replace('/')
+      setLoading(false)
+      return
+    }
+    try {
+      setData(JSON.parse(raw))
+    } catch {
+      router.replace('/')
+    }
+    setLoading(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!user) return
+
+    const pendingFavorite = sessionStorage.getItem('pending_favorite')
+    if (pendingFavorite) sessionStorage.removeItem('pending_favorite')
+
+    fetchFavorites()
+      .then(favs => {
+        const ids = new Set(favs.map(f => f.spotId))
+        setFavoritedIds(ids)
+        if (pendingFavorite && !ids.has(pendingFavorite)) {
+          setFavoritedIds(prev => new Set([...prev, pendingFavorite]))
+          addFavorite(pendingFavorite).catch(() => {
+            setFavoritedIds(prev => { const n = new Set(prev); n.delete(pendingFavorite); return n })
+          })
+        }
+      })
+      .catch(() => {})
+  }, [user])
+
+  const handleToggleFavorite = (spotId: string) => {
+    const wasFavorited = favoritedIds.has(spotId)
+    setFavoritedIds(prev => {
+      const next = new Set(prev)
+      wasFavorited ? next.delete(spotId) : next.add(spotId)
+      return next
+    })
+    const op = wasFavorited ? removeFavorite(spotId) : addFavorite(spotId)
+    op.catch(() => {
+      setFavoritedIds(prev => {
+        const next = new Set(prev)
+        wasFavorited ? next.add(spotId) : next.delete(spotId)
+        return next
+      })
+    })
+  }
+
+  const handleLogSession = (spotId: string) => {
+    logSurfSession(spotId)
+      .then(() => setLoggedSessionIds(prev => new Set([...prev, spotId])))
+      .catch(() => {})
+  }
+
+  const handleStartOver = () => router.push('/')
+
+  return {
+    data,
+    loading,
+    activeSpot,
+    setActiveSpot,
+    favoritedIds,
+    handleToggleFavorite,
+    loggedSessionIds,
+    handleLogSession,
+    handleStartOver,
+    isLoggedIn: !!user,
+  }
+}

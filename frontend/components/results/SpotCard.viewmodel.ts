@@ -3,14 +3,14 @@ import {
   CROWD_BADGES,
   FACILITY_LABELS,
   REGION_GRADIENTS,
-  REGION_LABELS,
   SKILL_BADGES,
   SPOT_IMAGES,
   WAVE_SIZE_LABELS,
   WAVE_TYPE_LABELS,
+  spotRegionLabel,
   type Badge,
 } from '@/lib/constants';
-import type { Facility, SpotRecommendation, UserPreferences } from '@/lib/types';
+import type { SpotBase, SpotRecommendation, UserPreferences } from '@/lib/types';
 
 export interface SpotCardViewModel {
   matchPct: number;
@@ -33,7 +33,7 @@ export const toSpotCardViewModel = (
   backgroundStyle: { background: REGION_GRADIENTS[spot.region] },
   imageUrl: SPOT_IMAGES[spot.name],
   name: spot.name,
-  regionLabel: REGION_LABELS[spot.region],
+  regionLabel: spotRegionLabel(spot.name, spot.region),
   description: spot.description,
   waveTypeLabel: WAVE_TYPE_LABELS[spot.waveType],
   waveSizeLabel: WAVE_SIZE_LABELS[spot.currentWaveSize],
@@ -41,7 +41,8 @@ export const toSpotCardViewModel = (
   skillBadge: SKILL_BADGES[spot.minSkillLevel],
 });
 
-export interface SpotModalViewModel extends SpotCardViewModel {
+export interface SpotModalViewModel extends Omit<SpotCardViewModel, 'matchPct'> {
+  matchPct: number | null;
   facilitiesLabels: string[];
   mapsUrl: string;
   skillLevel: string;
@@ -53,19 +54,28 @@ export interface SpotModalViewModel extends SpotCardViewModel {
 }
 
 export const toSpotModalViewModel = (
-  spot: SpotRecommendation,
-  preferences: UserPreferences,
+  spot: SpotBase,
+  preferences?: UserPreferences,
 ): SpotModalViewModel => {
-  const card = toSpotCardViewModel(spot, preferences);
+  const rec = spot as Partial<SpotRecommendation>;
   return {
-    ...card,
-    facilitiesLabels: spot.facilities.map((f: Facility) => FACILITY_LABELS[f]),
+    matchPct: preferences && rec.score !== undefined ? computeMatchPercent(rec.score, preferences) : null,
+    backgroundStyle: { background: REGION_GRADIENTS[spot.region] },
+    imageUrl: SPOT_IMAGES[spot.name],
+    name: spot.name,
+    regionLabel: spotRegionLabel(spot.name, spot.region),
+    description: spot.description,
+    waveTypeLabel: WAVE_TYPE_LABELS[spot.waveType],
+    waveSizeLabel: WAVE_SIZE_LABELS[spot.currentWaveSize],
+    crowdBadge: CROWD_BADGES[spot.typicalCrowd],
+    skillBadge: SKILL_BADGES[spot.minSkillLevel],
+    facilitiesLabels: spot.facilities.map((f) => FACILITY_LABELS[f]),
     mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' New Zealand')}`,
     skillLevel: spot.minSkillLevel,
     crowdLevel: spot.typicalCrowd,
     waveType: WAVE_TYPE_LABELS[spot.waveType],
     currentHeight: WAVE_SIZE_LABELS[spot.currentWaveSize],
-    hasNotes: spot.notes.length > 0,
-    notes: spot.notes,
+    hasNotes: (rec.notes?.length ?? 0) > 0,
+    notes: rec.notes ?? [],
   };
 };

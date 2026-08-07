@@ -1,15 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import ProgressIndicator from '@/components/ui/ProgressIndicator';
 import Button from '@/components/ui/Button';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import QuestionScreen from '@/components/quiz/QuestionScreen';
+import SkillCheckModal from '@/components/quiz/SkillCheckModal';
+import { useAuth } from '@/lib/AuthContext';
 import { QUESTIONS } from '@/lib/questions';
 import { useQuizViewModel } from './quiz.viewmodel';
 import styles from './page.module.css';
 
 const QuizPage = () => {
+  const { user } = useAuth();
   const vm = useQuizViewModel();
+  const [showSkillQuiz, setShowSkillQuiz] = useState(false);
 
   if (vm.loading) {
     return (
@@ -25,8 +30,17 @@ const QuizPage = () => {
         <ProgressIndicator current={vm.step + 1} total={QUESTIONS.length} />
       </div>
 
-      <div className={styles.body}>
-        <QuestionScreen question={vm.question} value={vm.value} onChange={vm.handleChange} />
+      <div className={`${styles.body}${vm.prefillLoading ? ` ${styles.bodyPrefilling}` : ''}`}>
+        <div key={vm.step} className={styles.question}>
+          <QuestionScreen question={vm.question} value={vm.value} onChange={vm.handleChange} />
+
+          {vm.step === 0 && (
+            <button className={styles.skillQuizLink} onClick={() => setShowSkillQuiz(true)}>
+              Not sure of your level? Take a quick quiz →
+            </button>
+          )}
+        </div>
+
         {vm.error && <p className={styles.error}>{vm.error}</p>}
       </div>
 
@@ -43,6 +57,17 @@ const QuizPage = () => {
           {vm.nextLabel}
         </Button>
       </div>
+
+      {showSkillQuiz && (
+        <SkillCheckModal
+          onClose={() => setShowSkillQuiz(false)}
+          onComplete={(level) => {
+            vm.handleChange(level);
+            setShowSkillQuiz(false);
+          }}
+          actionLabel={user ? 'Save to my profile' : 'Use this level'}
+        />
+      )}
     </main>
   );
 };

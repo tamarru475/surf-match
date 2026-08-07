@@ -1,15 +1,28 @@
 export type SkillLevel = 'NewToSurfing' | 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+export const SKILL_LEVELS: SkillLevel[] = ['NewToSurfing', 'Beginner', 'Intermediate', 'Advanced', 'Expert'];
+
 export type CrowdLevel = 'Quiet' | 'Moderate' | 'Busy';
-export type Region = 'Northland' | 'Auckland' | 'Coromandel' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
+export const CROWD_LEVELS: CrowdLevel[] = ['Quiet', 'Moderate', 'Busy'];
+
+export type Region = 'Northland' | 'Auckland' | 'BayOfPlenty' | 'Waikato' | 'Gisborne' | 'Christchurch' | 'Taranaki' | 'Kaikoura' | 'Wellington' | 'Otago';
+export const REGIONS: Region[] = ['Northland', 'Auckland', 'BayOfPlenty', 'Waikato', 'Gisborne', 'Christchurch', 'Taranaki', 'Kaikoura', 'Wellington', 'Otago'];
+
 export type WaveType = 'BeachBreak' | 'PointBreak' | 'ReefBreak';
+export const WAVE_TYPES: WaveType[] = ['BeachBreak', 'PointBreak', 'ReefBreak'];
+
 export type WaveSize = 'AnkleHigh' | 'KneeHigh' | 'WaistHigh' | 'HeadHigh' | 'DoubleOverhead';
+export const WAVE_SIZES: WaveSize[] = ['AnkleHigh', 'KneeHigh', 'WaistHigh', 'HeadHigh', 'DoubleOverhead'];
+
 export type BoardType = 'Rental' | 'Longboard' | 'Shortboard' | 'Fish' | 'Funboard';
+export const BOARD_TYPES: BoardType[] = ['Rental', 'Longboard', 'Shortboard', 'Fish', 'Funboard'];
+
 export type Facility = 'Bathrooms' | 'Showers' | 'SurfClub' | 'Rentals' | 'Lifeguard' | 'Campground';
+export const FACILITIES: Facility[] = ['Bathrooms', 'Showers', 'SurfClub', 'Rentals', 'Lifeguard', 'Campground'];
 
 export interface UserPreferences {
   skillLevel: SkillLevel;
   crowdTolerance: CrowdLevel;
-  preferredRegion?: Region;
+  preferredRegions: Region[];
   boardTypes: BoardType[];
   preferredWaveTypes: WaveType[];
   preferredWaveSizes: WaveSize[];
@@ -26,24 +39,60 @@ export interface ScoreBreakdown {
   facilityMatch: number;
 }
 
-export interface SpotRecommendation {
+export interface SpotBase {
   spotId: string;
   name: string;
   region: Region;
   waveType: WaveType;
   minSkillLevel: SkillLevel;
   typicalCrowd: CrowdLevel;
-  facilities: Facility[];
   currentWaveSize: WaveSize;
+  facilities: Facility[];
   description: string;
+}
+
+export interface SpotRecommendation extends SpotBase {
   score: number;
   notes: string[];
   breakdown: ScoreBreakdown;
+}
+
+export interface Profile {
+  id: string;
+  email: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  location: string | null;
+  bio: string | null;
+  instagramHandle: string | null;
+  tikTokHandle: string | null;
+}
+
+export interface UpdateProfileData {
+  displayName: string;
+  location: string;
+  bio: string;
+  instagramHandle: string;
+  tikTokHandle: string;
+}
+
+export interface SurfSession {
+  sessionId: string;
+  spotId: string;
+  spotName: string;
+  region: Region;
+  waveType: WaveType;
+  currentWaveSize: WaveSize;
+  surfedAt: string;
 }
 
 export interface RecommendationResponse {
   preferences: UserPreferences;
   recommendations: SpotRecommendation[];
   warnings: string[];
+}
+
+export interface FavoriteSpot extends SpotBase {
+  favoritedAt: string;
 }
 
