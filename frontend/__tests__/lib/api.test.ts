@@ -6,6 +6,7 @@ import type { UserPreferences } from '@/lib/types';
 const minPrefs: UserPreferences = {
   skillLevel: 'Beginner',
   crowdTolerance: 'Quiet',
+  preferredRegions: [],
   boardTypes: [],
   preferredWaveTypes: [],
   preferredWaveSizes: [],
@@ -47,6 +48,7 @@ describe('fetchRecommendations', () => {
 const base: UserPreferences = {
   skillLevel: 'Beginner',
   crowdTolerance: 'Quiet',
+  preferredRegions: [],
   boardTypes: [],
   preferredWaveTypes: [],
   preferredWaveSizes: [],

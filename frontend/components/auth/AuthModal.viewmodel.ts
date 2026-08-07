@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
-import { fetchUserPreferences } from '@/lib/api';
+import { saveUserPreferences } from '@/lib/api';
+import type { UserPreferences } from '@/lib/types';
 
 export interface AuthModalViewModel {
   mode: 'login' | 'signup';
@@ -52,11 +53,23 @@ export const useAuthModalViewModel = (): AuthModalViewModel => {
 
   const handlePostAuth = async () => {
     handleClose();
-    try {
-      await fetchUserPreferences();
-      router.push('/profile');
-    } catch {
-      router.push('/');
+
+    // If the user just finished the quiz without being logged in, sync those
+    // preferences to the backend now so they aren't lost.
+    const storedResults = sessionStorage.getItem('surfmatch_results');
+    if (storedResults) {
+      try {
+        const { preferences } = JSON.parse(storedResults) as { preferences: UserPreferences };
+        if (preferences) await saveUserPreferences(preferences).catch(() => {});
+      } catch {}
+    }
+
+    const returnTo = sessionStorage.getItem('auth_return_to') || '/profile';
+    sessionStorage.removeItem('auth_return_to');
+    // Skip navigation if already on the target page — pushing the same URL
+    // remounts the page which races with the pending_favorite effect.
+    if (typeof window === 'undefined' || window.location.pathname !== returnTo) {
+      router.push(returnTo);
     }
   };
 

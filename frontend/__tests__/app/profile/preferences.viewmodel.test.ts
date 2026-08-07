@@ -14,6 +14,7 @@ jest.mock('../../../lib/api', () => ({
 const FAKE_PREFS: UserPreferences = {
   skillLevel: 'Intermediate',
   crowdTolerance: 'Quiet',
+  preferredRegions: [],
   boardTypes: ['Shortboard'],
   preferredWaveTypes: ['BeachBreak'],
   preferredWaveSizes: ['WaistHigh'],

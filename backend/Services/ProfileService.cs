@@ -22,20 +22,31 @@ public class ProfileService(AppDbContext db)
             UpdatedAt = DateTime.UtcNow,
         };
         db.Users.Add(user);
-        await db.SaveChangesAsync();
+        try
+        {
+            await db.SaveChangesAsync();
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+        {
+            // Concurrent request beat us to the insert — clear the tracker and
+            // re-fetch the row that was just created by the other request.
+            db.ChangeTracker.Clear();
+            user = await db.Users.FindAsync(userId)
+                ?? throw new InvalidOperationException($"User {userId} not found after concurrent insert.");
+        }
         return user;
     }
 
-    public async Task<UserEntity?> UpdateAsync(Guid userId, UpdateProfileRequest req)
+    public async Task<UserEntity> UpdateAsync(Guid userId, string email, UpdateProfileRequest req)
     {
-        var user = await db.Users.FindAsync(userId);
-        if (user is null) return null;
-
-        user.DisplayName = req.DisplayName;
-        user.Location = req.Location;
-        user.Bio = req.Bio;
+        // GetOrCreateAsync ensures the row exists even if PUT /me is called
+        // before GET /me (which normally creates it).
+        var user = await GetOrCreateAsync(userId, email);
+        user.DisplayName     = req.DisplayName;
+        user.Location        = req.Location;
+        user.Bio             = req.Bio;
         user.InstagramHandle = req.InstagramHandle;
-        user.TikTokHandle = req.TikTokHandle;
+        user.TikTokHandle    = req.TikTokHandle;
         user.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync();
         return user;

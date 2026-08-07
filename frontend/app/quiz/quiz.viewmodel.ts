@@ -31,7 +31,7 @@ export const getNextLabel = (question: Question, value: string | string[], isLas
 export type Answers = {
   skillLevel: string;
   crowdTolerance: string;
-  preferredRegion: string;
+  preferredRegions: string[];
   boardTypes: string[];
   preferredWaveTypes: string[];
   preferredWaveSizes: string[];
@@ -41,7 +41,7 @@ export type Answers = {
 export const INITIAL_ANSWERS: Answers = {
   skillLevel: '',
   crowdTolerance: '',
-  preferredRegion: '',
+  preferredRegions: [],
   boardTypes: [],
   preferredWaveTypes: [],
   preferredWaveSizes: [],
@@ -51,9 +51,7 @@ export const INITIAL_ANSWERS: Answers = {
 export const buildPreferences = (answers: Answers): UserPreferences => ({
   skillLevel:          answers.skillLevel as SkillLevel,
   crowdTolerance:      answers.crowdTolerance as CrowdLevel,
-  preferredRegion:     answers.preferredRegion && answers.preferredRegion !== 'Anywhere'
-                          ? (answers.preferredRegion as Region)
-                          : undefined,
+  preferredRegions:    answers.preferredRegions as Region[],
   boardTypes:          answers.boardTypes as BoardType[],
   preferredWaveTypes:  answers.preferredWaveTypes as WaveType[],
   preferredWaveSizes:  answers.preferredWaveSizes as WaveSize[],
@@ -63,7 +61,7 @@ export const buildPreferences = (answers: Answers): UserPreferences => ({
 export const prefsToAnswers = (prefs: UserPreferences): Answers => ({
   skillLevel:          prefs.skillLevel,
   crowdTolerance:      prefs.crowdTolerance,
-  preferredRegion:     prefs.preferredRegion ?? '',
+  preferredRegions:    [...prefs.preferredRegions],
   boardTypes:          [...prefs.boardTypes],
   preferredWaveTypes:  [...prefs.preferredWaveTypes],
   preferredWaveSizes:  [...prefs.preferredWaveSizes],

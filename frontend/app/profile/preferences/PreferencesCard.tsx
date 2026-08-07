@@ -4,7 +4,8 @@ import Button from '@/components/ui/Button';
 import MultiSelect from '@/components/ui/MultiSelect';
 import { LinesIcon } from '@/components/ui/Icons';
 import { SKILL_LEVELS, CROWD_LEVELS, BOARD_TYPES, WAVE_TYPES, WAVE_SIZES, FACILITIES } from '@/lib/types';
-import type { UserPreferences, SkillLevel, CrowdLevel, Region } from '@/lib/types';
+import type { UserPreferences, SkillLevel, CrowdLevel } from '@/lib/types';
+import { REGION_LABELS } from '@/lib/constants';
 import { usePreferencesViewModel, REGION_OPTIONS } from './preferences.viewmodel';
 import { formatEnum } from '../profile.viewmodel';
 import styles from './PreferencesCard.module.css';
@@ -57,19 +58,14 @@ const PreferencesCard = ({ preferences }: Props) => {
               </div>
             </div>
 
-            <div className={styles.item}>
-              <span className={styles.label}>Search Region</span>
-              <div className={styles.selectWrap}>
-                <select
-                  className={styles.selectPill}
-                  value={vm.prefRegion}
-                  onChange={e => vm.setPrefRegion(e.target.value as Region | '')}
-                >
-                  <option value="">Any region</option>
-                  {REGION_OPTIONS.map(r => <option key={r} value={r}>{formatEnum(r)}</option>)}
-                </select>
-                <span className={styles.selectArrow}>▾</span>
-              </div>
+            <div className={`${styles.item} ${styles.itemFull}`}>
+              <span className={styles.label}>Search Regions</span>
+              <MultiSelect
+                options={REGION_OPTIONS}
+                selected={vm.prefRegions}
+                onToggle={vm.togglePrefRegion}
+                formatLabel={(r) => REGION_LABELS[r as keyof typeof REGION_LABELS] ?? formatEnum(r)}
+              />
             </div>
 
             <div className={styles.item}>

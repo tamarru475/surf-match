@@ -11,7 +11,7 @@ import type {
 export interface PreferencesViewModel {
   skillLevel: SkillLevel;
   crowdTolerance: CrowdLevel;
-  prefRegion: Region | '';
+  prefRegions: Region[];
   boardTypes: BoardType[];
   waveTypes: WaveType[];
   waveSizes: WaveSize[];
@@ -22,7 +22,7 @@ export interface PreferencesViewModel {
   error: string | null;
   setSkillLevel: (v: SkillLevel) => void;
   setCrowdTolerance: (v: CrowdLevel) => void;
-  setPrefRegion: (v: Region | '') => void;
+  togglePrefRegion: (v: Region) => void;
   toggleBoardType: (v: BoardType) => void;
   toggleWaveType: (v: WaveType) => void;
   toggleWaveSize: (v: WaveSize) => void;
@@ -43,7 +43,7 @@ export const usePreferencesViewModel = (
   const [saved, setSaved]               = useState<UserPreferences | null>(initialPreferences);
   const [skillLevel, setSkillLevel]     = useState<SkillLevel>(initialPreferences?.skillLevel ?? 'Beginner');
   const [crowdTolerance, setCrowdTolerance] = useState<CrowdLevel>(initialPreferences?.crowdTolerance ?? 'Moderate');
-  const [prefRegion, setPrefRegion]     = useState<Region | ''>(initialPreferences?.preferredRegion ?? '');
+  const [prefRegions, setPrefRegions]   = useState<Region[]>(initialPreferences?.preferredRegions ?? []);
   const [boardTypes, setBoardTypes]     = useState<BoardType[]>(initialPreferences?.boardTypes ?? []);
   const [waveTypes, setWaveTypes]       = useState<WaveType[]>(initialPreferences?.preferredWaveTypes ?? []);
   const [waveSizes, setWaveSizes]       = useState<WaveSize[]>(initialPreferences?.preferredWaveSizes ?? []);
@@ -58,7 +58,7 @@ export const usePreferencesViewModel = (
     setSaved(initialPreferences);
     setSkillLevel(initialPreferences.skillLevel);
     setCrowdTolerance(initialPreferences.crowdTolerance);
-    setPrefRegion(initialPreferences.preferredRegion ?? '');
+    setPrefRegions(initialPreferences.preferredRegions);
     setBoardTypes(initialPreferences.boardTypes);
     setWaveTypes(initialPreferences.preferredWaveTypes);
     setWaveSizes(initialPreferences.preferredWaveSizes);
@@ -70,13 +70,16 @@ export const usePreferencesViewModel = (
     return (
       skillLevel     !== saved.skillLevel ||
       crowdTolerance !== saved.crowdTolerance ||
-      prefRegion     !== (saved.preferredRegion ?? '') ||
+      !sameArr(prefRegions, saved.preferredRegions) ||
       !sameArr(boardTypes, saved.boardTypes) ||
       !sameArr(waveTypes,  saved.preferredWaveTypes) ||
       !sameArr(waveSizes,  saved.preferredWaveSizes) ||
       !sameArr(facilities, saved.preferredFacilities)
     );
-  }, [skillLevel, crowdTolerance, prefRegion, boardTypes, waveTypes, waveSizes, facilities, saved]);
+  }, [skillLevel, crowdTolerance, prefRegions, boardTypes, waveTypes, waveSizes, facilities, saved]);
+
+  const togglePrefRegion = useCallback((v: Region) =>
+    setPrefRegions(prev => prev.includes(v) ? prev.filter(x => x !== v) : [...prev, v]), []);
 
   const toggleBoardType = useCallback((v: BoardType) =>
     setBoardTypes(prev => prev.includes(v) ? prev.filter(x => x !== v) : [...prev, v]), []);
@@ -99,7 +102,7 @@ export const usePreferencesViewModel = (
       const prefs: UserPreferences = {
         skillLevel,
         crowdTolerance,
-        preferredRegion: prefRegion || undefined,
+        preferredRegions: prefRegions,
         boardTypes,
         preferredWaveTypes: waveTypes,
         preferredWaveSizes: waveSizes,
@@ -114,12 +117,12 @@ export const usePreferencesViewModel = (
     } finally {
       setSavingPreferences(false);
     }
-  }, [skillLevel, crowdTolerance, prefRegion, boardTypes, waveTypes, waveSizes, facilities]);
+  }, [skillLevel, crowdTolerance, prefRegions, boardTypes, waveTypes, waveSizes, facilities]);
 
   return {
-    skillLevel, crowdTolerance, prefRegion, boardTypes, waveTypes, waveSizes, facilities,
+    skillLevel, crowdTolerance, prefRegions, boardTypes, waveTypes, waveSizes, facilities,
     isPreferencesDirty, savingPreferences, prefsSaveSuccess, error,
-    setSkillLevel, setCrowdTolerance, setPrefRegion,
+    setSkillLevel, setCrowdTolerance, togglePrefRegion,
     toggleBoardType, toggleWaveType, toggleWaveSize, toggleFacility,
     handleSavePreferences,
   };

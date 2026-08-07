@@ -93,7 +93,7 @@
 /* ── Spot meta inside photo ── */
 
 .meta {
-  @apply absolute bottom-0 left-0 right-0 p-3;
+  @apply absolute bottom-0 left-0 right-0 p-3 text-left;
 }
 
 .spotName {

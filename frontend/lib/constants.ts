@@ -15,6 +15,31 @@ export const REGION_LABELS: Record<Region, string> = {
   Otago:        'Otago',
 };
 
+// Spot-level sub-area for BayOfPlenty — distinguishes Coromandel Peninsula
+// spots from Bay of Plenty (Tauranga / Eastern Bay) spots.
+export const BAYOFPLENTY_SUBAREA: Partial<Record<string, string>> = {
+  // Coromandel Peninsula
+  'Pauanui':         'Coromandel',
+  'Whangamata':      'Coromandel',
+  'Tairua':          'Coromandel',
+  'Hot Water Beach': 'Coromandel',
+  'Waihi Beach':     'Coromandel',
+  // Bay of Plenty (Tauranga / Eastern Bay)
+  'Mount Maunganui': 'Bay of Plenty',
+  'Papamoa Beach':   'Bay of Plenty',
+  'Ohope Beach':     'Bay of Plenty',
+  'Waihau Bay':      'Bay of Plenty',
+  'Tay Street':      'Bay of Plenty',
+};
+
+// Returns a spot-specific region label. For BayOfPlenty spots this resolves to
+// 'Coromandel' or 'Bay of Plenty' rather than the combined quiz label, so the
+// user knows exactly where each spot is.
+export const spotRegionLabel = (spotName: string, region: Region): string =>
+  region === 'BayOfPlenty'
+    ? (BAYOFPLENTY_SUBAREA[spotName] ?? REGION_LABELS[region])
+    : REGION_LABELS[region];
+
 export const REGION_GRADIENTS: Record<Region, string> = {
   Northland:    'linear-gradient(135deg, #06b6d4, #1d4ed8)',
   Auckland:     'linear-gradient(135deg, #0ea5e9, #4338ca)',

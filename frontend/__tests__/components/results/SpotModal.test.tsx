@@ -27,6 +27,7 @@ const spot: SpotRecommendation = {
 const prefs: UserPreferences = {
   skillLevel: 'Intermediate',
   crowdTolerance: 'Busy',
+  preferredRegions: [],
   boardTypes: [],
   preferredWaveTypes: [],
   preferredWaveSizes: [],

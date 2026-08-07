@@ -3,7 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { fetchUserPreferences } from '@/lib/api';
+import { saveUserPreferences } from '@/lib/api';
+import type { UserPreferences } from '@/lib/types';
 import styles from './page.module.css';
 
 const AuthCallbackPage = () => {
@@ -12,12 +13,18 @@ const AuthCallbackPage = () => {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) { router.replace('/'); return; }
-      try {
-        await fetchUserPreferences();
-        router.replace('/profile');
-      } catch {
-        router.replace('/');
+
+      const storedResults = sessionStorage.getItem('surfmatch_results');
+      if (storedResults) {
+        try {
+          const { preferences } = JSON.parse(storedResults) as { preferences: UserPreferences };
+          if (preferences) await saveUserPreferences(preferences).catch(() => {});
+        } catch {}
       }
+
+      const returnTo = sessionStorage.getItem('auth_return_to') || '/profile';
+      sessionStorage.removeItem('auth_return_to');
+      router.replace(returnTo);
     });
   }, [router]);
 

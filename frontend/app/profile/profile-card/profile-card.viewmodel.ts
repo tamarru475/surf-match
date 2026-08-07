@@ -77,11 +77,11 @@ export const useProfileCardViewModel = (profile: Profile | null): ProfileCardVie
     if (saveSuccessTimer.current) clearTimeout(saveSuccessTimer.current);
     try {
       const updated = await updateProfile({
-        displayName:     displayName.trim() || null,
-        location:        location.trim() || null,
-        bio:             bio.trim() || null,
-        instagramHandle: instagramHandle.trim() || null,
-        tikTokHandle:    tikTokHandle.trim() || null,
+        displayName:     displayName.trim(),
+        location:        location.trim(),
+        bio:             bio.trim(),
+        instagramHandle: instagramHandle.trim(),
+        tikTokHandle:    tikTokHandle.trim(),
       });
       setSaved(updated);
       setSaveSuccess(true);
@@ -118,7 +118,7 @@ export const useProfileCardViewModel = (profile: Profile | null): ProfileCardVie
     }
   }, [clearPending]);
 
-  const avatarLetter = ((saved?.displayName ?? saved?.email ?? profile?.email ?? '?')[0]).toUpperCase();
+  const avatarLetter = ((saved?.displayName || saved?.email || profile?.email || '?')[0]).toUpperCase();
 
   return {
     avatarUrl, avatarLetter, uploading, pendingImageSrc,

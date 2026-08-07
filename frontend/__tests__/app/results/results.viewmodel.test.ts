@@ -34,6 +34,7 @@ const FAKE_DATA: RecommendationResponse = {
   preferences: {
     skillLevel: 'Intermediate',
     crowdTolerance: 'Quiet',
+    preferredRegions: [],
     boardTypes: [],
     preferredWaveTypes: [],
     preferredWaveSizes: [],
@@ -121,6 +122,33 @@ describe('favorites loading', () => {
     sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
     await act(async () => { renderHook(() => useResultsViewModel()) })
     expect(mockFetchFavorites).not.toHaveBeenCalled()
+  })
+
+  it('adds a pending_favorite from sessionStorage after fetching favorites', async () => {
+    const pendingId = 'pending-spot-id'
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    sessionStorage.setItem('pending_favorite', pendingId)
+    mockFetchFavorites.mockResolvedValue([])
+    mockAddFavorite.mockResolvedValue({})
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    expect(result!.current.favoritedIds.has(pendingId)).toBe(true)
+    expect(mockAddFavorite).toHaveBeenCalledWith(pendingId)
+    expect(sessionStorage.getItem('pending_favorite')).toBeNull()
+  })
+
+  it('does not call addFavorite for pending_favorite already in fetched list', async () => {
+    sessionStorage.setItem('surfmatch_results', JSON.stringify(FAKE_DATA))
+    sessionStorage.setItem('pending_favorite', SPOT_ID)
+    mockFetchFavorites.mockResolvedValue([FAKE_FAVORITE])
+    let result: ReturnType<typeof renderHook<ReturnType<typeof useResultsViewModel>, unknown>>['result']
+    await act(async () => {
+      ;({ result } = renderHook(() => useResultsViewModel()))
+    })
+    expect(result!.current.favoritedIds.has(SPOT_ID)).toBe(true)
+    expect(mockAddFavorite).not.toHaveBeenCalled()
   })
 })
 

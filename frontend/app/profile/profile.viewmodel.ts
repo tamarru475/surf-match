@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  fetchProfile, fetchUserPreferences, fetchRecommendations, saveUserPreferences,
+  fetchProfile, fetchUserPreferences, fetchRecommendations, saveUserPreferences, updateProfile,
 } from '@/lib/api';
 import { useAuth } from '@/lib/AuthContext';
-import type { Profile, SkillLevel, UserPreferences } from '@/lib/types';
+import type { Profile, Region, SkillLevel, UserPreferences } from '@/lib/types';
 
 export interface ProfileViewModel {
   profile: Profile | null;
@@ -38,10 +38,45 @@ export const useProfileViewModel = (): ProfileViewModel => {
       fetchUserPreferences().catch(() => null),
     ])
       .then(([p, prefs]) => {
-        // Seed location from quiz region if not yet saved on profile.
-        setProfile({ ...p, location: p.location ?? prefs?.preferredRegion ?? null });
-        setPreferences(prefs);
-        setSkillLevel(prefs?.skillLevel ?? null);
+        // Fallback: if handlePostAuth couldn't save prefs (e.g. Supabase session
+        // wasn't ready yet), recover them directly from the quiz sessionStorage key.
+        let resolvedPrefs = prefs;
+        if (!resolvedPrefs) {
+          try {
+            const raw = sessionStorage.getItem('surfmatch_results');
+            if (raw) {
+              const { preferences } = JSON.parse(raw) as { preferences: UserPreferences };
+              if (preferences) {
+                resolvedPrefs = preferences;
+                saveUserPreferences(preferences).catch(() => {});
+              }
+            }
+          } catch {}
+        }
+
+        const firstRegion = resolvedPrefs?.preferredRegions[0] as Region | undefined;
+        // Store the raw enum value — the profile card uses a <select> whose
+        // option values are enum strings (e.g. 'BayOfPlenty'). Using the
+        // human-readable label ('Coromandel / Bay of Plenty') would not match
+        // any option and the field would show the blank placeholder instead.
+        const seededLocation = firstRegion ?? null;
+        // Use || not ?? — the backend initialises new-user rows with "" (empty
+        // string), and ?? only falls back for null/undefined, so "" would slip
+        // through and leave the location select showing "Your region".
+        const resolvedLocation = p.location || seededLocation || null;
+        setProfile({ ...p, location: resolvedLocation });
+        setPreferences(resolvedPrefs);
+        setSkillLevel(resolvedPrefs?.skillLevel ?? null);
+        // Persist the seeded location so it survives page reloads.
+        if (!p.location && resolvedLocation) {
+          updateProfile({
+            displayName:     p.displayName     || '',
+            location:        resolvedLocation,
+            bio:             p.bio             || '',
+            instagramHandle: p.instagramHandle || '',
+            tikTokHandle:    p.tikTokHandle    || '',
+          }).catch(() => {});
+        }
       })
       .catch(() => router.push('/'))
       .finally(() => setLoading(false));
