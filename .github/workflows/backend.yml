@@ -42,5 +42,5 @@ jobs:
             --project ${{ secrets.GCP_PROJECT_ID }} \
             --region australia-southeast1 \
             --allow-unauthenticated \
-            --update-env-vars CORS_ORIGIN=https://surf-match.vercel.app \
+            --update-env-vars CORS_ORIGIN=https://surf-match.vercel.app,SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }},ConnectionStrings__DefaultConnection=${{ secrets.CONNECTIONSTRINGS__DEFAULTCONNECTION }} \
             --quiet
