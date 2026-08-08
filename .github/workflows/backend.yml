@@ -35,6 +35,27 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@v2
 
+      # Write env vars to a YAML file so values with semicolons/special chars
+      # never touch the shell (inline --update-env-vars expansion breaks on them).
+      - name: Write Cloud Run env vars
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DB_CONN: ${{ secrets.CONNECTIONSTRINGS__DEFAULTCONNECTION }}
+        run: |
+          python3 - <<'EOF'
+          import os, json
+          rows = [
+              ('CORS_ORIGIN', 'https://surf-match.vercel.app'),
+              ('SUPABASE_URL', os.environ['SUPABASE_URL']),
+              ('SUPABASE_SERVICE_ROLE_KEY', os.environ['SUPABASE_SERVICE_ROLE_KEY']),
+              ('ConnectionStrings__DefaultConnection', os.environ['DB_CONN']),
+          ]
+          with open('/tmp/cloudrun.yaml', 'w') as f:
+              for k, v in rows:
+                  f.write(f'{k}: {json.dumps(v)}\n')
+          EOF
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy surf-match-api \
@@ -42,5 +63,11 @@ jobs:
             --project ${{ secrets.GCP_PROJECT_ID }} \
             --region australia-southeast1 \
             --allow-unauthenticated \
-            --update-env-vars CORS_ORIGIN=https://surf-match.vercel.app,SUPABASE_URL=${{ secrets.SUPABASE_URL }},SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }},ConnectionStrings__DefaultConnection=${{ secrets.CONNECTIONSTRINGS__DEFAULTCONNECTION }} \
+            --env-vars-file /tmp/cloudrun.yaml \
             --quiet
+
+      - name: Verify health
+        run: |
+          sleep 20
+          curl -sf https://surf-match-api-518426856978.australia-southeast1.run.app/health \
+            || (echo "Health check failed" && exit 1)
