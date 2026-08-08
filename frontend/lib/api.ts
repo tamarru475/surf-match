@@ -1,7 +1,7 @@
 import type { FavoriteSpot, Profile, RecommendationResponse, SurfSession, UpdateProfileData, UserPreferences } from './types';
 import { supabase } from './supabase';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5116';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5116';
 
 async function authHeaders(): Promise<HeadersInit> {
   const { data } = await supabase.auth.getSession();
